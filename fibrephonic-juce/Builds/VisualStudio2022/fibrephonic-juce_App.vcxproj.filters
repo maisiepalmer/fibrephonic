@@ -2,6 +2,12 @@
 
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="fibrephonic-juce\Source\x-imu3\lib">
+      <UniqueIdentifier>{1B1493FF-03AD-FD3A-2D25-C37DCE767312}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fibrephonic-juce\Source\x-imu3">
+      <UniqueIdentifier>{070E659D-259B-805F-C812-C3FF67939730}</UniqueIdentifier>
+    </Filter>
     <Filter Include="fibrephonic-juce\Source">
       <UniqueIdentifier>{75EC8CFA-5B96-3A32-0DBF-6FE2D853F61E}</UniqueIdentifier>
     </Filter>
@@ -4092,10 +4098,37 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\OSCManager.h">
-      <Filter>fibrephonic-juce\Source</Filter>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Connection.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\ConnectionInfo.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\DataLogger.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\FileConverter.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Helpers.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\KeepOpen.h">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\NetworkAnnouncement.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\PortScanner.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.hpp">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Ximu3DeviceManager.h">
+      <Filter>fibrephonic-juce\Source\x-imu3</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\OSCManager.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Objects.h">
@@ -8517,7 +8550,7 @@
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialPortListMonitor.h">
       <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport.h">
+    <ClInclude Include="..\..\..\..\JUCE\juce_serialport\juce_serialport.h">
       <Filter>JUCE Modules\juce_serialport</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">

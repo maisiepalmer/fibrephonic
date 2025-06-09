@@ -55,6 +55,7 @@
 /* Begin PBXFileReference section */
 		078C89494E67F91F9A337E64 /* OSCManager.h */ /* OSCManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OSCManager.h; path = ../../Source/OSCManager.h; sourceTree = SOURCE_ROOT; };
 		0890123AC77AA29DE0C7A5F7 /* juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = ../../../../JUCE/modules/juce_core; sourceTree = SOURCE_ROOT; };
+		09A28D43CEECBB644B184809 /* Helpers.hpp */ /* Helpers.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Helpers.hpp; path = "../../libraries/X-IMU3-Cpp/Helpers.hpp"; sourceTree = SOURCE_ROOT; };
 		0C32D988F6F65FA1F545704F /* include_juce_midi_ci.cpp */ /* include_juce_midi_ci.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_midi_ci.cpp; path = ../../JuceLibraryCode/include_juce_midi_ci.cpp; sourceTree = SOURCE_ROOT; };
 		12B99F67CCEDD7CAA47C4C2D /* include_juce_dsp.mm */ /* include_juce_dsp.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_dsp.mm; path = ../../JuceLibraryCode/include_juce_dsp.mm; sourceTree = SOURCE_ROOT; };
 		161906F93EE5BE943ABF7536 /* juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = ../../../../JUCE/modules/juce_gui_extra; sourceTree = SOURCE_ROOT; };
@@ -70,26 +71,32 @@
 		3E838D9D7C323296C0737547 /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		4136687EBF4671FA03627BA0 /* juce_data_structures */ /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = ../../../../JUCE/modules/juce_data_structures; sourceTree = SOURCE_ROOT; };
 		4296FEA1B31947F561D92F2D /* include_juce_audio_processors_lv2_libs.cpp */ /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_lv2_libs.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
+		44FA98BFB2FE46E345DC4502 /* juce_serialport */ /* juce_serialport */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_serialport; path = ../../../../JUCE/juce_serialport/juce_serialport; sourceTree = SOURCE_ROOT; };
+		47886B4057EC2D5B8D6B138C /* FileConverter.hpp */ /* FileConverter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FileConverter.hpp; path = "../../libraries/X-IMU3-Cpp/FileConverter.hpp"; sourceTree = SOURCE_ROOT; };
 		48D845333167C0F0E819E7F5 /* include_juce_graphics_Harfbuzz.cpp */ /* include_juce_graphics_Harfbuzz.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_graphics_Harfbuzz.cpp; path = ../../JuceLibraryCode/include_juce_graphics_Harfbuzz.cpp; sourceTree = SOURCE_ROOT; };
 		4A9E04A2BA914D6549742110 /* MainComponent.cpp */ /* MainComponent.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MainComponent.cpp; path = ../../Source/MainComponent.cpp; sourceTree = SOURCE_ROOT; };
 		5124A6220152634B333E6DFF /* Foundation.framework */ /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		516ED374D671CE2D40DFCF51 /* WebKit.framework */ /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		51848D37A2CFD2235601C2A8 /* juce_cryptography */ /* juce_cryptography */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_cryptography; path = ../../../../JUCE/modules/juce_cryptography; sourceTree = SOURCE_ROOT; };
 		51B95A22E2368D2CF5CEF07C /* Security.framework */ /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		526A2F6946AA48C4E85770C0 /* PortScanner.hpp */ /* PortScanner.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PortScanner.hpp; path = "../../libraries/X-IMU3-Cpp/PortScanner.hpp"; sourceTree = SOURCE_ROOT; };
 		624B0A2D93B0A96A393F8208 /* OpenGL.framework */ /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		63C1586ECDCCC16A871AF5D4 /* Connection.hpp */ /* Connection.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Connection.hpp; path = "../../libraries/X-IMU3-Cpp/Connection.hpp"; sourceTree = SOURCE_ROOT; };
 		65DF5B7D4CE343317BD45BB1 /* include_juce_audio_utils.mm */ /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
 		660642159AF1678A6F67ADE1 /* DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
 		69EBDB80FF655672297F983E /* Ximu3DeviceManager.h */ /* Ximu3DeviceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Ximu3DeviceManager.h; path = ../../Source/Ximu3DeviceManager.h; sourceTree = SOURCE_ROOT; };
-		733FEDDB420A8CCAF50BA564 /* juce_serialport */ /* juce_serialport */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_serialport; path = "../../../../../JUCE and Projects/JUCE-master/usermodules/juce_serialport"; sourceTree = SOURCE_ROOT; };
 		77A4D9D833DDD42DE741E7FE /* include_juce_audio_devices.mm */ /* include_juce_audio_devices.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_devices.mm; path = ../../JuceLibraryCode/include_juce_audio_devices.mm; sourceTree = SOURCE_ROOT; };
 		79CF3BE4C9D87570A05E4AB9 /* include_juce_opengl.mm */ /* include_juce_opengl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_opengl.mm; path = ../../JuceLibraryCode/include_juce_opengl.mm; sourceTree = SOURCE_ROOT; };
+		7F47B01277A871E0BF772F8E /* DataLogger.hpp */ /* DataLogger.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataLogger.hpp; path = "../../libraries/X-IMU3-Cpp/DataLogger.hpp"; sourceTree = SOURCE_ROOT; };
 		7FC40676D4C5ACFBC62EF1B8 /* include_juce_osc.cpp */ /* include_juce_osc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_osc.cpp; path = ../../JuceLibraryCode/include_juce_osc.cpp; sourceTree = SOURCE_ROOT; };
 		80DF94C27C3F1D3729A20058 /* juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = ../../../../JUCE/modules/juce_audio_formats; sourceTree = SOURCE_ROOT; };
 		8A69FEF139106182D4C5265A /* RecentFilesMenuTemplate.nib */ /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
+		907AA915CB78CC9BB53DBF5C /* KeepOpen.h */ /* KeepOpen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeepOpen.h; path = "../../libraries/X-IMU3-Cpp/KeepOpen.h"; sourceTree = SOURCE_ROOT; };
 		9344729222671EB5785AC1F5 /* include_juce_core_CompilationTime.cpp */ /* include_juce_core_CompilationTime.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_core_CompilationTime.cpp; path = ../../JuceLibraryCode/include_juce_core_CompilationTime.cpp; sourceTree = SOURCE_ROOT; };
 		97BC0F649DC7B6274F8D7CCA /* Info-App.plist */ /* Info-App.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-App.plist"; path = "Info-App.plist"; sourceTree = SOURCE_ROOT; };
 		9B56A7C95EA553124CD7AD50 /* juce_audio_processors */ /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = ../../../../JUCE/modules/juce_audio_processors; sourceTree = SOURCE_ROOT; };
 		9B719A513638A08F6B4781C9 /* Cocoa.framework */ /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		9D157C6B0A988ED4EE6873ED /* Ximu3.hpp */ /* Ximu3.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Ximu3.hpp; path = "../../libraries/X-IMU3-Cpp/Ximu3.hpp"; sourceTree = SOURCE_ROOT; };
 		A01B4C0240FBBFFEC7E92C33 /* include_juce_serialport_OSX.cpp */ /* include_juce_serialport_OSX.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_serialport_OSX.cpp; path = ../../JuceLibraryCode/include_juce_serialport_OSX.cpp; sourceTree = SOURCE_ROOT; };
 		A62CF796998882216C38329D /* MetalKit.framework */ /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		A661B72B56C12871182CECD8 /* juce_audio_utils */ /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../../JUCE/modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
@@ -98,6 +105,7 @@
 		AB6C5C1E439E035164DED218 /* CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		ABC822DD0EF92E3885BC13CC /* juce_box2d */ /* juce_box2d */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_box2d; path = ../../../../JUCE/modules/juce_box2d; sourceTree = SOURCE_ROOT; };
 		B74A5ED6351342E5211A2A02 /* juce_osc */ /* juce_osc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_osc; path = ../../../../JUCE/modules/juce_osc; sourceTree = SOURCE_ROOT; };
+		BE2998A6296FD92E6344D698 /* NetworkAnnouncement.hpp */ /* NetworkAnnouncement.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NetworkAnnouncement.hpp; path = "../../libraries/X-IMU3-Cpp/NetworkAnnouncement.hpp"; sourceTree = SOURCE_ROOT; };
 		C6DFE81163933A73D9FD1E0B /* juce_dsp */ /* juce_dsp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_dsp; path = ../../../../JUCE/modules/juce_dsp; sourceTree = SOURCE_ROOT; };
 		C8FA85BDB589738C3FA208F2 /* Accelerate.framework */ /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		CAF791AB29CEA212A528C7A5 /* QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -117,6 +125,7 @@
 		F65F1D3BD806018851568B23 /* include_juce_events.mm */ /* include_juce_events.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_events.mm; path = ../../JuceLibraryCode/include_juce_events.mm; sourceTree = SOURCE_ROOT; };
 		F79D56ECA4E84E914ACD4DA4 /* Main.cpp */ /* Main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Main.cpp; path = ../../Source/Main.cpp; sourceTree = SOURCE_ROOT; };
 		F7FCA625BB2C7FF5856AD4E9 /* include_juce_audio_processors_ara.cpp */ /* include_juce_audio_processors_ara.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_ara.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_ara.cpp; sourceTree = SOURCE_ROOT; };
+		F841250B73AE5CFB3E67E15C /* ConnectionInfo.hpp */ /* ConnectionInfo.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConnectionInfo.hpp; path = "../../libraries/X-IMU3-Cpp/ConnectionInfo.hpp"; sourceTree = SOURCE_ROOT; };
 		F93001E1F157525E7FABFBDA /* include_juce_gui_extra.mm */ /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
 		F9950AA220388C10E066C566 /* include_juce_audio_formats.mm */ /* include_juce_audio_formats.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_formats.mm; path = ../../JuceLibraryCode/include_juce_audio_formats.mm; sourceTree = SOURCE_ROOT; };
 		FBEAE02EBFA13D28A8080179 /* AudioToolbox.framework */ /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -171,7 +180,7 @@
 				DAE2AC9AC22FD412385B7414,
 				2D271EF7E21DC6014059ADB5,
 				B74A5ED6351342E5211A2A02,
-				733FEDDB420A8CCAF50BA564,
+				44FA98BFB2FE46E345DC4502,
 			);
 			name = "JUCE Modules";
 			sourceTree = "<group>";
@@ -187,6 +196,15 @@
 				F492FF6A9B7312F54104B52E,
 			);
 			name = Source;
+			sourceTree = "<group>";
+		};
+		64D0984796D4A97B3C0B241C /* x-imu3 */ = {
+			isa = PBXGroup;
+			children = (
+				A2AE2FABE49538183C55DC4E,
+				69EBDB80FF655672297F983E,
+			);
+			name = "x-imu3";
 			sourceTree = "<group>";
 		};
 		705664525D24AA75D14B6218 /* JUCE Library Code */ = {
@@ -229,6 +247,22 @@
 			name = "fibrephonic-juce";
 			sourceTree = "<group>";
 		};
+		A2AE2FABE49538183C55DC4E /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				63C1586ECDCCC16A871AF5D4,
+				F841250B73AE5CFB3E67E15C,
+				7F47B01277A871E0BF772F8E,
+				47886B4057EC2D5B8D6B138C,
+				09A28D43CEECBB644B184809,
+				907AA915CB78CC9BB53DBF5C,
+				BE2998A6296FD92E6344D698,
+				526A2F6946AA48C4E85770C0,
+				9D157C6B0A988ED4EE6873ED,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
 		CC92A19177E02CF360EAEA74 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -254,8 +288,8 @@
 		D22E2E1B37ADCE39A9255F73 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				64D0984796D4A97B3C0B241C,
 				078C89494E67F91F9A337E64,
-				69EBDB80FF655672297F983E,
 				AA9F47789A1FEBBA79F21FAA,
 				F79D56ECA4E84E914ACD4DA4,
 				E93343B906B6E5BBAEC5450B,
@@ -551,14 +585,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../../../JUCE/modules",
-					"\"$(SRCROOT)/../../../../../JUCE and Projects/JUCE-master/usermodules\"",
+					"$(SRCROOT)/../../../../JUCE/juce_serialport",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules \"$(SRCROOT)/../../../../../JUCE and Projects/JUCE-master/usermodules\"";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules $(SRCROOT)/../../../../JUCE/juce_serialport";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.fibrephonicjuce;
 				PRODUCT_NAME = "NewProject";
 				USE_HEADERMAP = NO;
@@ -621,7 +655,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../../../JUCE/modules",
-					"\"$(SRCROOT)/../../../../../JUCE and Projects/JUCE-master/usermodules\"",
+					"$(SRCROOT)/../../../../JUCE/juce_serialport",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -629,7 +663,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules \"$(SRCROOT)/../../../../../JUCE and Projects/JUCE-master/usermodules\"";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules $(SRCROOT)/../../../../JUCE/juce_serialport";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.fibrephonicjuce;
 				PRODUCT_NAME = "NewProject";
 				USE_HEADERMAP = NO;

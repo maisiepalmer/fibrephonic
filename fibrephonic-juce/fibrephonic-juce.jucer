@@ -4,9 +4,25 @@
               jucerFormatVersion="1" projectType="guiapp" pluginFormats="buildAU,buildVST3">
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
+      <GROUP id="{7541B055-A622-1378-2963-F1E93D0288D9}" name="x-imu3">
+        <GROUP id="{3AA4EC0C-F308-6146-74B3-CCDB9C63E002}" name="lib">
+          <FILE id="xJd1Ur" name="Connection.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/Connection.hpp"/>
+          <FILE id="lduVMu" name="ConnectionInfo.hpp" compile="0" resource="0"
+                file="libraries/X-IMU3-Cpp/ConnectionInfo.hpp"/>
+          <FILE id="flE1zc" name="DataLogger.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/DataLogger.hpp"/>
+          <FILE id="tyaOJM" name="FileConverter.hpp" compile="0" resource="0"
+                file="libraries/X-IMU3-Cpp/FileConverter.hpp"/>
+          <FILE id="micDa2" name="Helpers.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/Helpers.hpp"/>
+          <FILE id="krDc4j" name="KeepOpen.h" compile="0" resource="0" file="libraries/X-IMU3-Cpp/KeepOpen.h"/>
+          <FILE id="d2dg0c" name="NetworkAnnouncement.hpp" compile="0" resource="0"
+                file="libraries/X-IMU3-Cpp/NetworkAnnouncement.hpp"/>
+          <FILE id="vYerk1" name="PortScanner.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/PortScanner.hpp"/>
+          <FILE id="aYf6kG" name="Ximu3.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/Ximu3.hpp"/>
+        </GROUP>
+        <FILE id="PbuqDR" name="Ximu3DeviceManager.h" compile="0" resource="0"
+              file="Source/Ximu3DeviceManager.h"/>
+      </GROUP>
       <FILE id="PYgu3A" name="OSCManager.h" compile="0" resource="0" file="Source/OSCManager.h"/>
-      <FILE id="PbuqDR" name="Ximu3DeviceManager.h" compile="0" resource="0"
-            file="Source/Ximu3DeviceManager.h"/>
       <FILE id="xbqB5W" name="Objects.h" compile="0" resource="0" file="Source/Objects.h"/>
       <FILE id="fkCq2l" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="emtHeO" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
@@ -89,7 +105,7 @@
         <MODULEPATH id="juce_midi_ci" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_opengl" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_osc" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_serialport" path="../../../JUCE and Projects/JUCE-master/usermodules"/>
+        <MODULEPATH id="juce_serialport" path="../../JUCE/juce_serialport"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>

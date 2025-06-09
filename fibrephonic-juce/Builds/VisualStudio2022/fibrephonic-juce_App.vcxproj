@@ -3251,8 +3251,17 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_serialport_Windows.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\OSCManager.h"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Connection.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\ConnectionInfo.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\DataLogger.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\FileConverter.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Helpers.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\KeepOpen.h"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\NetworkAnnouncement.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\PortScanner.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.hpp"/>
     <ClInclude Include="..\..\Source\Ximu3DeviceManager.h"/>
+    <ClInclude Include="..\..\Source\OSCManager.h"/>
     <ClInclude Include="..\..\Source\Objects.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
     <ClInclude Include="..\..\Source\LookandFeel.h"/>
@@ -4726,7 +4735,7 @@
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\ToolWindow.h"/>
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialDevice.h"/>
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialPortListMonitor.h"/>
-    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport.h"/>
+    <ClInclude Include="..\..\..\..\JUCE\juce_serialport\juce_serialport.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>
