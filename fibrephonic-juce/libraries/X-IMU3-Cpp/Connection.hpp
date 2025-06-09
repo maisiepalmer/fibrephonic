@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../C/Ximu3.h"
+#include "../libraries/X-IMU3-Cpp/Ximu3.h"
 #include <cassert>
 #include "ConnectionInfo.hpp"
 #include <functional>

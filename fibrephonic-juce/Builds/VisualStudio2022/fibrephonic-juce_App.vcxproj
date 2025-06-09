@@ -3260,11 +3260,16 @@
     <ClInclude Include="..\..\libraries\X-IMU3-Cpp\NetworkAnnouncement.hpp"/>
     <ClInclude Include="..\..\libraries\X-IMU3-Cpp\PortScanner.hpp"/>
     <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.hpp"/>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.h"/>
     <ClInclude Include="..\..\Source\Ximu3DeviceManager.h"/>
     <ClInclude Include="..\..\Source\OSCManager.h"/>
     <ClInclude Include="..\..\Source\Objects.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
     <ClInclude Include="..\..\Source\LookandFeel.h"/>
+    <ClInclude Include="..\..\Source\BluetoothConnectExample.h"/>
+    <ClInclude Include="..\..\Source\SerialConnectionExample.h"/>
+    <ClInclude Include="..\..\Source\UdpConnectionExample.h"/>
+    <ClInclude Include="..\..\Source\Connection.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_analytics\analytics\juce_Analytics.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_analytics\analytics\juce_ButtonTracker.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_analytics\destinations\juce_AnalyticsDestination.h"/>
@@ -4735,7 +4740,7 @@
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\ToolWindow.h"/>
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialDevice.h"/>
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialPortListMonitor.h"/>
-    <ClInclude Include="..\..\..\..\JUCE\juce_serialport\juce_serialport.h"/>
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h"/>
   </ItemGroup>
   <ItemGroup>

@@ -4125,6 +4125,9 @@
     <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.hpp">
       <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.h">
+      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Ximu3DeviceManager.h">
       <Filter>fibrephonic-juce\Source\x-imu3</Filter>
     </ClInclude>
@@ -4138,6 +4141,18 @@
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\LookandFeel.h">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\BluetoothConnectExample.h">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\SerialConnectionExample.h">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UdpConnectionExample.h">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Connection.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_analytics\analytics\juce_Analytics.h">
@@ -8550,7 +8565,7 @@
     <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialPortListMonitor.h">
       <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\JUCE\juce_serialport\juce_serialport.h">
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport.h">
       <Filter>JUCE Modules\juce_serialport</Filter>
     </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
