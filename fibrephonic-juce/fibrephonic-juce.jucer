@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="gT3KzM" name="fibrephonic-juce" projectType="guiapp" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+<JUCERPROJECT id="gT3KzM" name="fibrephonic-juce" useAppConfig="0" addUsingNamespaceToJuceHeader="1"
+              jucerFormatVersion="1" projectType="guiapp" pluginFormats="buildAU,buildVST3">
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
+      <FILE id="PYgu3A" name="OSCManager.h" compile="0" resource="0" file="Source/OSCManager.h"/>
+      <FILE id="PbuqDR" name="Ximu3DeviceManager.h" compile="0" resource="0"
+            file="Source/Ximu3DeviceManager.h"/>
+      <FILE id="xbqB5W" name="Objects.h" compile="0" resource="0" file="Source/Objects.h"/>
       <FILE id="fkCq2l" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="emtHeO" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="Zniqtw" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+      <FILE id="zslFeP" name="LookandFeel.h" compile="0" resource="0" file="Source/LookandFeel.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
@@ -15,8 +20,6 @@
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
-            useGlobalPath="0"/>
     <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_box2d" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
@@ -44,7 +47,6 @@
         <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_box2d" path="../../JUCE/modules"/>
@@ -71,7 +73,6 @@
         <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_box2d" path="../../JUCE/modules"/>

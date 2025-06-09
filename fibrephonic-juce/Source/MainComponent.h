@@ -1,13 +1,12 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "LookandFeel.h"
+#include "OSCManager.h"
 
 //==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
-class MainComponent  : public juce::Component
+
+class MainComponent  : public juce::Component, private juce::Timer
 {
 public:
     //==============================================================================
@@ -17,11 +16,47 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void timerCallback() override;
 
 private:
     //==============================================================================
-    // Your private member variables go here...
+    //Instanciation Station
 
+    //Custom Look and Feel Instances
+    ButtonLookandFeel buttonlookandfeel;
+
+    //Toggle Buttons and Functions
+    bool isConnectionsToggled = true, isCalibrationToggled = false;
+
+    TextButton connectionsbutton, calibrationbutton;
+
+    TextButton* pConnectionsButton = &connectionsbutton;
+    TextButton* pCalibrationButton = &calibrationbutton;
+
+    //std::vector<juce::Button> SwatchButtons;
+
+    inline void hideConnections()
+    {
+        /*
+        instructionsOverlay->setVisible(false);
+        dismissButton.setVisible(false);
+        */
+    }
+
+    inline void showConnections()
+    {
+
+    }
+
+    //OSC and Chip Communication
+    OSCManager oscmanager;
+
+    //Parameters and XML
+    ValueTree presetTree, ParameterTree;
+
+    std::vector<ValueTree> SwatchTree;
+
+    File xmlFile;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
