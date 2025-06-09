@@ -1,4 +1,0 @@
- 
-[submodule "x-IMU3"]
-	path = x-IMU3-Software
-	url = https://github.com/xioTechnologies/x-IMU3-Software.git
