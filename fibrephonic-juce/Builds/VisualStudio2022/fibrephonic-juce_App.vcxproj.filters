@@ -758,6 +758,30 @@
     <Filter Include="JUCE Modules\juce_osc">
       <UniqueIdentifier>{B1DE8DB1-C00A-12C0-D690-8B3C9504A60A}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\Serial">
+      <UniqueIdentifier>{79908ABA-1C4C-C1FF-CD57-351FFCE19B42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI">
+      <UniqueIdentifier>{1A0D2170-AD96-7749-E46B-E6D704B036C5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial">
+      <UniqueIdentifier>{D68017B4-C2F5-5CC9-4A01-E19F65064B30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source">
+      <UniqueIdentifier>{BD067D75-3730-5B0F-A1C8-9BA07A152782}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App">
+      <UniqueIdentifier>{B3EF9A57-B3CD-26F9-B377-37A6C08EA8BF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_serialport\examples\App_and_Arudino_Client">
+      <UniqueIdentifier>{C0519969-C952-6D61-7425-7AE028920615}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_serialport\examples">
+      <UniqueIdentifier>{975F6BCA-567A-FD04-468B-5750A7CE37BB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="JUCE Modules\juce_serialport">
+      <UniqueIdentifier>{5F28799F-08FF-74A3-B10E-868299710E8A}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules">
       <UniqueIdentifier>{FE955B6B-68AC-AA07-70D8-2413F6DB65C8}</UniqueIdentifier>
     </Filter>
@@ -3964,6 +3988,36 @@
     <ClCompile Include="..\..\..\..\JUCE\modules\juce_osc\juce_osc.cpp">
       <Filter>JUCE Modules\juce_osc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\Serial\SerialComponent.cpp">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\MainComponent.cpp">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\ToolWindow.cpp">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialDevice.cpp">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialPortListMonitor.cpp">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Main.cpp">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport_Android.cpp">
+      <Filter>JUCE Modules\juce_serialport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport_iOS.cpp">
+      <Filter>JUCE Modules\juce_serialport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport_OSX.cpp">
+      <Filter>JUCE Modules\juce_serialport</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport_Windows.cpp">
+      <Filter>JUCE Modules\juce_serialport</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_analytics.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
@@ -4031,6 +4085,9 @@
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp">
+      <Filter>JUCE Library Code</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_serialport_Windows.cpp">
       <Filter>JUCE Library Code</Filter>
     </ClCompile>
   </ItemGroup>
@@ -8445,6 +8502,24 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_osc\juce_osc.h">
       <Filter>JUCE Modules\juce_osc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\Serial\SerialComponent.h">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\MainComponent.h">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI\ToolWindow.h">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialDevice.h">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial\SerialPortListMonitor.h">
+      <Filter>JUCE Modules\juce_serialport\examples\App_and_Arudino_Client\App\Source\Serial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\juce_serialport.h">
+      <Filter>JUCE Modules\juce_serialport</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h">
       <Filter>JUCE Library Code</Filter>
     </ClInclude>
@@ -8524,6 +8599,9 @@
     </None>
     <None Include="..\..\..\..\JUCE\modules\juce_graphics\unicode\sheenbidi\JUCE_CHANGES.txt">
       <Filter>JUCE Modules\juce_graphics\unicode\sheenbidi</Filter>
+    </None>
+    <None Include="..\..\..\..\..\JUCE and Projects\JUCE-master\usermodules\juce_serialport\README.md">
+      <Filter>JUCE Modules\juce_serialport</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

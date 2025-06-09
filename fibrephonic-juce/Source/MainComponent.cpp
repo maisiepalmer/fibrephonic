@@ -94,6 +94,27 @@ MainComponent::MainComponent()
         }
     }
 
+    {
+        // Serial Connection  Setup 
+        SerialPortConfig config(115200, 8,
+            SerialPortConfig::SERIALPORT_PARITY_NONE,
+            SerialPortConfig::STOPBITS_1,
+            SerialPortConfig::FLOWCONTROL_NONE);
+
+        serialPort = std::make_unique<SerialPort>("COM6", config, nullptr);
+
+        if (serialPort && serialPort->exists() && serialPort->open("COM6"))
+        {
+            inputStream = std::make_unique<SerialPortInputStream>(serialPort.get());
+            serialConnected = true;
+            DBG("Serial connected!");
+        }
+        else
+        {
+            DBG("Failed to open serial port");
+        }
+    }
+
 }
 
 MainComponent::~MainComponent()
@@ -161,9 +182,60 @@ void MainComponent::resized()
     connectionsbutton.setBounds(0, 50, getWidth() / 2, 60);
     calibrationbutton.setBounds(getWidth() / 2, 50, getWidth() / 2, 60);
 }
+//==============================================================================
+void MainComponent::parseIMUData(const juce::String& data)
+{
+    // Expected format: "ACC:0.01,0.02,9.8;GYRO:0.01,0.00,0.1;"
+    DBG("IMU Raw Data: " << data);
+
+    juce::StringArray sections;
+    sections.addTokens(data, ";", "");
+
+    for (auto& section : sections)
+    {
+        if (section.startsWith("ACC:"))
+        {
+            auto accValues = juce::StringArray::fromTokens(section.fromFirstOccurrenceOf("ACC:", false, false), ",", "");
+            if (accValues.size() == 3)
+            {
+                float ax = accValues[0].getFloatValue();
+                float ay = accValues[1].getFloatValue();
+                float az = accValues[2].getFloatValue();
+                DBG("Accel: " << ax << ", " << ay << ", " << az);
+            }
+        }
+        else if (section.startsWith("GYRO:"))
+        {
+            auto gyroValues = juce::StringArray::fromTokens(section.fromFirstOccurrenceOf("GYRO:", false, false), ",", "");
+            if (gyroValues.size() == 3)
+            {
+                float gx = gyroValues[0].getFloatValue();
+                float gy = gyroValues[1].getFloatValue();
+                float gz = gyroValues[2].getFloatValue();
+                DBG("Gyro: " << gx << ", " << gy << ", " << gz);
+            }
+        }
+    }
+}
 
 //==============================================================================
 void MainComponent::timerCallback(){
     startTimerHz(30);  
     repaint();
+
+    {
+        // Serial Connection
+        if (!serialConnected || !inputStream)
+            return;
+
+        char buffer[128] = { 0 };
+        int bytesRead = inputStream->read(buffer, sizeof(buffer) - 1);
+
+        if (bytesRead > 0)
+        {
+            buffer[bytesRead] = '\0'; // Null terminate buffer safely
+            juce::String rawData(buffer);
+            parseIMUData(rawData.trim());
+        }
+    }
 }

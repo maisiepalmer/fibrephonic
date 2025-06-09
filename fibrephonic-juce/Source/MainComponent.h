@@ -1,6 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include <juce_serialport/juce_serialport.h>
 #include "LookandFeel.h"
 #include "OSCManager.h"
 
@@ -17,6 +18,7 @@ public:
     void paint (juce::Graphics&) override;
     void resized() override;
     void timerCallback() override;
+    void parseIMUData(const juce::String& data);
 
 private:
     //==============================================================================
@@ -57,6 +59,13 @@ private:
     std::vector<ValueTree> SwatchTree;
 
     File xmlFile;
+
+    //Serial and IMU 
+    std::unique_ptr<SerialPort> serialPort;
+    std::unique_ptr<SerialPortInputStream> inputStream;
+    bool serialConnected = false; 
+
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
