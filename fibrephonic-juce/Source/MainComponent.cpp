@@ -95,24 +95,24 @@ MainComponent::MainComponent()
     }
 
     {
-        // Serial Connection  Setup 
-        SerialPortConfig config(115200, 8,
-            SerialPortConfig::SERIALPORT_PARITY_NONE,
-            SerialPortConfig::STOPBITS_1,
-            SerialPortConfig::FLOWCONTROL_NONE);
-
-        serialPort = std::make_unique<SerialPort>("COM6", config, nullptr);
-
-        if (serialPort && serialPort->exists() && serialPort->open("COM6"))
-        {
-            inputStream = std::make_unique<SerialPortInputStream>(serialPort.get());
-            serialConnected = true;
-            DBG("Serial connected!");
-        }
-        else
-        {
-            DBG("Failed to open serial port");
-        }
+//        // Serial Connection  Setup 
+//        SerialPortConfig config(115200, 8,
+//            SerialPortConfig::SERIALPORT_PARITY_NONE,
+//            SerialPortConfig::STOPBITS_1,
+//            SerialPortConfig::FLOWCONTROL_NONE);
+//
+//        serialPort = std::make_unique<SerialPort>("COM6", config, nullptr);
+//
+//        if (serialPort && serialPort->exists() && serialPort->open("COM6"))
+//        {
+//            inputStream = std::make_unique<SerialPortInputStream>(serialPort.get());
+//            serialConnected = true;
+//            DBG("Serial connected!");
+//        }
+//        else
+//        {
+//            DBG("Failed to open serial port");
+//        }
     }
 
 }
@@ -224,18 +224,18 @@ void MainComponent::timerCallback(){
     repaint();
 
     {
-        // Serial Connection
-        if (!serialConnected || !inputStream)
-            return;
-
-        char buffer[128] = { 0 };
-        int bytesRead = inputStream->read(buffer, sizeof(buffer) - 1);
-
-        if (bytesRead > 0)
-        {
-            buffer[bytesRead] = '\0'; // Null terminate buffer safely
-            juce::String rawData(buffer);
-            parseIMUData(rawData.trim());
-        }
+//        // Serial Connection
+//        if (!serialConnected || !inputStream)
+//            return;
+//
+//        char buffer[128] = { 0 };
+//        int bytesRead = inputStream->read(buffer, sizeof(buffer) - 1);
+//
+//        if (bytesRead > 0)
+//        {
+//            buffer[bytesRead] = '\0'; // Null terminate buffer safely
+//            juce::String rawData(buffer);
+//            parseIMUData(rawData.trim());
+//        }
     }
 }

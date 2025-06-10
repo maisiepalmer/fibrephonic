@@ -31,7 +31,6 @@
 #include <juce_midi_ci/juce_midi_ci.h>
 #include <juce_opengl/juce_opengl.h>
 #include <juce_osc/juce_osc.h>
-#include <juce_serialport/juce_serialport.h>
 
 
 #if defined (JUCE_PROJUCER_VERSION) && JUCE_PROJUCER_VERSION < JUCE_VERSION

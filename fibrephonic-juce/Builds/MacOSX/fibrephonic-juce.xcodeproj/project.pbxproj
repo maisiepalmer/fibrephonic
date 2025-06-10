@@ -37,7 +37,6 @@
 		94ABE4CAA7C2DCAFAE7B9328 /* CoreAudioKit.framework */ = {isa = PBXBuildFile; fileRef = F0AF74653D3FF04D7006DAC3; };
 		9D94526CF9C747620DD1535F /* IOKit.framework */ = {isa = PBXBuildFile; fileRef = 3E838D9D7C323296C0737547; };
 		9E81CB96C74B2A0EC72D4FF5 /* include_juce_graphics.mm */ = {isa = PBXBuildFile; fileRef = 30E5F0F01FC5249559BCF36B; };
-		B9C5B0471C1BF7ACDBF18108 /* include_juce_serialport_OSX.cpp */ = {isa = PBXBuildFile; fileRef = A01B4C0240FBBFFEC7E92C33; };
 		C2963AD41F3E84B1A8346BE3 /* include_juce_audio_processors.mm */ = {isa = PBXBuildFile; fileRef = EFCA8FCD66142302D08A6799; };
 		D32B09FE6B1A062215DF5E19 /* include_juce_events.mm */ = {isa = PBXBuildFile; fileRef = F65F1D3BD806018851568B23; };
 		D52DBE91F9B4BF83BBE94A36 /* include_juce_graphics_Harfbuzz.cpp */ = {isa = PBXBuildFile; fileRef = 48D845333167C0F0E819E7F5; };
@@ -72,7 +71,6 @@
 		3E838D9D7C323296C0737547 /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		4136687EBF4671FA03627BA0 /* juce_data_structures */ /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = ../../../../JUCE/modules/juce_data_structures; sourceTree = SOURCE_ROOT; };
 		4296FEA1B31947F561D92F2D /* include_juce_audio_processors_lv2_libs.cpp */ /* include_juce_audio_processors_lv2_libs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_processors_lv2_libs.cpp; path = ../../JuceLibraryCode/include_juce_audio_processors_lv2_libs.cpp; sourceTree = SOURCE_ROOT; };
-		44FA98BFB2FE46E345DC4502 /* juce_serialport */ /* juce_serialport */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_serialport; path = ../../../../JUCE/juce_serialport/juce_serialport; sourceTree = SOURCE_ROOT; };
 		469F841088EA3E318EAC0EE1 /* Connection.h */ /* Connection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Connection.h; path = ../../Source/Connection.h; sourceTree = SOURCE_ROOT; };
 		47886B4057EC2D5B8D6B138C /* FileConverter.hpp */ /* FileConverter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FileConverter.hpp; path = "../../libraries/X-IMU3-Cpp/FileConverter.hpp"; sourceTree = SOURCE_ROOT; };
 		48D845333167C0F0E819E7F5 /* include_juce_graphics_Harfbuzz.cpp */ /* include_juce_graphics_Harfbuzz.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_graphics_Harfbuzz.cpp; path = ../../JuceLibraryCode/include_juce_graphics_Harfbuzz.cpp; sourceTree = SOURCE_ROOT; };
@@ -102,7 +100,6 @@
 		9B56A7C95EA553124CD7AD50 /* juce_audio_processors */ /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = ../../../../JUCE/modules/juce_audio_processors; sourceTree = SOURCE_ROOT; };
 		9B719A513638A08F6B4781C9 /* Cocoa.framework */ /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		9D157C6B0A988ED4EE6873ED /* Ximu3.hpp */ /* Ximu3.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Ximu3.hpp; path = "../../libraries/X-IMU3-Cpp/Ximu3.hpp"; sourceTree = SOURCE_ROOT; };
-		A01B4C0240FBBFFEC7E92C33 /* include_juce_serialport_OSX.cpp */ /* include_juce_serialport_OSX.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_serialport_OSX.cpp; path = ../../JuceLibraryCode/include_juce_serialport_OSX.cpp; sourceTree = SOURCE_ROOT; };
 		A62CF796998882216C38329D /* MetalKit.framework */ /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		A661B72B56C12871182CECD8 /* juce_audio_utils */ /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../../JUCE/modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
 		AA9F47789A1FEBBA79F21FAA /* Objects.h */ /* Objects.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Objects.h; path = ../../Source/Objects.h; sourceTree = SOURCE_ROOT; };
@@ -185,7 +182,6 @@
 				DAE2AC9AC22FD412385B7414,
 				2D271EF7E21DC6014059ADB5,
 				B74A5ED6351342E5211A2A02,
-				44FA98BFB2FE46E345DC4502,
 			);
 			name = "JUCE Modules";
 			sourceTree = "<group>";
@@ -238,7 +234,6 @@
 				0C32D988F6F65FA1F545704F,
 				79CF3BE4C9D87570A05E4AB9,
 				7FC40676D4C5ACFBC62EF1B8,
-				A01B4C0240FBBFFEC7E92C33,
 				CCE95E501710D724C1E2A610,
 			);
 			name = "JUCE Library Code";
@@ -437,7 +432,6 @@
 				E9391E52BBB25E3A660BF772,
 				5DED270B001C826AC9549D9C,
 				1AEECC86F1CE7C3CA56A1F58,
-				B9C5B0471C1BF7ACDBF18108,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,7 +569,6 @@
 					"JUCE_MODULE_AVAILABLE_juce_midi_ci=1",
 					"JUCE_MODULE_AVAILABLE_juce_opengl=1",
 					"JUCE_MODULE_AVAILABLE_juce_osc=1",
-					"JUCE_MODULE_AVAILABLE_juce_serialport=1",
 					"JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1",
 					"JUCE_STRICT_REFCOUNTEDPOINTER=1",
 					"JUCE_STANDALONE_APPLICATION=1",
@@ -595,14 +588,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../../../JUCE/modules",
-					"$(SRCROOT)/../../../../JUCE/juce_serialport",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules $(SRCROOT)/../../../../JUCE/juce_serialport";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.fibrephonicjuce;
 				PRODUCT_NAME = "NewProject";
 				USE_HEADERMAP = NO;
@@ -645,7 +637,6 @@
 					"JUCE_MODULE_AVAILABLE_juce_midi_ci=1",
 					"JUCE_MODULE_AVAILABLE_juce_opengl=1",
 					"JUCE_MODULE_AVAILABLE_juce_osc=1",
-					"JUCE_MODULE_AVAILABLE_juce_serialport=1",
 					"JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1",
 					"JUCE_STRICT_REFCOUNTEDPOINTER=1",
 					"JUCE_STANDALONE_APPLICATION=1",
@@ -665,7 +656,6 @@
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/../../JuceLibraryCode",
 					"$(SRCROOT)/../../../../JUCE/modules",
-					"$(SRCROOT)/../../../../JUCE/juce_serialport",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-App.plist;
@@ -673,7 +663,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules $(SRCROOT)/../../../../JUCE/juce_serialport";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../JUCE/modules";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.fibrephonicjuce;
 				PRODUCT_NAME = "NewProject";
 				USE_HEADERMAP = NO;

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include <juce_serialport/juce_serialport.h>
+// #include <juce_serialport/juce_serialport.h>
 #include "LookandFeel.h"
 #include "OSCManager.h"
+#include "../Source/Connection.h"
 
 //==============================================================================
 
@@ -61,8 +62,8 @@ private:
     File xmlFile;
 
     //Serial and IMU 
-    std::unique_ptr<SerialPort> serialPort;
-    std::unique_ptr<SerialPortInputStream> inputStream;
+//    std::unique_ptr<SerialPort> serialPort;
+//    std::unique_ptr<SerialPortInputStream> inputStream;
     bool serialConnected = false; 
 
 
