@@ -4,25 +4,16 @@
               jucerFormatVersion="1" projectType="guiapp" pluginFormats="buildAU,buildVST3">
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
-      <GROUP id="{7541B055-A622-1378-2963-F1E93D0288D9}" name="x-imu3">
-        <GROUP id="{3AA4EC0C-F308-6146-74B3-CCDB9C63E002}" name="lib">
-          <FILE id="xJd1Ur" name="Connection.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/Connection.hpp"/>
-          <FILE id="lduVMu" name="ConnectionInfo.hpp" compile="0" resource="0"
-                file="libraries/X-IMU3-Cpp/ConnectionInfo.hpp"/>
-          <FILE id="flE1zc" name="DataLogger.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/DataLogger.hpp"/>
-          <FILE id="tyaOJM" name="FileConverter.hpp" compile="0" resource="0"
-                file="libraries/X-IMU3-Cpp/FileConverter.hpp"/>
-          <FILE id="micDa2" name="Helpers.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/Helpers.hpp"/>
-          <FILE id="krDc4j" name="KeepOpen.h" compile="0" resource="0" file="libraries/X-IMU3-Cpp/KeepOpen.h"/>
-          <FILE id="d2dg0c" name="NetworkAnnouncement.hpp" compile="0" resource="0"
-                file="libraries/X-IMU3-Cpp/NetworkAnnouncement.hpp"/>
-          <FILE id="vYerk1" name="PortScanner.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/PortScanner.hpp"/>
-          <FILE id="aYf6kG" name="Ximu3.hpp" compile="0" resource="0" file="libraries/X-IMU3-Cpp/Ximu3.hpp"/>
-          <FILE id="xatjQu" name="Ximu3.h" compile="0" resource="0" file="libraries/X-IMU3-Cpp/Ximu3.h"/>
-        </GROUP>
-        <FILE id="PbuqDR" name="Ximu3DeviceManager.h" compile="0" resource="0"
-              file="Source/Ximu3DeviceManager.h"/>
+      <GROUP id="{7541B055-A622-1378-2963-F1E93D0288D9}" name="imuExamples">
+        <FILE id="rdvEjC" name="BluetoothConnection.h" compile="0" resource="0"
+              file="Source/imuExamples/BluetoothConnection.h"/>
+        <FILE id="bJJJ0a" name="Helpers.hpp" compile="0" resource="0" file="Source/imuExamples/Helpers.hpp"/>
+        <FILE id="fETMop" name="SerialConnection.h" compile="0" resource="0"
+              file="Source/imuExamples/SerialConnection.h"/>
+        <FILE id="jYdSq1" name="Connection.h" compile="0" resource="0" file="Source/imuExamples/Connection.h"/>
       </GROUP>
+      <FILE id="PbuqDR" name="Ximu3DeviceManager.h" compile="0" resource="0"
+            file="Source/Ximu3DeviceManager.h"/>
       <FILE id="PYgu3A" name="OSCManager.h" compile="0" resource="0" file="Source/OSCManager.h"/>
       <FILE id="xbqB5W" name="Objects.h" compile="0" resource="0" file="Source/Objects.h"/>
       <FILE id="fkCq2l" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
@@ -30,13 +21,6 @@
       <FILE id="Zniqtw" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="zslFeP" name="LookandFeel.h" compile="0" resource="0" file="Source/LookandFeel.h"/>
-      <FILE id="m7jwBa" name="BluetoothConnectExample.h" compile="0" resource="0"
-            file="Source/BluetoothConnectExample.h"/>
-      <FILE id="kVzQmz" name="SerialConnectionExample.h" compile="0" resource="0"
-            file="Source/SerialConnectionExample.h"/>
-      <FILE id="MNojtc" name="UdpConnectionExample.h" compile="0" resource="0"
-            file="Source/UdpConnectionExample.h"/>
-      <FILE id="hbcTNb" name="Connection.h" compile="0" resource="0" file="Source/Connection.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
@@ -61,10 +45,12 @@
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2022 targetFolder="Builds/VisualStudio2022">
+    <VS2022 targetFolder="Builds/VisualStudio2022" externalLibraries="ximu3">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" headerPath="../../Libs/x-IMU3/include"
+                       libraryPath="../../Libs/x-IMU3/lib/macOS"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" headerPath="../../Libs/x-IMU3/include"
+                       libraryPath="../../Libs/x-IMU3/lib/macOS"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_analytics" path="../../JUCE/modules"/>
@@ -87,10 +73,12 @@
         <MODULEPATH id="juce_osc" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2022>
-    <XCODE_MAC targetFolder="Builds/MacOSX">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="ximu3">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" usePrecompiledHeaderFile="1"
+                       headerPath="../../Libs/x-IMU3/include" libraryPath="../../Libs/x-IMU3/lib/macOS"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" headerPath="../../Libs/x-IMU3/include"
+                       libraryPath="../../Libs/x-IMU3/lib/macOS"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_analytics" path="../../JUCE/modules"/>

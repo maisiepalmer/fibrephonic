@@ -2,11 +2,8 @@
 
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="fibrephonic-juce\Source\x-imu3\lib">
-      <UniqueIdentifier>{1B1493FF-03AD-FD3A-2D25-C37DCE767312}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="fibrephonic-juce\Source\x-imu3">
-      <UniqueIdentifier>{070E659D-259B-805F-C812-C3FF67939730}</UniqueIdentifier>
+    <Filter Include="fibrephonic-juce\Source\imuExamples">
+      <UniqueIdentifier>{9F4624C6-C740-D9EA-46F0-92971E04158F}</UniqueIdentifier>
     </Filter>
     <Filter Include="fibrephonic-juce\Source">
       <UniqueIdentifier>{75EC8CFA-5B96-3A32-0DBF-6FE2D853F61E}</UniqueIdentifier>
@@ -4041,38 +4038,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Connection.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h">
+      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\ConnectionInfo.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    <ClInclude Include="..\..\Source\imuExamples\Helpers.hpp">
+      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\DataLogger.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    <ClInclude Include="..\..\Source\imuExamples\SerialConnection.h">
+      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\FileConverter.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Helpers.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\KeepOpen.h">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\NetworkAnnouncement.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\PortScanner.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.hpp">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\libraries\X-IMU3-Cpp\Ximu3.h">
-      <Filter>fibrephonic-juce\Source\x-imu3\lib</Filter>
+    <ClInclude Include="..\..\Source\imuExamples\Connection.h">
+      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Ximu3DeviceManager.h">
-      <Filter>fibrephonic-juce\Source\x-imu3</Filter>
+      <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\OSCManager.h">
       <Filter>fibrephonic-juce\Source</Filter>
@@ -4084,18 +4063,6 @@
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\LookandFeel.h">
-      <Filter>fibrephonic-juce\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\BluetoothConnectExample.h">
-      <Filter>fibrephonic-juce\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\SerialConnectionExample.h">
-      <Filter>fibrephonic-juce\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UdpConnectionExample.h">
-      <Filter>fibrephonic-juce\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Connection.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_analytics\analytics\juce_Analytics.h">

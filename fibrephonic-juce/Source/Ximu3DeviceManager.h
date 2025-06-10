@@ -8,7 +8,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-//Add include path for Ximu3 connect
+#include <x-IMU3/Cpp/Ximu3.hpp>
 
 class Ximu3DeviceManager : private Thread
 {
