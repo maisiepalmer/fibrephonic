@@ -22,20 +22,28 @@ MainComponent::MainComponent()
         connectionsbutton.setLookAndFeel(&buttonlookandfeel);
         connectionsbutton.setButtonText("Connections");
 
-        pConnectionsButton->onClick = [this] { isConnectionsToggled = !isConnectionsToggled; 
-        DBG("isConnections = " << (isConnectionsToggled ? "true" : "false"));
-        if(isCalibrationToggled == true)
-            isConnectionsToggled = false;
-            };
+        pConnectionsButton->onClick = [this] {
+            isConnectionsToggled = !isConnectionsToggled;
+            DBG("isConnections = " << (isConnectionsToggled ? "true" : "false"));
+
+            if (isConnectionsToggled)  
+            {
+                isCalibrationToggled = false;
+            }
+         };
 
         calibrationbutton.setLookAndFeel(&buttonlookandfeel);
         calibrationbutton.setButtonText("Calibration");
 
-        pCalibrationButton->onClick = [this] { isCalibrationToggled = !isCalibrationToggled; 
-        DBG("isCalibration = " << (isCalibrationToggled ? "true" : "false"));
-        if (isConnectionsToggled == true)
-            isCalibrationToggled = false;
-            };
+        pCalibrationButton->onClick = [this] {
+            isCalibrationToggled = !isCalibrationToggled;
+            DBG("isCalibration = " << (isCalibrationToggled ? "true" : "false"));
+
+            if (isCalibrationToggled)  
+            {
+                isConnectionsToggled = false;
+            }
+         };
 
         addAndMakeVisible(connectionsbutton);
         addAndMakeVisible(calibrationbutton);
