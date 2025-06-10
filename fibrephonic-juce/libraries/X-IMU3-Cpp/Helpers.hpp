@@ -10,6 +10,8 @@ namespace ximu3
 {
     class Helpers
     {
+    public:
+
         friend class Connection;
 
         friend class DataLogger;

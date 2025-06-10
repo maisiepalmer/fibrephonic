@@ -7,7 +7,7 @@ class BluetoothConnection : public Connection
 public:
     BluetoothConnection()
     {
-        if (helpers::yesOrNo("Search for connections?"))
+        if (ximu3::Helpers::yesOrNo("Search for connections?"))
         {
             const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
 

@@ -2,6 +2,7 @@
 
 #include "../libraries/X-IMU3-Cpp/Ximu3.hpp"
 #include "../libraries/X-IMU3-Cpp/Helpers.hpp"
+#include "../libraries/X-IMU3-Cpp/Connection.hpp"
 #include <chrono>
 #include <inttypes.h>
 #include <iostream>
@@ -25,7 +26,7 @@ protected:
         connection.addDecodeErrorCallback(decodeErrorCallback);
         connection.addStatisticsCallback(statisticsCallback);
 
-        if (helpers::yesOrNo("Print data messages?"))
+        if (ximu3::Helpers::yesOrNo("Print data messages?"))
         {
             connection.addInertialCallback(inertialCallback);
             connection.addMagnetometerCallback(magnetometerCallback);
