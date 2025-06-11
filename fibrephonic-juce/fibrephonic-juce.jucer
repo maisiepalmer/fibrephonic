@@ -4,14 +4,6 @@
               jucerFormatVersion="1" projectType="guiapp" pluginFormats="buildAU,buildVST3">
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
-      <GROUP id="{7541B055-A622-1378-2963-F1E93D0288D9}" name="imuExamples">
-        <FILE id="rdvEjC" name="BluetoothConnection.h" compile="0" resource="0"
-              file="Source/imuExamples/BluetoothConnection.h"/>
-        <FILE id="bJJJ0a" name="Helpers.hpp" compile="0" resource="0" file="Source/imuExamples/Helpers.hpp"/>
-        <FILE id="fETMop" name="SerialConnection.h" compile="0" resource="0"
-              file="Source/imuExamples/SerialConnection.h"/>
-        <FILE id="jYdSq1" name="Connection.h" compile="0" resource="0" file="Source/imuExamples/Connection.h"/>
-      </GROUP>
       <FILE id="PbuqDR" name="Ximu3DeviceManager.h" compile="0" resource="0"
             file="Source/Ximu3DeviceManager.h"/>
       <FILE id="PYgu3A" name="OSCManager.h" compile="0" resource="0" file="Source/OSCManager.h"/>

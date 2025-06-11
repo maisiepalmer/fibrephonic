@@ -2,7 +2,6 @@
 
 #include "../C/Ximu3.h"
 #include <cstring>
-#include <memory>
 #include <string>
 
 namespace ximu3
@@ -19,8 +18,6 @@ namespace ximu3
         virtual ~ConnectionInfo() = default;
 
         virtual std::string toString() const = 0;
-
-        virtual XIMU3_ConnectionType getType() const = 0;
 
     protected:
         static void stringCopy(char* destination, const char* source, const size_t destinationSize)
@@ -47,11 +44,6 @@ namespace ximu3
         {
             return XIMU3_usb_connection_info_to_string(*this);
         }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeUsb;
-        }
     };
 
     class SerialConnectionInfo : public ConnectionInfo, public XIMU3_SerialConnectionInfo
@@ -75,11 +67,6 @@ namespace ximu3
         {
             return XIMU3_serial_connection_info_to_string(*this);
         }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeSerial;
-        }
     };
 
     class TcpConnectionInfo : public ConnectionInfo, public XIMU3_TcpConnectionInfo
@@ -100,11 +87,6 @@ namespace ximu3
         std::string toString() const override
         {
             return XIMU3_tcp_connection_info_to_string(*this);
-        }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeTcp;
         }
     };
 
@@ -129,11 +111,6 @@ namespace ximu3
         {
             return XIMU3_udp_connection_info_to_string(*this);
         }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeUdp;
-        }
     };
 
     class BluetoothConnectionInfo : public ConnectionInfo, public XIMU3_BluetoothConnectionInfo
@@ -152,11 +129,6 @@ namespace ximu3
         std::string toString() const override
         {
             return XIMU3_bluetooth_connection_info_to_string(*this);
-        }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeBluetooth;
         }
     };
 
@@ -177,38 +149,5 @@ namespace ximu3
         {
             return XIMU3_file_connection_info_to_string(*this);
         }
-
-        XIMU3_ConnectionType getType() const override
-        {
-            return XIMU3_ConnectionTypeFile;
-        }
     };
-
-    inline std::shared_ptr<ConnectionInfo> connectionInfoFrom(const XIMU3_Device& device)
-    {
-        switch (device.connection_type)
-        {
-            case XIMU3_ConnectionTypeUsb:
-                return std::make_shared<UsbConnectionInfo>(device.usb_connection_info);
-            case XIMU3_ConnectionTypeSerial:
-                return std::make_shared<SerialConnectionInfo>(device.serial_connection_info);
-            case XIMU3_ConnectionTypeBluetooth:
-                return std::make_shared<BluetoothConnectionInfo>(device.bluetooth_connection_info);
-            case XIMU3_ConnectionTypeTcp:
-            case XIMU3_ConnectionTypeUdp:
-            case XIMU3_ConnectionTypeFile:
-                break;
-        }
-        return {};
-    }
-
-    inline std::shared_ptr<TcpConnectionInfo> tcpConnectionInfoFrom(const XIMU3_NetworkAnnouncementMessage& message)
-    {
-        return std::make_shared<TcpConnectionInfo>(XIMU3_network_announcement_message_to_tcp_connection_info(message));
-    }
-
-    inline std::shared_ptr<UdpConnectionInfo> udpConnectionInfoFrom(const XIMU3_NetworkAnnouncementMessage& message)
-    {
-        return std::make_shared<UdpConnectionInfo>(XIMU3_network_announcement_message_to_udp_connection_info(message));
-    }
 } // namespace ximu3

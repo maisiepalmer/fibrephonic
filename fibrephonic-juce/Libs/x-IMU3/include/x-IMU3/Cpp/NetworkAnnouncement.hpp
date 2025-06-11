@@ -31,9 +31,9 @@ namespace ximu3
             return XIMU3_network_announcement_add_callback(networkAnnouncement, Helpers::wrapCallable<XIMU3_NetworkAnnouncementMessage>(callback), &callback);
         }
 
-        void removeCallback(const uint64_t callbackId)
+        void removeCallback(const uint64_t callbackID)
         {
-            XIMU3_network_announcement_remove_callback(networkAnnouncement, callbackId);
+            XIMU3_network_announcement_remove_callback(networkAnnouncement, callbackID);
         }
 
         std::vector<XIMU3_NetworkAnnouncementMessage> getMessages()

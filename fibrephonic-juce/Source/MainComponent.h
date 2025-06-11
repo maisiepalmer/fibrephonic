@@ -4,7 +4,7 @@
 // #include <juce_serialport/juce_serialport.h>
 #include "LookandFeel.h"
 #include "OSCManager.h"
-#include "imuExamples/BluetoothConnection.h"
+//#include "imuExamples/BluetoothConnection.h"
 
 //==============================================================================
 

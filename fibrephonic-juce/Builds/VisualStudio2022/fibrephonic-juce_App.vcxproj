@@ -3232,10 +3232,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h"/>
-    <ClInclude Include="..\..\Source\imuExamples\Helpers.hpp"/>
-    <ClInclude Include="..\..\Source\imuExamples\SerialConnection.h"/>
-    <ClInclude Include="..\..\Source\imuExamples\Connection.h"/>
     <ClInclude Include="..\..\Source\Ximu3DeviceManager.h"/>
     <ClInclude Include="..\..\Source\OSCManager.h"/>
     <ClInclude Include="..\..\Source\Objects.h"/>

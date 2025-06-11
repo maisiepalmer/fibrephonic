@@ -2,9 +2,6 @@
 
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="fibrephonic-juce\Source\imuExamples">
-      <UniqueIdentifier>{9F4624C6-C740-D9EA-46F0-92971E04158F}</UniqueIdentifier>
-    </Filter>
     <Filter Include="fibrephonic-juce\Source">
       <UniqueIdentifier>{75EC8CFA-5B96-3A32-0DBF-6FE2D853F61E}</UniqueIdentifier>
     </Filter>
@@ -4038,18 +4035,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\imuExamples\Helpers.hpp">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\imuExamples\SerialConnection.h">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\imuExamples\Connection.h">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Ximu3DeviceManager.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
