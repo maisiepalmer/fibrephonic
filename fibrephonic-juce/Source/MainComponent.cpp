@@ -65,9 +65,11 @@ MainComponent::MainComponent()
 
                 if (isBlutoothToggled)
                 {
-
-
-
+                    bluetoothconnection.startThread(); // Triggers thread run function
+                }
+                else {
+                    bluetoothconnection.signalThreadShouldExit();
+                    //bluetoothconnection.stopThread(1000);
                 }
              };
         }        
@@ -151,6 +153,9 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
+    bluetoothconnection.signalThreadShouldExit();
+    //bluetoothconnection.stopThread(1000);
+
     stopTimer();
 }
 

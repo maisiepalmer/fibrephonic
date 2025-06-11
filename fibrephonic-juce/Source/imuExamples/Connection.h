@@ -17,7 +17,7 @@
 class Connection
 {
 protected:
-    void run(const ximu3::ConnectionInfo& connectionInfo)
+    void runconnection(const ximu3::ConnectionInfo& connectionInfo)
     {
         // Create connection
         ximu3::Connection connection(connectionInfo);

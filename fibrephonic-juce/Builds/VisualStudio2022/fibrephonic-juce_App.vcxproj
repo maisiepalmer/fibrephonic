@@ -3228,7 +3228,7 @@
     <ClInclude Include="..\..\Source\UI\LookandFeel.h" />
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h" />
     <ClInclude Include="..\..\Source\Data\OSCManager.h" />
-    <ClInclude Include="..\..\Source\BluetoothConnection.h" />
+    <ClInclude Include="..\..\Source\BluetoothConnectionManager.h" />
     <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h" />
     <ClInclude Include="..\..\Source\imuExamples\Helpers.hpp" />
     <ClInclude Include="..\..\Source\imuExamples\SerialConnection.h" />

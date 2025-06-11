@@ -21,13 +21,13 @@ public:
 
             const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
 
-            run(*connectionInfo);
+            runconnection(*connectionInfo);
         }
         else
         {
             const ximu3::BluetoothConnectionInfo connectionInfo("COM1"); // replace with actual connection info
 
-            run(connectionInfo);
+            runconnection(connectionInfo);
         }
     }
 };
