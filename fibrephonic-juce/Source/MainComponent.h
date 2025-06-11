@@ -27,15 +27,18 @@ private:
 
     //Custom Look and Feel Instances
     ButtonLookandFeel buttonlookandfeel;
+    RoundedButtonLookandFeel roundedbuttonlookandfeel;
 
     //Toggle Buttons and Functions
-    bool isConnectionsToggled = true, isCalibrationToggled = false;
+    bool isConnectionsToggled = true, isCalibrationToggled = false,
+         isBlutoothToggled = false;
 
-    TextButton connectionsbutton, calibrationbutton;
+    TextButton connectionsbutton, calibrationbutton, BluetoothButton;
 
     TextButton* pConnectionsButton = &connectionsbutton;
     TextButton* pCalibrationButton = &calibrationbutton;
-
+    TextButton* pBluetoothButton = &BluetoothButton;
+ 
     //std::vector<juce::Button> SwatchButtons;
 
     inline void hideConnections()

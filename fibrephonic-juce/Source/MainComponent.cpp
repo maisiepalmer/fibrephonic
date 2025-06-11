@@ -21,14 +21,19 @@ MainComponent::MainComponent()
         //Buttons and Toggles
         connectionsbutton.setLookAndFeel(&buttonlookandfeel);
         connectionsbutton.setButtonText("Connections");
+        
+        BluetoothButton.setLookAndFeel(&roundedbuttonlookandfeel);
+        BluetoothButton.setButtonText("Bluetooth \n Connection");
 
         pConnectionsButton->onClick = [this] {
             isConnectionsToggled = !isConnectionsToggled;
             DBG("isConnections = " << (isConnectionsToggled ? "true" : "false"));
 
-            if (isConnectionsToggled)  // Only toggle off Calibration if we're turning Connections ON
+            if (isConnectionsToggled)  
             {
                 isCalibrationToggled = false;
+
+                BluetoothButton.setVisible(false);
             }
          };
 
@@ -39,14 +44,33 @@ MainComponent::MainComponent()
             isCalibrationToggled = !isCalibrationToggled;
             DBG("isCalibration = " << (isCalibrationToggled ? "true" : "false"));
 
-            if (isCalibrationToggled)  // Only toggle off Connections if we're turning Calibration ON
+            if (isCalibrationToggled) 
             {
                 isConnectionsToggled = false;
+
+                addAndMakeVisible(BluetoothButton);
             }
          };
 
         addAndMakeVisible(connectionsbutton);
         addAndMakeVisible(calibrationbutton);
+
+        {
+            // Bluetooth Connection Handling Via Button.
+            // Thread Closing and Handling Included within button logic.
+
+            pBluetoothButton->onClick = [this] {
+                isBlutoothToggled = !isBlutoothToggled;
+                DBG("Bluetooth = " << (isBlutoothToggled ? "true" : "false"));
+
+                if (isBlutoothToggled)
+                {
+
+
+
+                }
+             };
+        }        
     }
 
     {
@@ -166,6 +190,8 @@ void MainComponent::paint(juce::Graphics& g)
 
     g.setFont(juce::Font(15.0f));
 
+    // Extra UI Element control for different toggle elements....
+
     //MUST CALL REPAINT
     if (isConnectionsToggled == true) {
         
@@ -189,6 +215,7 @@ void MainComponent::resized()
     //Buttons and Toggles
     connectionsbutton.setBounds(0, 50, getWidth() / 2, 60);
     calibrationbutton.setBounds(getWidth() / 2, 50, getWidth() / 2, 60);
+    BluetoothButton.setBounds(100, 150, 100, 100);
 }
 //==============================================================================
 void MainComponent::parseIMUData(const juce::String& data)
