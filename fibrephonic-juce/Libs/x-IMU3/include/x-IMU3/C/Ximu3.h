@@ -18,7 +18,7 @@
 
 #ifdef __cplusplus
 namespace ximu3 {
-#endif // __cplusplus
+#endif  // __cplusplus
 
 #define XIMU3_DATA_MESSAGE_CHAR_ARRAY_SIZE 256
 
@@ -29,7 +29,14 @@ typedef enum XIMU3_ChargingStatus
     XIMU3_ChargingStatusNotConnected,
     XIMU3_ChargingStatusCharging,
     XIMU3_ChargingStatusChargingComplete,
+    XIMU3_ChargingStatusChargingOnHold,
 } XIMU3_ChargingStatus;
+
+typedef enum XIMU3_ConnectionStatus
+{
+    XIMU3_ConnectionStatusConnected,
+    XIMU3_ConnectionStatusReconnecting,
+} XIMU3_ConnectionStatus;
 
 typedef enum XIMU3_ConnectionType
 {
@@ -73,6 +80,8 @@ typedef struct XIMU3_DataLogger XIMU3_DataLogger;
 
 typedef struct XIMU3_FileConverter XIMU3_FileConverter;
 
+typedef struct XIMU3_KeepOpen XIMU3_KeepOpen;
+
 typedef struct XIMU3_NetworkAnnouncement XIMU3_NetworkAnnouncement;
 
 typedef struct XIMU3_PortScanner XIMU3_PortScanner;
@@ -83,6 +92,14 @@ typedef struct XIMU3_CharArrays
     uint32_t length;
     uint32_t capacity;
 } XIMU3_CharArrays;
+
+typedef struct XIMU3_CommandMessage
+{
+    char json[XIMU3_CHAR_ARRAY_SIZE];
+    char key[XIMU3_CHAR_ARRAY_SIZE];
+    char value[XIMU3_CHAR_ARRAY_SIZE];
+    char error[XIMU3_CHAR_ARRAY_SIZE];
+} XIMU3_CommandMessage;
 
 typedef struct XIMU3_UsbConnectionInfo
 {
@@ -128,6 +145,8 @@ typedef struct XIMU3_PingResponse
     char device_name[XIMU3_CHAR_ARRAY_SIZE];
     char serial_number[XIMU3_CHAR_ARRAY_SIZE];
 } XIMU3_PingResponse;
+
+typedef void (*XIMU3_CallbackPingResponseC)(struct XIMU3_PingResponse data, void *context);
 
 typedef void (*XIMU3_CallbackCharArrays)(struct XIMU3_CharArrays data, void *context);
 
@@ -314,10 +333,12 @@ typedef struct XIMU3_FileConverterProgress
     enum XIMU3_FileConverterStatus status;
     float percentage;
     uint64_t bytes_processed;
-    uint64_t file_size;
+    uint64_t bytes_total;
 } XIMU3_FileConverterProgress;
 
 typedef void (*XIMU3_CallbackFileConverterProgress)(struct XIMU3_FileConverterProgress data, void *context);
+
+typedef void (*XIMU3_CallbackConnectionStatus)(enum XIMU3_ConnectionStatus data, void *context);
 
 typedef struct XIMU3_NetworkAnnouncementMessage
 {
@@ -366,7 +387,11 @@ extern "C" {
 
 void XIMU3_char_arrays_free(struct XIMU3_CharArrays char_arrays);
 
+enum XIMU3_ChargingStatus XIMU3_charging_status_from_float(float charging_status);
+
 const char *XIMU3_charging_status_to_string(enum XIMU3_ChargingStatus charging_status);
+
+struct XIMU3_CommandMessage XIMU3_command_message_parse(const char *json);
 
 struct XIMU3_Connection *XIMU3_connection_new_usb(struct XIMU3_UsbConnectionInfo connection_info);
 
@@ -389,6 +414,8 @@ void XIMU3_connection_open_async(struct XIMU3_Connection *connection, XIMU3_Call
 void XIMU3_connection_close(struct XIMU3_Connection *connection);
 
 struct XIMU3_PingResponse XIMU3_connection_ping(struct XIMU3_Connection *connection);
+
+void XIMU3_connection_ping_async(struct XIMU3_Connection *connection, XIMU3_CallbackPingResponseC callback, void *context);
 
 struct XIMU3_CharArrays XIMU3_connection_send_commands(struct XIMU3_Connection *connection, const char *const *commands, uint32_t length, uint32_t retries, uint32_t timeout);
 
@@ -444,6 +471,8 @@ uint64_t XIMU3_connection_add_notification_callback(struct XIMU3_Connection *con
 
 uint64_t XIMU3_connection_add_error_callback(struct XIMU3_Connection *connection, XIMU3_CallbackErrorMessage callback, void *context);
 
+uint64_t XIMU3_connection_add_end_of_file_callback(struct XIMU3_Connection *connection, void (*callback)(void *context), void *context);
+
 void XIMU3_connection_remove_callback(struct XIMU3_Connection *connection, uint64_t callback_id);
 
 const char *XIMU3_usb_connection_info_to_string(struct XIMU3_UsbConnectionInfo connection_info);
@@ -460,13 +489,13 @@ const char *XIMU3_file_connection_info_to_string(struct XIMU3_FileConnectionInfo
 
 const char *XIMU3_connection_type_to_string(enum XIMU3_ConnectionType connection_type);
 
-struct XIMU3_DataLogger *XIMU3_data_logger_new(const char *directory, const char *name, struct XIMU3_Connection *const *connections, uint32_t length);
+struct XIMU3_DataLogger *XIMU3_data_logger_new(const char *destination, const char *name, struct XIMU3_Connection *const *connections, uint32_t length);
 
 void XIMU3_data_logger_free(struct XIMU3_DataLogger *data_logger);
 
 enum XIMU3_Result XIMU3_data_logger_get_result(struct XIMU3_DataLogger *data_logger);
 
-enum XIMU3_Result XIMU3_data_logger_log(const char *directory, const char *name, struct XIMU3_Connection *const *connections, uint32_t length, uint32_t seconds);
+enum XIMU3_Result XIMU3_data_logger_log(const char *destination, const char *name, struct XIMU3_Connection *const *connections, uint32_t length, uint32_t seconds);
 
 const char *XIMU3_inertial_message_to_string(struct XIMU3_InertialMessage message);
 
@@ -514,11 +543,17 @@ const char *XIMU3_file_converter_status_to_string(enum XIMU3_FileConverterStatus
 
 const char *XIMU3_file_converter_progress_to_string(struct XIMU3_FileConverterProgress progress);
 
-struct XIMU3_FileConverter *XIMU3_file_converter_new(const char *destination, const char *source, XIMU3_CallbackFileConverterProgress callback, void *context);
+struct XIMU3_FileConverter *XIMU3_file_converter_new(const char *destination, const char *name, const char *const *file_paths, uint32_t length, XIMU3_CallbackFileConverterProgress callback, void *context);
 
 void XIMU3_file_converter_free(struct XIMU3_FileConverter *file_converter);
 
-struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *destination, const char *source);
+struct XIMU3_FileConverterProgress XIMU3_file_converter_convert(const char *destination, const char *name, const char *const *file_paths, uint32_t length);
+
+const char *XIMU3_connection_status_to_string(enum XIMU3_ConnectionStatus status);
+
+struct XIMU3_KeepOpen *XIMU3_keep_open_new(struct XIMU3_Connection *connection, XIMU3_CallbackConnectionStatus callback, void *context);
+
+void XIMU3_keep_open_free(struct XIMU3_KeepOpen *keep_open);
 
 struct XIMU3_TcpConnectionInfo XIMU3_network_announcement_message_to_tcp_connection_info(struct XIMU3_NetworkAnnouncementMessage message);
 
@@ -565,11 +600,11 @@ const char *XIMU3_result_to_string(enum XIMU3_Result result);
 const char *XIMU3_statistics_to_string(struct XIMU3_Statistics statistics);
 
 #ifdef __cplusplus
-} // extern "C"
-#endif // __cplusplus
+}  // extern "C"
+#endif  // __cplusplus
 
 #ifdef __cplusplus
-} // namespace ximu3
-#endif // __cplusplus
+}  // namespace ximu3
+#endif  // __cplusplus
 
-#endif /* XIMU3_H */
+#endif  /* XIMU3_H */
