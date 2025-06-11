@@ -2,8 +2,8 @@
 
 #include <JuceHeader.h>
 // #include <juce_serialport/juce_serialport.h>
-#include "LookandFeel.h"
-#include "OSCManager.h"
+#include "UI/LookandFeel.h"
+#include "Data/OSCManager.h"
 #include "imuExamples/BluetoothConnection.h"
 
 //==============================================================================
