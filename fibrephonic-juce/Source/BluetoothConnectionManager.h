@@ -33,30 +33,23 @@ public:
         stopThread(500);                      
     }
 
-    void run() override 
+    void run() override
     {
-        while (!threadShouldExit()) 
+        while (!threadShouldExit())
         {
-            if (helpers::yesOrNo("Search for connections?"))
+            const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
+
+            if (devices.empty())
             {
-                const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
-
-                if (devices.empty())
-                {
-                    DBG("No Bluetooth connections available");
-                }
-
-                DBG("Found " << devices[0].device_name << " " << devices[0].serial_number);
-
-                const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
-
-                runconnection(*connectionInfo);
+               DBG("No Bluetooth connections available");
             }
             else
             {
-                const ximu3::BluetoothConnectionInfo connectionInfo("COM1"); // replace with actual connection info
+               DBG("Found " << devices[0].device_name << " " << devices[0].serial_number);
 
-                runconnection(connectionInfo);
+               const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
+               
+               runconnection(*connectionInfo);
             }
 
             wait(pollRate);

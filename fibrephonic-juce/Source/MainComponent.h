@@ -71,7 +71,9 @@ private:
     bool serialConnected = false; 
 
     // Bluetooth Connection and Thread 
-    BluetoothConnectionManager bluetoothconnection;
+    //BluetoothConnectionManager bluetoothconnection;
+
+    std::unique_ptr<BluetoothConnectionManager> bluetoothconnection;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

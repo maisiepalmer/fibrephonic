@@ -4,6 +4,8 @@
 MainComponent::MainComponent()
     : presetTree("Presets")
 {
+    bluetoothconnection = std::make_unique<BluetoothConnectionManager>();
+
     {
         //Setup for XML file directory Ensures it exists and file path is valid....
         juce::File directory = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
@@ -65,11 +67,11 @@ MainComponent::MainComponent()
 
                 if (isBlutoothToggled)
                 {
-                    bluetoothconnection.startThread(); // Triggers thread run function
+                    bluetoothconnection->startThread(); // Triggers thread run function
                 }
                 else {
-                    bluetoothconnection.signalThreadShouldExit();
-                    //bluetoothconnection.stopThread(1000);
+                    bluetoothconnection->signalThreadShouldExit();
+                    bluetoothconnection->stopThread(1000);
                 }
              };
         }        
@@ -153,8 +155,11 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
-    bluetoothconnection.signalThreadShouldExit();
-    //bluetoothconnection.stopThread(1000);
+    //bluetoothconnection.signalThreadShouldExit();
+    //bluetoothconnection.stopThread(1000); 
+
+    bluetoothconnection->signalThreadShouldExit();
+    bluetoothconnection->stopThread(1000);
 
     stopTimer();
 }
