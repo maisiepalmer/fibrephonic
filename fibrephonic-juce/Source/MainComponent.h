@@ -6,6 +6,7 @@
 #include "Data/OSCManager.h"
 #include "imuExamples/BluetoothConnection.h"
 #include "BluetoothConnectionManager.h"
+#include "Data/SerialPort.h"
 
 //==============================================================================
 
@@ -65,14 +66,12 @@ private:
 
     File xmlFile;
 
-    // Serial and IMU 
-//    std::unique_ptr<SerialPort> serialPort;
-//    std::unique_ptr<SerialPortInputStream> inputStream;
+    // Serial 
+    // std::unique_ptr<SerialPort> serialPort;
+    // std::unique_ptr<SerialPortInputStream> inputStream;
     bool serialConnected = false; 
 
     // Bluetooth Connection and Thread 
-    //BluetoothConnectionManager bluetoothconnection;
-
     std::unique_ptr<BluetoothConnectionManager> bluetoothconnection;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

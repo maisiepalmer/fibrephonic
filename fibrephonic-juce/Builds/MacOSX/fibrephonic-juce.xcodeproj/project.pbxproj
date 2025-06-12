@@ -15,6 +15,7 @@
 		23545B0B8FB22B40E86A5119 /* Accelerate.framework */ = {isa = PBXBuildFile; fileRef = C8FA85BDB589738C3FA208F2; };
 		23C31DA667B1B3CD7F7B87CF /* include_juce_audio_processors_ara.cpp */ = {isa = PBXBuildFile; fileRef = F7FCA625BB2C7FF5856AD4E9; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
 		23CDE3E09A2705E84FD845A5 /* OpenGL.framework */ = {isa = PBXBuildFile; fileRef = 624B0A2D93B0A96A393F8208; };
+		26E3A8756A3AAE18E687B3DA /* SerialPort.cpp */ = {isa = PBXBuildFile; fileRef = D218E7CA0B539681F2AE5EC0; };
 		28E6AAE93804554585F86347 /* App */ = {isa = PBXBuildFile; fileRef = 17E330FB6351AC188E9F537F; };
 		3199E2BC775E89FCF48CDD51 /* include_juce_dsp.mm */ = {isa = PBXBuildFile; fileRef = 12B99F67CCEDD7CAA47C4C2D; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
 		3711A2601BAB202AA6FFA456 /* include_juce_audio_basics.mm */ = {isa = PBXBuildFile; fileRef = EB9161DD6D012D6CEA9625A0; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
@@ -53,6 +54,7 @@
 
 /* Begin PBXFileReference section */
 		0131F20D974E0E0EE7527CCC /* Connection.h */ /* Connection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Connection.h; path = ../../Source/imuExamples/Connection.h; sourceTree = SOURCE_ROOT; };
+		065E0A21E118A0054F583DFF /* SerialPort.h */ /* SerialPort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SerialPort.h; path = ../../Source/Data/SerialPort.h; sourceTree = SOURCE_ROOT; };
 		0890123AC77AA29DE0C7A5F7 /* juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = ../../../../JUCE/modules/juce_core; sourceTree = SOURCE_ROOT; };
 		0B010B537603899677F29478 /* BluetoothConnectionManager.h */ /* BluetoothConnectionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BluetoothConnectionManager.h; path = ../../Source/BluetoothConnectionManager.h; sourceTree = SOURCE_ROOT; };
 		0C32D988F6F65FA1F545704F /* include_juce_midi_ci.cpp */ /* include_juce_midi_ci.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_midi_ci.cpp; path = ../../JuceLibraryCode/include_juce_midi_ci.cpp; sourceTree = SOURCE_ROOT; };
@@ -103,6 +105,7 @@
 		C8FA85BDB589738C3FA208F2 /* Accelerate.framework */ /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		CAF791AB29CEA212A528C7A5 /* QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CCE95E501710D724C1E2A610 /* JuceHeader.h */ /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
+		D218E7CA0B539681F2AE5EC0 /* SerialPort.cpp */ /* SerialPort.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SerialPort.cpp; path = ../../Source/Data/SerialPort.cpp; sourceTree = SOURCE_ROOT; };
 		D32F5128C66639A949869244 /* juce_audio_devices */ /* juce_audio_devices */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_devices; path = ../../../../JUCE/modules/juce_audio_devices; sourceTree = SOURCE_ROOT; };
 		D64D788CAA94BF2D8049B344 /* juce_analytics */ /* juce_analytics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_analytics; path = ../../../../JUCE/modules/juce_analytics; sourceTree = SOURCE_ROOT; };
 		DAE2AC9AC22FD412385B7414 /* juce_midi_ci */ /* juce_midi_ci */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_midi_ci; path = ../../../../JUCE/modules/juce_midi_ci; sourceTree = SOURCE_ROOT; };
@@ -194,6 +197,8 @@
 			isa = PBXGroup;
 			children = (
 				7DF463D1D993F8683F74CB29,
+				D218E7CA0B539681F2AE5EC0,
+				065E0A21E118A0054F583DFF,
 				F1E66E88E34B487BE42B859A,
 				0B010B537603899677F29478,
 			);
@@ -397,6 +402,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26E3A8756A3AAE18E687B3DA,
 				4CE0BD05ABBEE29E52BF2E06,
 				50D2664D1605A1F6D1F78F31,
 				392DE47B7DC3360A6EC02FE9,

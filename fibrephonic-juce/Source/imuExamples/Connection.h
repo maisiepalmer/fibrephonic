@@ -25,24 +25,24 @@ protected:
         connection.addDecodeErrorCallback(decodeErrorCallback);
         connection.addStatisticsCallback(statisticsCallback);
 
-        if (helpers::yesOrNo("Print data messages?"))
-        {
-            connection.addInertialCallback(inertialCallback);
-            connection.addMagnetometerCallback(magnetometerCallback);
-            connection.addQuaternionCallback(quaternionCallback);
-            connection.addRotationMatrixCallback(rotationMatrixCallback);
-            connection.addEulerAnglesCallback(eulerAnglesCallback);
-            connection.addLinearAccelerationCallback(linearAccelerationCallback);
-            connection.addEarthAccelerationCallback(earthAccelerationCallback);
-            connection.addAhrsStatusCallback(ahrsStatusCallback);
-            connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
-            connection.addTemperatureCallback(temperatureCallback);
-            connection.addBatteryCallback(batteryCallback);
-            connection.addRssiCallback(rssiCallback);
-            connection.addSerialAccessoryCallback(serialAccessoryCallback);
-            connection.addNotificationCallback(notificationCallback);
-            connection.addErrorCallback(errorCallback);
-        }
+        connection.addInertialCallback(inertialCallback);
+
+        /*
+        connection.addMagnetometerCallback(magnetometerCallback);
+        connection.addQuaternionCallback(quaternionCallback);
+        connection.addRotationMatrixCallback(rotationMatrixCallback);
+        connection.addEulerAnglesCallback(eulerAnglesCallback);
+        connection.addLinearAccelerationCallback(linearAccelerationCallback);
+        connection.addEarthAccelerationCallback(earthAccelerationCallback);
+        connection.addAhrsStatusCallback(ahrsStatusCallback);
+        connection.addHighGAccelerometerCallback(highGAccelerometerCallback);
+        connection.addTemperatureCallback(temperatureCallback);
+        connection.addBatteryCallback(batteryCallback);
+        connection.addRssiCallback(rssiCallback);
+        connection.addSerialAccessoryCallback(serialAccessoryCallback);
+        connection.addNotificationCallback(notificationCallback);
+        connection.addErrorCallback(errorCallback);
+        */
         connection.addEndOfFileCallback(endOfFileCallback);
 
         // Open connection
@@ -80,6 +80,7 @@ private:
         // std::cout << ximu3::XIMU3_statistics_to_string(statistics) << std::endl; // alternative to above
     };
 
+    /*
     std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [](auto message)
     {
         printf(TIMESTAMP_FORMAT FLOAT_FORMAT " deg/s" FLOAT_FORMAT " deg/s" FLOAT_FORMAT " deg/s" FLOAT_FORMAT " g" FLOAT_FORMAT " g" FLOAT_FORMAT " g\n",
@@ -92,6 +93,24 @@ private:
                message.accelerometer_z);
         // std::cout << ximu3::XIMU3_inertial_message_to_string(message) << std::endl; // alternative to above
     };
+    */
+
+    std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [](auto message)
+        {
+            juce::String output;
+
+            output << "Timestamp: " << juce::String(static_cast<double>(message.timestamp), 3) << " s | "
+                << "Gyroscope: ["
+                << juce::String(static_cast<double>(message.gyroscope_x), 2) << ", "
+                << juce::String(static_cast<double>(message.gyroscope_y), 2) << ", "
+                << juce::String(static_cast<double>(message.gyroscope_z), 2) << "] deg/s | "
+                << "Accelerometer: ["
+                << juce::String(static_cast<double>(message.accelerometer_x), 2) << ", "
+                << juce::String(static_cast<double>(message.accelerometer_y), 2) << ", "
+                << juce::String(static_cast<double>(message.accelerometer_z), 2) << "] g";
+
+            DBG(output);
+        };
 
     std::function<void(ximu3::XIMU3_MagnetometerMessage message)> magnetometerCallback = [](auto message)
     {

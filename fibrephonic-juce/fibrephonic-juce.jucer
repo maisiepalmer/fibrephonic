@@ -10,6 +10,8 @@
       <GROUP id="{10A6A6E9-BAAD-CFB0-07C7-1EFB0943290B}" name="Data">
         <FILE id="NXG67P" name="Ximu3DeviceManager.h" compile="0" resource="0"
               file="Source/Data/Ximu3DeviceManager.h"/>
+        <FILE id="uXZMOT" name="SerialPort.cpp" compile="1" resource="0" file="Source/Data/SerialPort.cpp"/>
+        <FILE id="iGsSmS" name="SerialPort.h" compile="0" resource="0" file="Source/Data/SerialPort.h"/>
         <FILE id="DqEARk" name="OSCManager.h" compile="0" resource="0" file="Source/Data/OSCManager.h"/>
         <FILE id="rdz6D6" name="BluetoothConnectionManager.h" compile="0" resource="0"
               file="Source/BluetoothConnectionManager.h"/>
@@ -51,7 +53,7 @@
   </MODULES>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
   <EXPORTFORMATS>
-    <VS2022 targetFolder="Builds/VisualStudio2022" externalLibraries="ximu3">
+    <VS2022 targetFolder="Builds/VisualStudio2022" externalLibraries="ximu3.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" headerPath="&quot;../../Libs/x-IMU3/include&quot;"
                        libraryPath="&quot;../../Libs/x-IMU3/lib/windows&quot;"/>
