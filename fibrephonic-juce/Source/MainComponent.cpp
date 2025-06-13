@@ -63,6 +63,9 @@ MainComponent::MainComponent()
 
             pBluetoothButton->onClick = [this] {
                 isBlutoothToggled = !isBlutoothToggled;
+
+                bluetoothconnection->setConnectionbool(isBlutoothToggled); // Passes to Bluetooth Connection Manager instance
+
                 DBG("Bluetooth = " << (isBlutoothToggled ? "true" : "false"));
 
                 if (isBlutoothToggled)

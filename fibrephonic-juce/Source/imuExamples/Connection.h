@@ -43,6 +43,7 @@ protected:
         connection.addNotificationCallback(notificationCallback);
         connection.addErrorCallback(errorCallback);
         */
+
         connection.addEndOfFileCallback(endOfFileCallback);
 
         // Open connection
@@ -60,6 +61,14 @@ protected:
         std::this_thread::sleep_for(std::chrono::seconds(60));
         connection.close();
     }
+
+public:
+    
+    float gx, gy, gz;
+
+    inline float getX() { return gx; }
+    inline float getY() { return gy; }
+    inline float getZ() { return gz; }
 
 private:
     std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback = [](auto error)
@@ -95,7 +104,7 @@ private:
     };
     */
 
-    std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [](auto message)
+    std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback = [this](auto message)
         {
             juce::String output;
 
@@ -108,6 +117,10 @@ private:
                 << juce::String(static_cast<double>(message.accelerometer_x), 2) << ", "
                 << juce::String(static_cast<double>(message.accelerometer_y), 2) << ", "
                 << juce::String(static_cast<double>(message.accelerometer_z), 2) << "] g";
+
+            gx = message.gyroscope_x;
+            gy = message.gyroscope_y;
+            gz = message.gyroscope_z;
 
             DBG(output);
         };

@@ -24,12 +24,9 @@ private:
 
     float gX, gY, gZ;
 
-    bool isConnected;
-
 public:
 
     virtual void setGyroscopeValues(float x, float y, float z) { gX = x; gY = y; gZ = z; }
-    virtual void setConnectionbool(bool MainBool) { isConnected = MainBool; }
 
 public:
 
@@ -68,8 +65,6 @@ public:
                 const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
                 
                 runconnection(*connectionInfo);
-
-                gX = getX(); gY = getY(); gZ = getZ();
             }
 
             wait(pollRate);
@@ -81,10 +76,6 @@ private:
     void timerCallback() override {
 
         // Use for any additional function and management, ensure sync with bluetooth thread...
-        
-        while (!isConnected) 
-        {
-            //DBG(gX);
-        }
+
     }
 };

@@ -7,6 +7,7 @@
 #include "imuExamples/BluetoothConnection.h"
 #include "BluetoothConnectionManager.h"
 #include "Data/SerialPort.h"
+#include "imuExamples/Connection.h"
 
 //==============================================================================
 
@@ -71,8 +72,10 @@ private:
     // std::unique_ptr<SerialPortInputStream> inputStream;
     bool serialConnected = false; 
 
+public:
     // Bluetooth Connection and Thread 
     std::unique_ptr<BluetoothConnectionManager> bluetoothconnection;
 
+private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
