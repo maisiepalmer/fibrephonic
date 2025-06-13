@@ -3234,6 +3234,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\UI\LookandFeel.h"/>
+    <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h"/>
     <ClInclude Include="..\..\Source\Data\SerialPort.h"/>
     <ClInclude Include="..\..\Source\Data\OSCManager.h"/>

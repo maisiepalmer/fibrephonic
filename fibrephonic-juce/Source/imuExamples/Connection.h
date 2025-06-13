@@ -65,10 +65,15 @@ protected:
 public:
     
     float gx, gy, gz;
+    float accx, accy, accz;
 
     inline float getX() { return gx; }
     inline float getY() { return gy; }
     inline float getZ() { return gz; }
+
+    inline float getaccX() { return accx; }
+    inline float getaccY() { return accy; }
+    inline float getaccZ() { return accz; }
 
 private:
     std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback = [](auto error)
@@ -121,6 +126,10 @@ private:
             gx = message.gyroscope_x;
             gy = message.gyroscope_y;
             gz = message.gyroscope_z;
+
+            accx = message.accelerometer_x;
+            accy = message.accelerometer_y;
+            accz = message.accelerometer_z;
 
             DBG(output);
         };

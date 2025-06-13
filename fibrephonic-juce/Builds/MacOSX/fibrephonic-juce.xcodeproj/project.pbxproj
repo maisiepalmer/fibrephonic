@@ -82,6 +82,7 @@
 		624B0A2D93B0A96A393F8208 /* OpenGL.framework */ /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		65DF5B7D4CE343317BD45BB1 /* include_juce_audio_utils.mm */ /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
 		660642159AF1678A6F67ADE1 /* DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
+		7403F43DF17D1840E2B68BCE /* GestureManager.h */ /* GestureManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GestureManager.h; path = ../../Source/Data/GestureManager.h; sourceTree = SOURCE_ROOT; };
 		77A4D9D833DDD42DE741E7FE /* include_juce_audio_devices.mm */ /* include_juce_audio_devices.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_devices.mm; path = ../../JuceLibraryCode/include_juce_audio_devices.mm; sourceTree = SOURCE_ROOT; };
 		79CF3BE4C9D87570A05E4AB9 /* include_juce_opengl.mm */ /* include_juce_opengl.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_opengl.mm; path = ../../JuceLibraryCode/include_juce_opengl.mm; sourceTree = SOURCE_ROOT; };
 		7DF463D1D993F8683F74CB29 /* Ximu3DeviceManager.h */ /* Ximu3DeviceManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Ximu3DeviceManager.h; path = ../../Source/Data/Ximu3DeviceManager.h; sourceTree = SOURCE_ROOT; };
@@ -196,6 +197,7 @@
 		3BAEF12ADA28F80FADB58F15 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				7403F43DF17D1840E2B68BCE,
 				7DF463D1D993F8683F74CB29,
 				D218E7CA0B539681F2AE5EC0,
 				065E0A21E118A0054F583DFF,

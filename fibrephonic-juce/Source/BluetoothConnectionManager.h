@@ -23,13 +23,23 @@ private:
     std::unique_ptr<ximu3::BluetoothConnectionInfo> bluetoothconnectioninfo;
 
     float gX, gY, gZ;
+    float accX, accY, accZ;
 
-    bool isConnected;
+    bool isConnected = false;
 
 public:
 
-    virtual void setGyroscopeValues(float x, float y, float z) { gX = x; gY = y; gZ = z; }
-    virtual void setConnectionbool(bool MainBool) { isConnected = MainBool; }
+    inline void setGyroscopeValues(float x, float y, float z) { gX = x; gY = y; gZ = z; }
+    inline void setConnectionbool(bool MainBool) { isConnected = MainBool; }
+
+    inline float getGyroscopeX() { return gX; }
+    inline float getGyroscopeY() { return gY; }
+    inline float getGyroscopeZ() { return gZ; }
+
+    inline float getAccelerationX() { return accX; }
+    inline float getAccelerationY() { return accY; }
+    inline float getAccelerationZ() { return accZ; }
+
 
 public:
 
@@ -38,6 +48,7 @@ public:
         startTimerHz(pollRate);
 
         gX = gY = gZ = 0;
+        accX = accY = accZ = 0;
 
         bluetoothconnectioninfo = std::make_unique<ximu3::BluetoothConnectionInfo>("COM11");
     }
@@ -70,6 +81,7 @@ public:
                 runconnection(*connectionInfo);
 
                 gX = getX(); gY = getY(); gZ = getZ();
+                accX = getaccX(); accY = getaccY(); accZ = getaccZ();
             }
 
             wait(pollRate);

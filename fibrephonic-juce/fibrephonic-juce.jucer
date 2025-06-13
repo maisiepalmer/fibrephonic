@@ -8,6 +8,8 @@
         <FILE id="ATX9uk" name="LookandFeel.h" compile="0" resource="0" file="Source/UI/LookandFeel.h"/>
       </GROUP>
       <GROUP id="{10A6A6E9-BAAD-CFB0-07C7-1EFB0943290B}" name="Data">
+        <FILE id="A5aqmN" name="GestureManager.h" compile="0" resource="0"
+              file="Source/Data/GestureManager.h"/>
         <FILE id="NXG67P" name="Ximu3DeviceManager.h" compile="0" resource="0"
               file="Source/Data/Ximu3DeviceManager.h"/>
         <FILE id="uXZMOT" name="SerialPort.cpp" compile="1" resource="0" file="Source/Data/SerialPort.cpp"/>

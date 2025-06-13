@@ -4050,6 +4050,9 @@
     <ClInclude Include="..\..\Source\UI\LookandFeel.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Data\GestureManager.h">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>

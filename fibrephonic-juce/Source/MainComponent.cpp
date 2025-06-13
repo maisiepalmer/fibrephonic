@@ -2,9 +2,10 @@
 
 //==============================================================================
 MainComponent::MainComponent()
-    : presetTree("Presets")
+    : presetTree("Presets"), gesturemanager(bluetoothconnection)
 {
-    bluetoothconnection = std::make_unique<BluetoothConnectionManager>();
+    bluetoothconnection = std::make_shared<BluetoothConnectionManager>();
+
 
     {
         //Setup for XML file directory Ensures it exists and file path is valid....

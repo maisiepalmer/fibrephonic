@@ -7,7 +7,8 @@
 #include "imuExamples/BluetoothConnection.h"
 #include "BluetoothConnectionManager.h"
 #include "Data/SerialPort.h"
-#include "imuExamples/Connection.h"
+//#include "imuExamples/Connection.h"
+#include "Data/GestureManager.h"
 
 //==============================================================================
 
@@ -16,7 +17,7 @@ class MainComponent  : public juce::Component, private juce::Timer
 public:
     //==============================================================================
     MainComponent();
-    ~MainComponent() override;
+    ~MainComponent() noexcept override;
 
     //==============================================================================
     void paint (juce::Graphics&) override;
@@ -74,7 +75,10 @@ private:
 
 public:
     // Bluetooth Connection and Thread 
-    std::unique_ptr<BluetoothConnectionManager> bluetoothconnection;
+    std::shared_ptr<BluetoothConnectionManager> bluetoothconnection;
+
+    // Gestural Control
+    GestureManager gesturemanager;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
