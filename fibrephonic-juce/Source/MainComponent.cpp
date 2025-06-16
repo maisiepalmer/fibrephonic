@@ -273,6 +273,8 @@ void MainComponent::timerCallback(){
     repaint();
 
     {
+        gesturemanager.PollGestures();
+
 //        // Serial Connection
 //        if (!serialConnected || !inputStream)
 //            return;

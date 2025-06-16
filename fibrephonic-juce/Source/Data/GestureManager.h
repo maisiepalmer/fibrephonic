@@ -8,6 +8,8 @@
   ==============================================================================
 */
 
+#define IMUINERTIALREFRESH 400
+
 #pragma once
 
 class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Header Clash in Main.
@@ -17,12 +19,52 @@ class GestureManager
 private:
     std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
 
+    float gX, gY, gZ;
+    float accX, accY, accZ;
+    float jerkX, jerkY, jerkZ;
+
+    enum Gesture {
+        PITCH,
+        ROLL,
+        YAW,
+        TAP,
+        STROKE
+    };
+
+
+
 public:
     GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
-        : bluetoothConnection(std::move(BluetoothConnectionManagerInstance)) {}
-
-    void PollGestures()
+        : bluetoothConnection(std::move(BluetoothConnectionManagerInstance)) 
     {
-        
+        gX = gY = gZ = accX = accY = accZ = 0;
+    }
+
+    inline float CalculateJerk(float changingValue) {
+
+        float Derivative = changingValue;
+
+        // Get Derivative of input value eg acceleration...
+
+
+        return Derivative;
+    }
+
+    inline void getConnectionManagerValues() 
+    {
+        gX = bluetoothConnection->getGyroscopeX();
+        gY = bluetoothConnection->getGyroscopeY();
+        gZ = bluetoothConnection->getGyroscopeZ();
+
+        accX = bluetoothConnection->getAccelerationX();
+        accY = bluetoothConnection->getAccelerationY();
+        accZ = bluetoothConnection->getAccelerationZ();
+    }
+
+    inline void PollGestures()
+    {
+        getConnectionManagerValues();
+
+
     }
 };

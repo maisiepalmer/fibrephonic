@@ -131,7 +131,7 @@ private:
             accy = message.accelerometer_y;
             accz = message.accelerometer_z;
 
-            DBG(output);
+            //DBG(output);
         };
 
     std::function<void(ximu3::XIMU3_MagnetometerMessage message)> magnetometerCallback = [](auto message)

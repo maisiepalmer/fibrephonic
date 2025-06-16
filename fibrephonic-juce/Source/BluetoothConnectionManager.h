@@ -45,8 +45,6 @@ public:
 
     BluetoothConnectionManager() : Thread("Bluetooth Connection Thread") 
     {
-        //startTimerHz(pollRate);
-
         gX = gY = gZ = 0;
         accX = accY = accZ = 0;
 
@@ -54,8 +52,7 @@ public:
     }
 
     ~BluetoothConnectionManager() 
-    {
-        //stopTimer();                  
+    {                
         signalThreadShouldExit();     
         stopThread(500);                      
     }
