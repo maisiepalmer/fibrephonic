@@ -12,6 +12,9 @@
 
 #pragma once
 
+#define WAVE_EXPORT
+#include "Wavelib/wavelet2d.h"
+
 class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Header Clash in Main.
 
 class GestureManager 
@@ -31,13 +34,17 @@ private:
         STROKE
     };
 
+private:
 
+    
 
 public:
+
     GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
         : bluetoothConnection(std::move(BluetoothConnectionManagerInstance)) 
     {
-        gX = gY = gZ = accX = accY = accZ = 0;
+        gX = gY = gZ = accX = accY = accZ = 
+        jerkX = jerkY = jerkZ = 0;
     }
 
     inline float CalculateJerk(float changingValue) {
@@ -65,6 +72,6 @@ public:
     {
         getConnectionManagerValues();
 
-
+        
     }
 };

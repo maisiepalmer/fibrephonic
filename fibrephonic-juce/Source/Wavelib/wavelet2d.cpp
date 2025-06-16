@@ -41,6 +41,8 @@ using namespace std;
 fftw_plan plan_forward_inp,plan_forward_filt, plan_backward;
 static unsigned int transient_size_of_fft = 0;
 
+namespace wavelet2d {
+
 void* per_ext2d(vector<vector<double> > &signal,vector<vector<double> > &temp2, int a) {
 
         unsigned int rows = signal.size();
@@ -5656,7 +5658,6 @@ int filtcoef(string name, vector<double> &lp1, vector<double> &hp1, vector<doubl
     }
 
 }
-
-
+}
 
 
