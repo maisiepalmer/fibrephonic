@@ -14,7 +14,7 @@
 #include "imuExamples/Connection.h"
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
 
-class BluetoothConnectionManager : public Connection, public Thread, public Timer
+class BluetoothConnectionManager : public Connection, public Thread
 {
 private:
 
@@ -45,7 +45,7 @@ public:
 
     BluetoothConnectionManager() : Thread("Bluetooth Connection Thread") 
     {
-        startTimerHz(pollRate);
+        //startTimerHz(pollRate);
 
         gX = gY = gZ = 0;
         accX = accY = accZ = 0;
@@ -55,7 +55,7 @@ public:
 
     ~BluetoothConnectionManager() 
     {
-        stopTimer();                  
+        //stopTimer();                  
         signalThreadShouldExit();     
         stopThread(500);                      
     }
@@ -85,18 +85,6 @@ public:
             }
 
             wait(pollRate);
-        }
-    }
-
-private:
-
-    void timerCallback() override {
-
-        // Use for any additional function and management, ensure sync with bluetooth thread...
-        
-        while (!isConnected) 
-        {
-            //DBG(gX);
         }
     }
 };
