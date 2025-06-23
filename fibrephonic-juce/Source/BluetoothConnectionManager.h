@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     BluetoothConnectionManager.h
@@ -18,9 +18,12 @@ class BluetoothConnectionManager : public Connection, public Thread
 {
 private:
 
-    const int pollRate = 125;
-    
     std::unique_ptr<ximu3::BluetoothConnectionInfo> bluetoothconnectioninfo;
+    std::unique_ptr<Connection> ConnectionInstance;
+
+private:
+
+    const int pollRate = 125;
 
     float gX, gY, gZ;
     float accX, accY, accZ;
@@ -40,29 +43,28 @@ public:
     inline float getAccelerationY() { return accY; }
     inline float getAccelerationZ() { return accZ; }
 
-
 public:
 
-    BluetoothConnectionManager() : Thread("Bluetooth Connection Thread") 
+    BluetoothConnectionManager() : Thread("Bluetooth Connection Thread")
     {
         gX = gY = gZ = 0;
         accX = accY = accZ = 0;
 
         bluetoothconnectioninfo = std::make_unique<ximu3::BluetoothConnectionInfo>("COM11");
+        ConnectionInstance = std::make_unique<Connection>();
     }
 
-    ~BluetoothConnectionManager() 
-    {                
-        signalThreadShouldExit();     
-        stopThread(500);                      
+    ~BluetoothConnectionManager()
+    {
+        signalThreadShouldExit();
+        stopThread(500);
     }
 
     void run() override
     {
         while (!threadShouldExit())
         {
-            const auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
-
+            auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
             if (devices.empty())
             {
                 DBG("No Bluetooth connections available");
@@ -70,20 +72,23 @@ public:
             else
             {
                 DBG("Found " << devices[0].device_name << " " << devices[0].serial_number);
-                const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
 
-                // Check exit before starting connection
+                auto connectionInfoPtr = ximu3::connectionInfoFrom(devices[0]);
+                if (!connectionInfoPtr)
+                {
+                    DBG("Failed to create connection info.");
+                    return;
+                }
+
                 if (threadShouldExit()) break;
 
-                runconnection(*connectionInfo);
+                runconnection(*connectionInfoPtr);  
 
                 gX = getX(); gY = getY(); gZ = getZ();
                 accX = getaccX(); accY = getaccY(); accZ = getaccZ();
             }
 
-            // Sleep for pollRate milliseconds or until signaled
             wait(pollRate);
         }
     }
-
 };

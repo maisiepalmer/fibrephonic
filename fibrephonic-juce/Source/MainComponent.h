@@ -45,19 +45,6 @@ private:
  
     //std::vector<juce::Button> SwatchButtons;
 
-    inline void hideConnections()
-    {
-        /*
-        instructionsOverlay->setVisible(false);
-        dismissButton.setVisible(false);
-        */
-    }
-
-    inline void showConnections()
-    {
-
-    }
-
     //OSC and Chip Communication
     OSCManager oscmanager;
 
@@ -74,11 +61,14 @@ private:
     bool serialConnected = false; 
 
 public:
+
     // Bluetooth Connection and Thread 
     std::shared_ptr<BluetoothConnectionManager> bluetoothconnection;
 
     // Gestural Control
-    GestureManager gesturemanager;
+    //GestureManager gesturemanager;
+
+    std::unique_ptr<GestureManager> gesturemanager;
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)

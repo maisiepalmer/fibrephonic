@@ -16,7 +16,7 @@
 
 class Connection
 {
-protected:
+public:
 
     void runconnection(const ximu3::ConnectionInfo& connectionInfo)
     {

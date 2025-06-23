@@ -91,6 +91,12 @@ public:
 
     inline void getConnectionManagerValues()
     {
+        if (!bluetoothConnection)
+        {
+            DBG("BluetoothConnectionManager is null!");
+            return;
+        }
+
         gX = bluetoothConnection->getGyroscopeX();
         gY = bluetoothConnection->getGyroscopeY();
         gZ = bluetoothConnection->getGyroscopeZ();

@@ -2,9 +2,10 @@
 
 //==============================================================================
 MainComponent::MainComponent()
-    : presetTree("Presets"), gesturemanager(bluetoothconnection)
+    : presetTree("Presets")
 {
     bluetoothconnection = std::make_shared<BluetoothConnectionManager>();
+    gesturemanager = std::make_unique<GestureManager>(bluetoothconnection);
 
     {
         //Setup for XML file directory Ensures it exists and file path is valid....
@@ -71,6 +72,7 @@ MainComponent::MainComponent()
                 if (isBlutoothToggled)
                 {
                     bluetoothconnection->startThread(); // Triggers thread run function
+                    gesturemanager->PollGestures();
                 }
                 else {
 
@@ -280,7 +282,6 @@ void MainComponent::timerCallback(){
     repaint();
 
     {
-        gesturemanager.PollGestures();
 
 //        // Serial Connection
 //        if (!serialConnected || !inputStream)
