@@ -16,8 +16,8 @@
 #define DATAWINDOW 256 // Needs to be power of 2
 
 #include <vector>
-#include<memory>
-//#include "Wavelib/wavelet2d"
+#include <memory>
+#include "../Wavelib/wavelet2s.h"
 
 class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Header Clash in Main.
 
@@ -118,7 +118,7 @@ public:
         std::vector<double>* yaccdata,
         std::vector<double>* zaccdata)
     {
-
+        
     }
 
     inline void PollGestures()

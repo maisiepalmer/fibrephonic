@@ -32,7 +32,10 @@
       <FILE id="Zniqtw" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
     </GROUP>
-    <GROUP id="{BF7333AE-CB73-4831-760B-AC31E3ABE7D7}" name="Wavelib"/>
+    <GROUP id="{BF7333AE-CB73-4831-760B-AC31E3ABE7D7}" name="Wavelib">
+      <FILE id="BxygBX" name="wavelet2s.cpp" compile="1" resource="0" file="Source/Wavelib/wavelet2s.cpp"/>
+      <FILE id="MvIMGg" name="wavelet2s.h" compile="0" resource="0" file="Source/Wavelib/wavelet2s.h"/>
+    </GROUP>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_analytics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>

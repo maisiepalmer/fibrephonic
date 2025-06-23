@@ -14,6 +14,9 @@
     <Filter Include="fibrephonic-juce\Source">
       <UniqueIdentifier>{75EC8CFA-5B96-3A32-0DBF-6FE2D853F61E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="fibrephonic-juce\Wavelib">
+      <UniqueIdentifier>{BDA82015-D582-C619-3133-7FE5C0EE00BD}</UniqueIdentifier>
+    </Filter>
     <Filter Include="fibrephonic-juce">
       <UniqueIdentifier>{588A5751-A67B-CF53-8D24-8F54A9B46383}</UniqueIdentifier>
     </Filter>
@@ -783,6 +786,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
       <Filter>fibrephonic-juce\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Wavelib\wavelet2s.cpp">
+      <Filter>fibrephonic-juce\Wavelib</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\JUCE\modules\juce_analytics\analytics\juce_Analytics.cpp">
       <Filter>JUCE Modules\juce_analytics\analytics</Filter>
@@ -4082,6 +4088,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
       <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Wavelib\wavelet2s.h">
+      <Filter>fibrephonic-juce\Wavelib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_analytics\analytics\juce_Analytics.h">
       <Filter>JUCE Modules\juce_analytics\analytics</Filter>
