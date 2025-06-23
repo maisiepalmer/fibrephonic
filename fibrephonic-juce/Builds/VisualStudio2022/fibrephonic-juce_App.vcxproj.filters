@@ -5,9 +5,6 @@
     <Filter Include="fibrephonic-juce\Source\UI">
       <UniqueIdentifier>{962D7544-8A83-0CFD-665D-C00E31A85E11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="fibrephonic-juce\Source\Wavelib">
-      <UniqueIdentifier>{CF8D70DC-2A09-9F3F-C22C-D0265144A886}</UniqueIdentifier>
-    </Filter>
     <Filter Include="fibrephonic-juce\Source\Data">
       <UniqueIdentifier>{ABAC7ACC-B3F3-2ECD-91D5-1541811C2534}</UniqueIdentifier>
     </Filter>
@@ -778,9 +775,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Wavelib\wavelet2d.cpp">
-      <Filter>fibrephonic-juce\Source\Wavelib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Data\SerialPort.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
@@ -4055,12 +4049,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\UI\LookandFeel.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Wavelib\fftw3.h">
-      <Filter>fibrephonic-juce\Source\Wavelib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Wavelib\wavelet2d.h">
-      <Filter>fibrephonic-juce\Source\Wavelib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\GestureManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>

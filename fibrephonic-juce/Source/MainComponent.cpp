@@ -6,7 +6,6 @@ MainComponent::MainComponent()
 {
     bluetoothconnection = std::make_shared<BluetoothConnectionManager>();
 
-
     {
         //Setup for XML file directory Ensures it exists and file path is valid....
         juce::File directory = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)

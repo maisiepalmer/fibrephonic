@@ -7,11 +7,6 @@
       <GROUP id="{F30E0362-D0A6-DDE3-F493-98DA9AB8D8E0}" name="UI">
         <FILE id="ATX9uk" name="LookandFeel.h" compile="0" resource="0" file="Source/UI/LookandFeel.h"/>
       </GROUP>
-      <GROUP id="{8931052C-6358-6005-E03D-DC98C3CCAB41}" name="Wavelib">
-        <FILE id="rVoPq0" name="wavelet2d.cpp" compile="1" resource="0" file="Source/Wavelib/wavelet2d.cpp"/>
-        <FILE id="PykpXv" name="fftw3.h" compile="0" resource="0" file="Source/Wavelib/fftw3.h"/>
-        <FILE id="cvArpi" name="wavelet2d.h" compile="0" resource="0" file="Source/Wavelib/wavelet2d.h"/>
-      </GROUP>
       <GROUP id="{10A6A6E9-BAAD-CFB0-07C7-1EFB0943290B}" name="Data">
         <FILE id="A5aqmN" name="GestureManager.h" compile="0" resource="0"
               file="Source/Data/GestureManager.h"/>
@@ -37,6 +32,7 @@
       <FILE id="Zniqtw" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
     </GROUP>
+    <GROUP id="{BF7333AE-CB73-4831-760B-AC31E3ABE7D7}" name="Wavelib"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_analytics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
@@ -64,8 +60,8 @@
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" headerPath="&quot;../../Libs/x-IMU3/include&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;&#10;"
                        libraryPath="&quot;../../Libs/x-IMU3/lib/windows&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" headerPath="&quot;../../Libs/x-IMU3/include&quot;&#10;"
-                       libraryPath="&quot;../../Libs/x-IMU3/lib/windows&quot;&#10;"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" headerPath="&quot;../../Libs/x-IMU3/include&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;"
+                       libraryPath="&quot;../../Libs/x-IMU3/lib/windows&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_analytics" path="../../JUCE/modules"/>
