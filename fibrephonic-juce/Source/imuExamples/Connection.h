@@ -17,6 +17,7 @@
 class Connection
 {
 protected:
+
     void runconnection(const ximu3::ConnectionInfo& connectionInfo)
     {
         // Create connection
@@ -54,13 +55,14 @@ protected:
         }
 
         // Send command to strobe LED
-        const std::vector<std::string> commands { "{\"strobe\":null}" };
+        const std::vector<std::string> commands{ "{\"strobe\":null}" };
         connection.sendCommands(commands, 2, 500);
 
         // Close connection
         std::this_thread::sleep_for(std::chrono::seconds(60));
         connection.close();
     }
+
 
 public:
     

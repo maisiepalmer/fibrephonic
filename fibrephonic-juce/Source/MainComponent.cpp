@@ -73,8 +73,11 @@ MainComponent::MainComponent()
                     bluetoothconnection->startThread(); // Triggers thread run function
                 }
                 else {
-                    bluetoothconnection->signalThreadShouldExit();
-                    bluetoothconnection->stopThread(1000);
+
+                    bluetoothconnection->wait(100);
+
+                    //bluetoothconnection->signalThreadShouldExit();
+                    //bluetoothconnection->stopThread(1000);
                 }
              };
         }        
@@ -158,11 +161,16 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
-    //bluetoothconnection.signalThreadShouldExit();
-    //bluetoothconnection.stopThread(1000); 
+    if (bluetoothconnection)
+    {
+        bluetoothconnection->signalThreadShouldExit();
 
-    bluetoothconnection->signalThreadShouldExit();
-    bluetoothconnection->stopThread(1000);
+        if (!bluetoothconnection->stopThread(1000))
+            DBG("Thread did not stop cleanly");
+
+        // Reset shared_ptr to release ownership and allow destruction if no other refs
+        bluetoothconnection.reset();
+    }
 
     stopTimer();
 }

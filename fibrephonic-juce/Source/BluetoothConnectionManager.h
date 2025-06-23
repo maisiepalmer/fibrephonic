@@ -65,23 +65,25 @@ public:
 
             if (devices.empty())
             {
-
                 DBG("No Bluetooth connections available");
             }
             else
             {
-                // Ensure that IMU isn't connected in IMU GUI or it will will not be found by scanFilter...
-
                 DBG("Found " << devices[0].device_name << " " << devices[0].serial_number);
                 const auto connectionInfo = ximu3::connectionInfoFrom(devices[0]);
-                
+
+                // Check exit before starting connection
+                if (threadShouldExit()) break;
+
                 runconnection(*connectionInfo);
 
                 gX = getX(); gY = getY(); gZ = getZ();
                 accX = getaccX(); accY = getaccY(); accZ = getaccZ();
             }
 
+            // Sleep for pollRate milliseconds or until signaled
             wait(pollRate);
         }
     }
+
 };

@@ -15,6 +15,7 @@
 #define IMUINERTIALREFRESH 400
 #define DATAWINDOW 256 // Needs to be power of 2
 
+#include <JuceHeader.h>
 #include <vector>
 #include <memory>
 #include "../Wavelib/wavelet2s.h"
@@ -125,5 +126,7 @@ public:
     {
         getConnectionManagerValues();
         fillDataVectors(paccXData, paccYData, paccZData, paccX, paccY, paccZ);
+
+        DBG("In function...");
     }
 };
