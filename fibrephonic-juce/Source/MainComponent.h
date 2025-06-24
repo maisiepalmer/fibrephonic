@@ -5,7 +5,7 @@
 #include "UI/LookandFeel.h"
 #include "Data/OSCManager.h"
 #include "imuExamples/BluetoothConnection.h"
-#include "BluetoothConnectionManager.h"
+#include "Data/BluetoothConnectionManager.h"
 #include "Data/SerialPort.h"
 //#include "imuExamples/Connection.h"
 #include "Data/GestureManager.h"
