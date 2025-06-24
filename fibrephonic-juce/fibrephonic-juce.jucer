@@ -17,8 +17,8 @@
         <FILE id="uXZMOT" name="SerialPort.cpp" compile="1" resource="0" file="Source/Data/SerialPort.cpp"/>
         <FILE id="iGsSmS" name="SerialPort.h" compile="0" resource="0" file="Source/Data/SerialPort.h"/>
         <FILE id="DqEARk" name="OSCManager.h" compile="0" resource="0" file="Source/Data/OSCManager.h"/>
-        <FILE id="rdz6D6" name="BluetoothConnectionManager.h" compile="0" resource="0"
-              file="Source/BluetoothConnectionManager.h"/>
+        <FILE id="NsmOll" name="BluetoothConnectionManager.h" compile="0" resource="0"
+              file="Source/Data/BluetoothConnectionManager.h"/>
       </GROUP>
       <GROUP id="{7541B055-A622-1378-2963-F1E93D0288D9}" name="imuExamples">
         <FILE id="rdvEjC" name="BluetoothConnection.h" compile="0" resource="0"

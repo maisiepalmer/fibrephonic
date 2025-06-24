@@ -48,8 +48,9 @@ private:
         STROKE
     };
 
-    // Data Vectors for Wavelet Transform
-    std::vector<double> accXData, accYData, accZData;
+    // Data Vectors 
+    std::vector<double> accXData, accYData, accZData,
+                                 XData, YData, ZData;
 
     // Approximation Coefficients
     std::vector<double> cAx, cAy, cAz;
@@ -67,6 +68,12 @@ private:
     void fillDataVectors(std::vector<double>* xaccdata,
                          std::vector<double>* yaccdata,
                          std::vector<double>* zaccdata,
+                         std::vector<double>* xdata,
+                         std::vector<double>* ydata,
+                         std::vector<double>* zdata,
+                                          double* x,
+                                          double* y,
+                                          double* z,
                                           double* accx,
                                           double* accy,
                                           double* accz);

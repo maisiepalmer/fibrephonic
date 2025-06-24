@@ -4074,7 +4074,7 @@
     <ClInclude Include="..\..\Source\Data\OSCManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\BluetoothConnectionManager.h">
+    <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h">

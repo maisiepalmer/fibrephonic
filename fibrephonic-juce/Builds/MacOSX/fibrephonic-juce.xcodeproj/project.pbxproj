@@ -59,7 +59,6 @@
 		0131F20D974E0E0EE7527CCC /* Connection.h */ /* Connection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Connection.h; path = ../../Source/imuExamples/Connection.h; sourceTree = SOURCE_ROOT; };
 		065E0A21E118A0054F583DFF /* SerialPort.h */ /* SerialPort.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SerialPort.h; path = ../../Source/Data/SerialPort.h; sourceTree = SOURCE_ROOT; };
 		0890123AC77AA29DE0C7A5F7 /* juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = ../../../../JUCE/modules/juce_core; sourceTree = SOURCE_ROOT; };
-		0B010B537603899677F29478 /* BluetoothConnectionManager.h */ /* BluetoothConnectionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BluetoothConnectionManager.h; path = ../../Source/BluetoothConnectionManager.h; sourceTree = SOURCE_ROOT; };
 		0C32D988F6F65FA1F545704F /* include_juce_midi_ci.cpp */ /* include_juce_midi_ci.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_midi_ci.cpp; path = ../../JuceLibraryCode/include_juce_midi_ci.cpp; sourceTree = SOURCE_ROOT; };
 		12B99F67CCEDD7CAA47C4C2D /* include_juce_dsp.mm */ /* include_juce_dsp.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_dsp.mm; path = ../../JuceLibraryCode/include_juce_dsp.mm; sourceTree = SOURCE_ROOT; };
 		161906F93EE5BE943ABF7536 /* juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = ../../../../JUCE/modules/juce_gui_extra; sourceTree = SOURCE_ROOT; };
@@ -107,6 +106,7 @@
 		AB0A99BF5A2ADF0CD6B480A8 /* juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = ../../../../JUCE/modules/juce_graphics; sourceTree = SOURCE_ROOT; };
 		AB6C5C1E439E035164DED218 /* CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
 		ABC822DD0EF92E3885BC13CC /* juce_box2d */ /* juce_box2d */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_box2d; path = ../../../../JUCE/modules/juce_box2d; sourceTree = SOURCE_ROOT; };
+		ACACA5904B4491D09C687399 /* BluetoothConnectionManager.h */ /* BluetoothConnectionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BluetoothConnectionManager.h; path = ../../Source/Data/BluetoothConnectionManager.h; sourceTree = SOURCE_ROOT; };
 		B5D65F674866BD27A988D1BC /* wavelet2s.cpp */ /* wavelet2s.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = wavelet2s.cpp; path = ../../Source/Wavelib/wavelet2s.cpp; sourceTree = SOURCE_ROOT; };
 		B74A5ED6351342E5211A2A02 /* juce_osc */ /* juce_osc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_osc; path = ../../../../JUCE/modules/juce_osc; sourceTree = SOURCE_ROOT; };
 		C6DFE81163933A73D9FD1E0B /* juce_dsp */ /* juce_dsp */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_dsp; path = ../../../../JUCE/modules/juce_dsp; sourceTree = SOURCE_ROOT; };
@@ -210,7 +210,7 @@
 				D218E7CA0B539681F2AE5EC0,
 				065E0A21E118A0054F583DFF,
 				F1E66E88E34B487BE42B859A,
-				0B010B537603899677F29478,
+				ACACA5904B4491D09C687399,
 			);
 			name = Data;
 			sourceTree = "<group>";
