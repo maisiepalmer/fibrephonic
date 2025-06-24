@@ -22,7 +22,7 @@
 
 class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Header Clash in Main.
 
-class GestureManager 
+class GestureManager : private juce::Timer
 {
 private:
     std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
@@ -32,10 +32,6 @@ private:
     float gX, gY, gZ;
     float accX, accY, accZ;
     float jerkX, jerkY, jerkZ;
-
-    float *paccX = &accX, 
-          *paccY = &accY, 
-          *paccZ = &accZ;
 
     enum Gesture {
         PITCH,
@@ -56,10 +52,6 @@ private:
     // Detail Coefficients 
     std::vector<double> cDx, cDy, cDz;
 
-    std::vector<double> *paccXData = &accXData,
-                        *paccYData = &accYData,
-                        *paccZData = &accZData;
-                        
 public:
 
     GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
@@ -79,14 +71,6 @@ public:
         accXData.clear(); 
         accYData.clear();
         accZData.clear();
-
-        paccX = nullptr;
-        paccY = nullptr;
-        paccZ = nullptr;
-
-        paccXData = nullptr;
-        paccYData = nullptr;
-        paccZData = nullptr;
     }
 
     inline void getConnectionManagerValues()
@@ -113,11 +97,11 @@ public:
                                                   float* accy,
                                                   float* accz)
     {
-        for (int i = 0; i < DATAWINDOW; i++) {
-            
-            xaccdata->push_back(*accx);
-            yaccdata->push_back(*accy);
-            zaccdata->push_back(*accz);
+        for (int i = 0; i < DATAWINDOW; i++)
+        {
+            (*xaccdata)[i] = static_cast<double>(*accx);   
+            (*yaccdata)[i] = static_cast<double>(*accy);
+            (*zaccdata)[i] = static_cast<double>(*accz);
         }
     }
 
@@ -131,8 +115,21 @@ public:
     inline void PollGestures()
     {
         getConnectionManagerValues();
-        fillDataVectors(paccXData, paccYData, paccZData, paccX, paccY, paccZ);
+        fillDataVectors(&accXData, &accYData, &accZData, &gX, &gY, &gZ);
+    
+        //Validate Data 
+        for (int i = 0; i < DATAWINDOW; i++) {
+            DBG(accXData[i]);
+        }
+    }
 
-        DBG("In function...");
+public:
+
+    void startPolling() { startTimerHz(IMUINERTIALREFRESH); }
+    void stopPolling() { stopTimer(); }
+
+    void timerCallback() override
+    {
+        PollGestures(); 
     }
 };

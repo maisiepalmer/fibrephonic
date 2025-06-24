@@ -25,6 +25,7 @@
         <FILE id="fETMop" name="SerialConnection.h" compile="0" resource="0"
               file="Source/imuExamples/SerialConnection.h"/>
         <FILE id="jYdSq1" name="Connection.h" compile="0" resource="0" file="Source/imuExamples/Connection.h"/>
+        <FILE id="FP4aaQ" name="Connection.cpp" compile="1" resource="0" file="Source/imuExamples/Connection.cpp"/>
       </GROUP>
       <FILE id="xbqB5W" name="Objects.h" compile="0" resource="0" file="Source/Objects.h"/>
       <FILE id="fkCq2l" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>

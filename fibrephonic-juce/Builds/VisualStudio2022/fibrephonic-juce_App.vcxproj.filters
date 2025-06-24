@@ -781,6 +781,9 @@
     <ClCompile Include="..\..\Source\Data\SerialPort.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\imuExamples\Connection.cpp">
+      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClCompile>

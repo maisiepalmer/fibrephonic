@@ -11,7 +11,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "imuExamples/Connection.h"
+#include "../imuExamples/Connection.h"
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
 
 class BluetoothConnectionManager : public Connection, public Thread, public Timer

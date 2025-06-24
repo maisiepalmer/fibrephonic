@@ -32,16 +32,18 @@ private:
 
 public:
 
-    inline void setGyroscopeValues(float x, float y, float z) { gX = x; gY = y; gZ = z; }
+    inline void setGyroscopeValues(double x, double y, double z) { gX = x; gY = y; gZ = z; }
+    inline void setAccelerometerValues(double x, double y, double z) { accX = x; accY = y; accZ = z; }
+
     inline void setConnectionbool(bool MainBool) { isConnected = MainBool; }
 
-    inline float getGyroscopeX() { return gX; }
-    inline float getGyroscopeY() { return gY; }
-    inline float getGyroscopeZ() { return gZ; }
+    inline double getGyroscopeX() { return gX; }
+    inline double getGyroscopeY() { return gY; }
+    inline double getGyroscopeZ() { return gZ; }
 
-    inline float getAccelerationX() { return accX; }
-    inline float getAccelerationY() { return accY; }
-    inline float getAccelerationZ() { return accZ; }
+    inline double getAccelerationX() { return accX; }
+    inline double getAccelerationY() { return accY; }
+    inline double getAccelerationZ() { return accZ; }
 
 public:
 
@@ -51,7 +53,7 @@ public:
         accX = accY = accZ = 0;
 
         bluetoothconnectioninfo = std::make_unique<ximu3::BluetoothConnectionInfo>("COM11");
-        ConnectionInstance = std::make_unique<Connection>();
+        ConnectionInstance = std::make_unique<Connection>(this);
     }
 
     ~BluetoothConnectionManager()
@@ -82,10 +84,15 @@ public:
 
                 if (threadShouldExit()) break;
 
-                runconnection(*connectionInfoPtr);  
+                ConnectionInstance->runconnection(*connectionInfoPtr);  
 
-                gX = getX(); gY = getY(); gZ = getZ();
-                accX = getaccX(); accY = getaccY(); accZ = getaccZ();
+                gX = ConnectionInstance->getX(); 
+                gY = ConnectionInstance->getX();
+                gZ = ConnectionInstance->getX();
+
+                accX = ConnectionInstance->getaccX(); 
+                accY = ConnectionInstance->getaccY(); 
+                accZ = ConnectionInstance->getaccZ();
             }
 
             wait(pollRate);

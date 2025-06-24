@@ -72,7 +72,8 @@ MainComponent::MainComponent()
                 if (isBlutoothToggled)
                 {
                     bluetoothconnection->startThread(); // Triggers thread run function
-                    gesturemanager->PollGestures();
+                    //gesturemanager->PollGestures();
+                    gesturemanager->startPolling();
                 }
                 else {
 
@@ -282,6 +283,7 @@ void MainComponent::timerCallback(){
     repaint();
 
     {
+   
 
 //        // Serial Connection
 //        if (!serialConnected || !inputStream)
