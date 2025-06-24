@@ -12,7 +12,7 @@
 #define FLOAT_FORMAT " %8.3f"
 #define STRING_FORMAT " \"%s\""
 
-class BluetoothConnectionManager; // Forward declaration
+class BluetoothConnectionManager; 
 
 class Connection
 {

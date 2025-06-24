@@ -59,8 +59,11 @@ void Connection::setupCallbacks()
                     message.gyroscope_x,
                     message.gyroscope_y,
                     message.gyroscope_z);
-              
-                
+
+                parentManager->setAccelerometerValues(
+                    message.accelerometer_x,
+                    message.accelerometer_y,
+                    message.accelerometer_z);
             }
         };
 
