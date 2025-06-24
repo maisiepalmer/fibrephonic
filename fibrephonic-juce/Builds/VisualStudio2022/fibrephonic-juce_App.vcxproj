@@ -158,6 +158,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
     <ClCompile Include="..\..\Source\Data\SerialPort.cpp"/>
     <ClCompile Include="..\..\Source\imuExamples\Connection.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>

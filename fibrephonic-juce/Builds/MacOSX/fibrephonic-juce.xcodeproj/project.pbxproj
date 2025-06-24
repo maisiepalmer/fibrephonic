@@ -47,6 +47,7 @@
 		D7E8F0898CD7F94D372BFEDF /* Cocoa.framework */ = {isa = PBXBuildFile; fileRef = 9B719A513638A08F6B4781C9; };
 		DE0492DE13C1FFFECEE9651B /* include_juce_core.mm */ = {isa = PBXBuildFile; fileRef = 17F1E2CBB3B3033CC6E95F3E; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
 		E601589E437CBEA40FA076E6 /* include_juce_audio_utils.mm */ = {isa = PBXBuildFile; fileRef = 65DF5B7D4CE343317BD45BB1; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
+		E803B521AB322FF1663B8912 /* GestureManager.cpp */ = {isa = PBXBuildFile; fileRef = 3558327F30E35001DC7652F4; };
 		E9391E52BBB25E3A660BF772 /* include_juce_midi_ci.cpp */ = {isa = PBXBuildFile; fileRef = 0C32D988F6F65FA1F545704F; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
 		EBA3E4225A43CBCFB4DE0D93 /* include_juce_audio_devices.mm */ = {isa = PBXBuildFile; fileRef = 77A4D9D833DDD42DE741E7FE; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
 		F072196F1936317C23FE3BF3 /* include_juce_cryptography.mm */ = {isa = PBXBuildFile; fileRef = E86401D30A771D63F6B17EC9; settings = { COMPILER_FLAGS = "-DJUCE_SKIP_PRECOMPILED_HEADER"; }; };
@@ -72,6 +73,7 @@
 		2F672F3A83CF2999FBC69D77 /* juce_audio_basics */ /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = ../../../../JUCE/modules/juce_audio_basics; sourceTree = SOURCE_ROOT; };
 		30E5F0F01FC5249559BCF36B /* include_juce_graphics.mm */ /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../../JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
 		353E5C67D1D342CBCA792E45 /* Connection.cpp */ /* Connection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Connection.cpp; path = ../../Source/imuExamples/Connection.cpp; sourceTree = SOURCE_ROOT; };
+		3558327F30E35001DC7652F4 /* GestureManager.cpp */ /* GestureManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GestureManager.cpp; path = ../../Source/Data/GestureManager.cpp; sourceTree = SOURCE_ROOT; };
 		3CF7FB9F5AF0B9360AEC2FAC /* include_juce_box2d.cpp */ /* include_juce_box2d.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_box2d.cpp; path = ../../JuceLibraryCode/include_juce_box2d.cpp; sourceTree = SOURCE_ROOT; };
 		3E838D9D7C323296C0737547 /* IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		4136687EBF4671FA03627BA0 /* juce_data_structures */ /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = ../../../../JUCE/modules/juce_data_structures; sourceTree = SOURCE_ROOT; };
@@ -202,6 +204,7 @@
 		3BAEF12ADA28F80FADB58F15 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				3558327F30E35001DC7652F4,
 				7403F43DF17D1840E2B68BCE,
 				7DF463D1D993F8683F74CB29,
 				D218E7CA0B539681F2AE5EC0,
@@ -420,6 +423,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E803B521AB322FF1663B8912,
 				26E3A8756A3AAE18E687B3DA,
 				66658247FF2B5D92B9926702,
 				4CE0BD05ABBEE29E52BF2E06,

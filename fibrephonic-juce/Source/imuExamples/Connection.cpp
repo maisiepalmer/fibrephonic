@@ -24,6 +24,9 @@ Connection::Connection(BluetoothConnectionManager* parent)
 
 void Connection::setupCallbacks()
 {
+    // Use this function to declare which Pre defined IMU callbacks are to be used...
+    // Also route as to where the data is going/ being passed to.
+
     decodeErrorCallback = [](auto error)
         {
             std::cout << ximu3::XIMU3_decode_error_to_string(error) << std::endl;
@@ -43,16 +46,6 @@ void Connection::setupCallbacks()
 
     inertialCallback = [this](auto message)
         {
-            /*
-            gx = message.gyroscope_x;
-            gy = message.gyroscope_y;
-            gz = message.gyroscope_z;
-
-            accx = message.accelerometer_x;
-            accy = message.accelerometer_y;
-            accz = message.accelerometer_z;
-            */
-
             if (parentManager)
             {
                 parentManager->setGyroscopeValues(

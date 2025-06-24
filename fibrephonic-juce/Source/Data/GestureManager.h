@@ -20,18 +20,25 @@
 #include <memory>
 #include "../Wavelib/wavelet2s.h"
 
-class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Header Clash in Main.
+class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Circular Dependancy. 
 
 class GestureManager : private juce::Timer
 {
-private:
-    std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
-    
-    //BluetoothConnectionManager bluetoothConnection;
+public:
 
-    float gX, gY, gZ;
-    float accX, accY, accZ;
-    float jerkX, jerkY, jerkZ;
+    GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance);
+    ~GestureManager();
+
+    void startPolling();
+    void stopPolling();
+
+private:
+
+    std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
+
+    double gX, gY, gZ;
+    double accX, accY, accZ;
+    double jerkX, jerkY, jerkZ;
 
     enum Gesture {
         PITCH,
@@ -41,95 +48,30 @@ private:
         STROKE
     };
 
-private:
-
-    // Data Vectors for Wavelet Trasform
+    // Data Vectors for Wavelet Transform
     std::vector<double> accXData, accYData, accZData;
 
     // Approximation Coefficients
     std::vector<double> cAx, cAy, cAz;
 
-    // Detail Coefficients 
+    // Detail Coefficients
     std::vector<double> cDx, cDy, cDz;
 
-public:
+private:
 
-    GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
-        : bluetoothConnection(std::move(BluetoothConnectionManagerInstance)) 
-    {
-        gX = gY = gZ = accX = accY = accZ = 
-        jerkX = jerkY = jerkZ = 0;
+    void timerCallback() override;
+    void PollGestures();
 
-        accXData.resize(DATAWINDOW); accYData.resize(DATAWINDOW); accZData.resize(DATAWINDOW);
+    void getConnectionManagerValues();
 
-        cAx.resize(DATAWINDOW); cAy.resize(DATAWINDOW); cAz.resize(DATAWINDOW);
-        cDx.resize(DATAWINDOW); cDy.resize(DATAWINDOW); cDz.resize(DATAWINDOW);
-    }
+    void fillDataVectors(std::vector<double>* xaccdata,
+                         std::vector<double>* yaccdata,
+                         std::vector<double>* zaccdata,
+                                          double* accx,
+                                          double* accy,
+                                          double* accz);
 
-    ~GestureManager() 
-    {
-        accXData.clear(); 
-        accYData.clear();
-        accZData.clear();
-    }
-
-    inline void getConnectionManagerValues()
-    {
-        if (!bluetoothConnection)
-        {
-            DBG("BluetoothConnectionManager is null!");
-            return;
-        }
-
-        gX = bluetoothConnection->getGyroscopeX();
-        gY = bluetoothConnection->getGyroscopeY();
-        gZ = bluetoothConnection->getGyroscopeZ();
-
-        accX = bluetoothConnection->getAccelerationX();
-        accY = bluetoothConnection->getAccelerationY();
-        accZ = bluetoothConnection->getAccelerationZ();
-    }
-
-    inline void fillDataVectors(std::vector<double>* xaccdata, 
-                                std::vector<double>* yaccdata, 
-                                std::vector<double>* zaccdata,
-                                                  float* accx,
-                                                  float* accy,
-                                                  float* accz)
-    {
-        for (int i = 0; i < DATAWINDOW; i++)
-        {
-            (*xaccdata)[i] = static_cast<double>(*accx);   
-            (*yaccdata)[i] = static_cast<double>(*accy);
-            (*zaccdata)[i] = static_cast<double>(*accz);
-        }
-    }
-
-    inline void perform1DWaveletTransform(std::vector<double>* xaccdata,
-        std::vector<double>* yaccdata,
-        std::vector<double>* zaccdata)
-    {
-        
-    }
-
-    inline void PollGestures()
-    {
-        getConnectionManagerValues();
-        fillDataVectors(&accXData, &accYData, &accZData, &gX, &gY, &gZ);
-    
-        //Validate Data 
-        for (int i = 0; i < DATAWINDOW; i++) {
-            DBG(accXData[i]);
-        }
-    }
-
-public:
-
-    void startPolling() { startTimerHz(IMUINERTIALREFRESH); }
-    void stopPolling() { stopTimer(); }
-
-    void timerCallback() override
-    {
-        PollGestures(); 
-    }
+    void perform1DWaveletTransform(std::vector<double>* xaccdata,
+                                   std::vector<double>* yaccdata,
+                                   std::vector<double>* zaccdata);
 };
