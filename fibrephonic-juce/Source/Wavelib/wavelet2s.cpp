@@ -44,6 +44,10 @@ extern "C" int _get_output_format( void ){ return 0; }
 fftw_plan plan_forward_inp,plan_forward_filt, plan_backward;
 static unsigned int transient_size_of_fft = 0;
 
+void safe_erase(std::vector<double>& vec, size_t from, size_t to) {
+    if (from >= vec.size() || to > vec.size() || from >= to) return;
+    vec.erase(vec.begin() + from, vec.begin() + to);
+}
 
 void* per_ext2d(vector<vector<double> > &signal,vector<vector<double> > &temp2, int a) {
 
@@ -1725,11 +1729,18 @@ void* dwt1(string wname, vector<double> &signal, vector<double> &cA, vector<doub
                 // convolving signal with lpd, Low Pass Filter, and O/P is stored in cA_undec
                 convfft(signal,lpd,cA_undec);
                 int D = 2; // Downsampling Factor is 2
+
+                /*
                 cA_undec.erase(cA_undec.begin(),cA_undec.begin()+len_avg-1);
                 cA_undec.erase(cA_undec.end()-len_avg+1,cA_undec.end());
                 cA_undec.erase(cA_undec.begin()+len_sig,cA_undec.end());
                 cA_undec.erase(cA_undec.begin());
+                */
 
+                safe_erase(cA_undec, 0, len_avg - 1);
+                safe_erase(cA_undec, cA_undec.size() - len_avg + 1, cA_undec.size());
+                safe_erase(cA_undec, len_sig, cA_undec.size());
+                safe_erase(cA_undec, 0, 1);
 
                 // Downsampling by 2 gives cA
                 downsamp(cA_undec, D, cA);
@@ -1743,10 +1754,18 @@ void* dwt1(string wname, vector<double> &signal, vector<double> &cA, vector<doub
                 vector<double> cD_undec;
                 // convolving signal with lpd, Low Pass Filter, and O/P is stored in cA_undec
                 convfft(signal,hpd,cD_undec);
+
+                /*
                 cD_undec.erase(cD_undec.begin(),cD_undec.begin()+len_avg-1);
                 cD_undec.erase(cD_undec.end()-len_avg+1,cD_undec.end());
                 cD_undec.erase(cD_undec.begin()+len_sig,cD_undec.end());
                 cD_undec.erase(cD_undec.begin());
+                */
+
+                safe_erase(cD_undec, 0, len_avg - 1);
+                safe_erase(cD_undec, cD_undec.size() - len_avg + 1, cD_undec.size());
+                safe_erase(cD_undec, len_sig, cD_undec.size());
+                safe_erase(cD_undec, 0, 1);
 
                  // Downsampling Factor is 2
 
@@ -1782,10 +1801,18 @@ void* dwt1_m(string wname, vector<double> &signal, vector<double> &cA, vector<do
                 // convolving signal with lpd, Low Pass Filter, and O/P is stored in cA_undec
                 convfftm(signal,lpd,cA_undec);
                 int D = 2; // Downsampling Factor is 2
+
+                /*
                 cA_undec.erase(cA_undec.begin(),cA_undec.begin()+len_avg-1);
                 cA_undec.erase(cA_undec.end()-len_avg+1,cA_undec.end());
                 cA_undec.erase(cA_undec.begin()+len_sig,cA_undec.end());
                 cA_undec.erase(cA_undec.begin());
+                */
+
+                safe_erase(cA_undec, 0, len_avg - 1);
+                safe_erase(cA_undec, cA_undec.size() - len_avg + 1, cA_undec.size());
+                safe_erase(cA_undec, len_sig, cA_undec.size());
+                safe_erase(cA_undec, 0, 1);
 
 
                 // Downsampling by 2 gives cA
@@ -1800,10 +1827,18 @@ void* dwt1_m(string wname, vector<double> &signal, vector<double> &cA, vector<do
                 vector<double> cD_undec;
                 // convolving signal with lpd, Low Pass Filter, and O/P is stored in cA_undec
                 convfftm(signal,hpd,cD_undec);
+
+                /*
                 cD_undec.erase(cD_undec.begin(),cD_undec.begin()+len_avg-1);
                 cD_undec.erase(cD_undec.end()-len_avg+1,cD_undec.end());
                 cD_undec.erase(cD_undec.begin()+len_sig,cD_undec.end());
                 cD_undec.erase(cD_undec.begin());
+                */
+
+                safe_erase(cD_undec, 0, len_avg - 1);
+                safe_erase(cD_undec, cD_undec.size() - len_avg + 1, cD_undec.size());
+                safe_erase(cD_undec, len_sig, cD_undec.size());
+                safe_erase(cD_undec, 0, 1);
 
                  // Downsampling Factor is 2
 

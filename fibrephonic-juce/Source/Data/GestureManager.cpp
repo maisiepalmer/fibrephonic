@@ -23,14 +23,6 @@ GestureManager::GestureManager(std::shared_ptr<BluetoothConnectionManager> Bluet
     XData.resize(DATAWINDOW);
     YData.resize(DATAWINDOW);
     ZData.resize(DATAWINDOW);
-
-    cAx.resize(DATAWINDOW);
-    cAy.resize(DATAWINDOW);
-    cAz.resize(DATAWINDOW);
-
-    cDx.resize(DATAWINDOW);
-    cDy.resize(DATAWINDOW);
-    cDz.resize(DATAWINDOW);
 }
 
 GestureManager::~GestureManager()
@@ -49,9 +41,13 @@ void GestureManager::PollGestures()
     getConnectionManagerValues();
     fillDataVectors(&accXData, &accYData, &accZData, &XData, &YData, &ZData, &gX, &gY, &gZ, &accX, &accY, &accZ);
 
+    perform1DWaveletTransform(accXData, accYData, accZData);
+
+    /*
     for (int i = 0; i < DATAWINDOW; i++) {
-        DBG(accXData[i]);
+        DBG(XData[i]);
     }
+    */
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -97,10 +93,22 @@ void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
     }
 }
 
-void GestureManager::perform1DWaveletTransform(std::vector<double>* xaccdata,
-                                               std::vector<double>* yaccdata,
-                                               std::vector<double>* zaccdata)
+void GestureManager::perform1DWaveletTransform(std::vector<double>& xaccdata,
+                                               std::vector<double>& xaccapprox,
+                                               std::vector<double>& xaccdetail)
 {
+    int levels = 1;
+    std::string wavelet = "Haar";
+    std::vector<double> coeffs, lengths;
+    std::vector<int> bookkeeping;
+
+    //coeffs.resize(DATAWINDOW);
     
+    dwt(xaccdata, levels, wavelet, coeffs, lengths, bookkeeping);
+    
+    DBG("Wavelet Coefficients:\n");
+    for (auto c : coeffs)
+        DBG(c << " ");
 }
+
 

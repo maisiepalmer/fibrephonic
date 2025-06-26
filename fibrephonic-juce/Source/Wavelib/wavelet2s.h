@@ -75,6 +75,9 @@
 	void* idwt1_m(std::string, std::vector<double>&, std::vector<double>&, std::vector<double>&);
 	void* dwt_output_dim2(std::vector<int>&, std::vector<int>&, int);
 
+	// === AI Fixing Shit ===
+	void safe_erase(std::vector<double>& vec, size_t from, size_t to);
+
  // namespace wavelet2d
 
 #endif // WAVELET2D_H

@@ -52,12 +52,6 @@ private:
     std::vector<double> accXData, accYData, accZData,
                                  XData, YData, ZData;
 
-    // Approximation Coefficients
-    std::vector<double> cAx, cAy, cAz;
-
-    // Detail Coefficients
-    std::vector<double> cDx, cDy, cDz;
-
 private:
 
     void timerCallback() override;
@@ -78,7 +72,7 @@ private:
                                           double* accy,
                                           double* accz);
 
-    void perform1DWaveletTransform(std::vector<double>* xaccdata,
-                                   std::vector<double>* yaccdata,
-                                   std::vector<double>* zaccdata);
+    void perform1DWaveletTransform(std::vector<double>& xaccdata,
+                                   std::vector<double>& yaccdata,
+                                   std::vector<double>& zaccdata);
 };
