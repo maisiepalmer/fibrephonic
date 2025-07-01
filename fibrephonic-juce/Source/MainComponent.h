@@ -71,5 +71,8 @@ public:
     std::unique_ptr<GestureManager> gesturemanager;
 
 private:
+
+    int functioncount = 0;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

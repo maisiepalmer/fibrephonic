@@ -14,35 +14,37 @@
 GestureManager::GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
     : bluetoothConnection(std::move(BluetoothConnectionManagerInstance))
 {
-    gX = gY = gZ = accX = accY = accZ = jerkX = jerkY = jerkZ = 0;
+    DATA.gX = DATA.gY = DATA.gZ = 
+    DATA.accX = DATA.accY = DATA.accZ = 
+    DATA.jerkX = DATA.jerkY = DATA.jerkZ = 0;
 
-    accXData.resize(DATAWINDOW);
-    accYData.resize(DATAWINDOW);
-    accZData.resize(DATAWINDOW);
+    DATA.accXData.resize(DATAWINDOW);
+    DATA.accYData.resize(DATAWINDOW);
+    DATA.accZData.resize(DATAWINDOW);
 
-    XData.resize(DATAWINDOW);
-    YData.resize(DATAWINDOW);
-    ZData.resize(DATAWINDOW);
+    DATA.XData.resize(DATAWINDOW);
+    DATA.YData.resize(DATAWINDOW);
+    DATA.ZData.resize(DATAWINDOW);
 }
 
 GestureManager::~GestureManager()
 {
-    accXData.clear();
-    accYData.clear();
-    accZData.clear();
+    DATA.accXData.clear();
+    DATA.accYData.clear();
+    DATA.accZData.clear();
 }
 
 void GestureManager::startPolling() { startTimerHz(IMUINERTIALREFRESH); }
 void GestureManager::stopPolling() { stopTimer(); }
-void GestureManager::timerCallback() { PollGestures(); }
+void GestureManager::timerCallback() { PollGestures(); } // pollcount++; DBG(pollcount); }
 
 void GestureManager::PollGestures()
 {
     getConnectionManagerValues();
-    fillDataVectors(&accXData, &accYData, &accZData, &XData, &YData, &ZData, &gX, &gY, &gZ, &accX, &accY, &accZ);
+    fillDataVectors(&DATA.accXData, &DATA.accYData, &DATA.accZData, &DATA.XData, &DATA.YData, &DATA.ZData, &DATA.gX, &DATA.gY, &DATA.gZ, &DATA.accX, &DATA.accY, &DATA.accZ);
 
-    perform1DWaveletTransform(accXData, accYData, accZData);
-
+    perform1DWaveletTransform(DATA.accXData, DATA.accYData, DATA.accZData);
+   
     /*
     for (int i = 0; i < DATAWINDOW; i++) {
         DBG(XData[i]);
@@ -58,13 +60,13 @@ void GestureManager::getConnectionManagerValues()
         return;
     }
 
-    gX = bluetoothConnection->getGyroscopeX();
-    gY = bluetoothConnection->getGyroscopeY();
-    gZ = bluetoothConnection->getGyroscopeZ();
+    DATA.gX = bluetoothConnection->getGyroscopeX();
+    DATA.gY = bluetoothConnection->getGyroscopeY();
+    DATA.gZ = bluetoothConnection->getGyroscopeZ();
 
-    accX = bluetoothConnection->getAccelerationX();
-    accY = bluetoothConnection->getAccelerationY();
-    accZ = bluetoothConnection->getAccelerationZ();
+    DATA.accX = bluetoothConnection->getAccelerationX();
+    DATA.accY = bluetoothConnection->getAccelerationY();
+    DATA.accZ = bluetoothConnection->getAccelerationZ();
 }
 
 void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
@@ -104,11 +106,19 @@ void GestureManager::perform1DWaveletTransform(std::vector<double>& xaccdata,
 
     //coeffs.resize(DATAWINDOW);
     
-    dwt(xaccdata, levels, wavelet, coeffs, lengths, bookkeeping);
+   // dwt(xaccdata, levels, wavelet, coeffs, lengths, bookkeeping);
     
-    DBG("Wavelet Coefficients:\n");
-    for (auto c : coeffs)
-        DBG(c << " ");
+    /*
+    for (int i = 0; i < coeffs.size(); i++) {
+        DBG(coeffs[i]);
+    }
+    */
+
+    /*
+    for (int i = 0; i < DATA.accXData.size(); i++) {
+        DBG(DATA.accXData[i]);
+    }
+    */
 }
 
 

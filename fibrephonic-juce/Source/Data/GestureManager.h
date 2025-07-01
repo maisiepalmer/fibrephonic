@@ -36,9 +36,7 @@ private:
 
     std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
 
-    double gX, gY, gZ;
-    double accX, accY, accZ;
-    double jerkX, jerkY, jerkZ;
+    int pollcount = 0;
 
     enum Gesture {
         PITCH,
@@ -48,9 +46,17 @@ private:
         STROKE
     };
 
-    // Data Vectors 
-    std::vector<double> accXData, accYData, accZData,
-                                 XData, YData, ZData;
+    struct datastreams {
+
+        //Incoming
+        double gX, gY, gZ;
+        double accX, accY, accZ;
+        double jerkX, jerkY, jerkZ;
+
+        // Data Vectors
+        std::vector<double> accXData, accYData, accZData,
+            XData, YData, ZData;
+    };
 
 private:
 
@@ -75,4 +81,11 @@ private:
     void perform1DWaveletTransform(std::vector<double>& xaccdata,
                                    std::vector<double>& yaccdata,
                                    std::vector<double>& zaccdata);
+
+private:
+
+    datastreams DATA;
+
+
+
 };
