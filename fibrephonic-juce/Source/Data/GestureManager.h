@@ -85,7 +85,4 @@ private:
 private:
 
     datastreams DATA;
-
-
-
 };

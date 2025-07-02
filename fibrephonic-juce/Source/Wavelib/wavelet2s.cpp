@@ -286,7 +286,7 @@ void* swt_2d(vector<vector<double> > &sig,int J, string nm, vector<double> &swt_
         return 0;
 }
 
-
+/*
 void* per_ext(vector<double> &sig, int a) {
         unsigned int len;
     len = sig.size();
@@ -307,6 +307,37 @@ void* per_ext(vector<double> &sig, int a) {
         return 0;
 
 }
+*/
+
+void* per_ext(std::vector<double>& sig, int a) {
+    unsigned int len = sig.size();
+
+    if (len == 0) {
+        DBG("Error: input vector 'sig' is empty!");
+        return nullptr;  // Or handle error appropriately
+    }
+
+    if ((len % 2) != 0) {
+        double temp = sig[len - 1];
+        sig.push_back(temp);
+        len = sig.size();
+    }
+
+    // Cache values to be inserted at start and end
+    std::vector<double> startValues;
+    std::vector<double> endValues;
+
+    for (int i = 0; i < a; i++) {
+        startValues.push_back(sig[len - 1]);   // last element, repeated
+        endValues.push_back(sig[2 * i]);       // elements from start
+    }
+
+    sig.insert(sig.begin(), startValues.begin(), startValues.end());
+    sig.insert(sig.end(), endValues.begin(), endValues.end());
+
+    return nullptr;
+}
+
 
 
 void* iswt(vector<double> &swtop,int J, string nm, vector<double> &iswt_output) {
@@ -1586,7 +1617,7 @@ void* bitreverse(vector<complex<double> > &sig) {
 
 
 void* dwt(vector<double> &sig, int J, string nm, vector<double> &dwt_output
-                , vector<int> &flag, vector<int> &length ) {
+                , vector<double> &flag, vector<double> &length ) {
 
         int Max_Iter;
                     Max_Iter = (int) ceil(log( double(sig.size()))/log (2.0)) - 2;
@@ -1888,7 +1919,7 @@ void* dyadic_zpad_1d(vector<double> &signal) {
 
 
 void* idwt(vector<double> &dwtop,vector<double> &flag, string nm,
-                vector<double> &idwt_output,vector<int> &length) {
+                vector<double> &idwt_output,vector<double> &length) {
 
         int J =(int) flag[1];
  //       int zpad =(int) flag[0];
@@ -2036,12 +2067,52 @@ void* idwt1(string wname, vector<double> &X, vector<double> &cA, vector<double> 
      //   X.erase(X.begin(),X.begin()+len_avg+len_avg/2-1);
      //   X.erase(X.end()-len_avg-len_avg/2,X.end());
 
-
+        /*
         X_lp.erase(X_lp.begin()+N+len_avg-1,X_lp.end());
         X_lp.erase(X_lp.begin(),X_lp.begin()+len_avg-1);
 
         X_hp.erase(X_hp.begin()+N+len_avg-1,X_hp.end());
         X_hp.erase(X_hp.begin(),X_hp.begin()+len_avg-1);
+        */
+        auto size_lp = X_lp.size();
+        auto size_hp = X_hp.size();
+
+        // For X_lp:
+        size_t start_pos_lp = N + len_avg - 1;
+        size_t front_pos_lp = len_avg - 1;
+
+        if (start_pos_lp <= size_lp) {
+            X_lp.erase(X_lp.begin() + start_pos_lp, X_lp.end());
+        }
+        else {
+            DBG("X_lp erase back range start out of bounds");
+        }
+
+        if (front_pos_lp <= size_lp) {
+            X_lp.erase(X_lp.begin(), X_lp.begin() + front_pos_lp);
+        }
+        else {
+            DBG("X_lp erase front range out of bounds");
+        }
+
+        // For X_hp:
+        size_t start_pos_hp = N + len_avg - 1;
+        size_t front_pos_hp = len_avg - 1;
+
+        if (start_pos_hp <= size_hp) {
+            X_hp.erase(X_hp.begin() + start_pos_hp, X_hp.end());
+        }
+        else {
+            DBG("X_hp erase back range start out of bounds");
+        }
+
+        if (front_pos_hp <= size_hp) {
+            X_hp.erase(X_hp.begin(), X_hp.begin() + front_pos_hp);
+        }
+        else {
+            DBG("X_hp erase front range out of bounds");
+        }
+
 
 
         vecsum(X_lp,X_hp,X);

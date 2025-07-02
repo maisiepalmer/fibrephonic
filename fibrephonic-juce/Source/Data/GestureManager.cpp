@@ -45,11 +45,11 @@ void GestureManager::PollGestures()
 
     perform1DWaveletTransform(DATA.accXData, DATA.accYData, DATA.accZData);
    
-    
+    /*
     for (int i = 0; i < DATAWINDOW; i++) {
         DBG(DATA.XData[i]);
     }
-    
+    */
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -84,6 +84,13 @@ void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
 {
     for (int i = 0; i < DATAWINDOW; i++)
     {
+        xaccdata->resize(DATAWINDOW);
+        yaccdata->resize(DATAWINDOW);
+        zaccdata->resize(DATAWINDOW);
+        xdata->resize(DATAWINDOW);
+        ydata->resize(DATAWINDOW);
+        zdata->resize(DATAWINDOW);
+
         // Populate Acceleration 
         (*xaccdata)[i] = static_cast<double>(*accx);
         (*yaccdata)[i] = static_cast<double>(*accy);
@@ -103,15 +110,14 @@ void GestureManager::perform1DWaveletTransform(std::vector<double>& xaccdata,
     std::string wavelet = "haar"; // haar = db1 
 
     std::vector<double> coeffs;
-    std::vector<int> bookkeeping; // Bookeeping is data on the coefficients eg coefficient sizes, decomp level and length. 
-    std::vector<int> lengths;        // sizes of coeff vectors at each level
+    std::vector<double> bookkeeping; // Bookeeping is data on the coefficients eg coefficient sizes, decomp level and length. 
+    std::vector<double> lengths;        // sizes of coeff vectors at each level
 
     std::vector<double> idwt_output;
 
-    
     coeffs.resize(DATAWINDOW);
     idwt_output.resize(DATAWINDOW);
-    
+    xaccdata.resize(DATAWINDOW);
 
     dwt(xaccdata, levels, wavelet, coeffs, lengths, bookkeeping);
 
@@ -128,7 +134,7 @@ void GestureManager::perform1DWaveletTransform(std::vector<double>& xaccdata,
 
     */
     
-    idwt(coeffs, bookkeeping, wavelet, idwt_output, lengths);
+    //idwt(coeffs, bookkeeping, wavelet, idwt_output, lengths);
 
     /*
     for (int i = 0; i < coeffs.size(); i++) {
