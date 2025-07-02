@@ -35,6 +35,7 @@
 #include <string>
 #include <cmath>
 #include <algorithm>
+#include <juce_core/juce_core.h>
 
 #include "fftw3.h"
 
@@ -1585,7 +1586,7 @@ void* bitreverse(vector<complex<double> > &sig) {
 
 
 void* dwt(vector<double> &sig, int J, string nm, vector<double> &dwt_output
-                , vector<double> &flag, vector<int> &length ) {
+                , vector<int> &flag, vector<int> &length ) {
 
         int Max_Iter;
                     Max_Iter = (int) ceil(log( double(sig.size()))/log (2.0)) - 2;
@@ -1594,6 +1595,13 @@ void* dwt(vector<double> &sig, int J, string nm, vector<double> &dwt_output
                       J = Max_Iter;
 
                     }
+
+                    // Validate Incoming Signal 
+                    /*
+                    for (int i = 0; i < sig.size(); i++) {
+                        DBG(sig[i]);
+                    }
+                    */
 
     vector<double> original_copy,orig, appx_sig, det_sig;
     original_copy = sig;
@@ -1713,6 +1721,14 @@ void* dwt1(string wname, vector<double> &signal, vector<double> &cA, vector<doub
         vector<double> lpd, hpd, lpr, hpr;
 
                 filtcoef(wname,lpd,hpd,lpr,hpr);
+
+                /*
+                DBG("Low-pass filter:");
+                for (auto c : lpd) DBG(c);
+
+                DBG("High-pass filter:");
+                for (auto c : hpd) DBG(c);
+                */
 
                 int len_lpfilt = lpd.size();
                 int len_hpfilt = hpd.size();
@@ -5729,7 +5745,8 @@ int filtcoef(string name, vector<double> &lp1, vector<double> &hp1, vector<doubl
 
 
     else {
-        cout << "Filter Not in Database" << endl;
+        DBG("Filter not in dataset");
+        //cout << "Filter Not in Database" << endl;
         return -1;
     }
 
