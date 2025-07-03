@@ -1918,64 +1918,102 @@ void* dyadic_zpad_1d(vector<double> &signal) {
 }
 
 
-void* idwt(vector<double> &dwtop,vector<double> &flag, string nm,
-                vector<double> &idwt_output,vector<double> &length) {
+void* idwt(std::vector<double>& dwtop, std::vector<double>& flag, std::string nm,
+    std::vector<double>& idwt_output, std::vector<int>& length)
+{
+    int J = (int)flag[1];
+    // int zpad = (int) flag[0];
 
-        int J =(int) flag[1];
- //       int zpad =(int) flag[0];
+    if (J > static_cast<int>(length.size()) - 1) {
+        DBG("Warning: J > length.size()-1. Clamping J from " << J << " to " << length.size() - 1);
+        J = static_cast<int>(length.size()) - 1;
+    }
 
+    std::vector<double> app;
+    std::vector<double> detail;
+    unsigned int app_len = length[0];
+    unsigned int det_len = length[1];
 
-            vector<double> app;
-            vector<double> detail;
-            unsigned int app_len = length[0];
-            unsigned int det_len = length[1];
+    auto dwt = dwtop.begin();
+    app.assign(dwt, dwtop.begin() + app_len);
+    detail.assign(dwtop.begin() + app_len, dwtop.begin() + 2 * app_len);
 
-        vector<double>::iterator dwt;
-        dwt = dwtop.begin();
-        app.assign(dwt,dwtop.begin()+app_len);
-        detail.assign(dwtop.begin()+app_len, dwtop.begin()+ 2* app_len);
+    for (int i = 0; i < J; i++) {
+        idwt1(nm, idwt_output, app, detail);
+        app_len += det_len;
+        app.clear();
+        detail.clear();
 
-            for (int i = 0; i < J; i++) {
+        /*
+        if (i < J - 1) {
+            det_len = length[i + 2];
+            for (unsigned int l = 0; l < det_len; l++) {
+                double temp = dwtop[app_len + l];
+                detail.push_back(temp);
+            }
+        */
 
-                idwt1(nm,idwt_output, app,detail);
-                app_len +=det_len;
-                app.clear();
-                detail.clear();
-                        if ( i < J - 1 ) {
-                            det_len = length[i+2];
-                            for (unsigned int l = 0; l < det_len;l++) {
-                                double temp = dwtop[app_len + l];
-                                detail.push_back(temp);
-                            }
-                            app = idwt_output;
-
-                            if (app.size() >= detail.size()){
-                                int t = app.size() - detail.size();
-                               int lent = (int) floor((double)t/2.0);
-                               app.erase(app.begin()+detail.size()+lent,app.end());
-                               app.erase(app.begin(),app.begin()+lent);
-                            }
-                        }
-
-
-
-
-//            int value1 = (int) ceil((double)(app.size() - det_len)/2.0);
-//           int value2 = (int) floor((double)(app.size() - det_len)/2.0);
-
-//            app.erase(app.end() -value2,app.end());
-//           app.erase(app.begin(),app.begin()+value1);
-
+        if (i < J - 1) {
+            if (i + 2 < length.size()) {
+                det_len = length[i + 2];
+            }
+            else {
+                DBG("Warning: i+2 out of range for length vector. Using last known det_len.");
+                det_len = length[1]; // fallback (can even skip if unsure)
             }
 
+            for (unsigned int l = 0; l < det_len; l++) {
+                if ((app_len + l) >= dwtop.size()) {
+                    DBG("Error: Attempting to access out-of-range dwtop during IDWT");
+                    break; // avoid crash
+                }
+                double temp = dwtop[app_len + l];
+                detail.push_back(temp);
+            }
 
-            // Remove ZeroPadding
+            app = idwt_output;
 
-            int zerop =(int) flag[0];
-            idwt_output.erase(idwt_output.end()- zerop,idwt_output.end());
+            if (app.size() >= detail.size()) {
+                int t = app.size() - detail.size();
+                int lent = (int)std::floor((double)t / 2.0);
+                app.erase(app.begin() + detail.size() + lent, app.end());
+                app.erase(app.begin(), app.begin() + lent);
+            }
+        }
 
-            return 0;
+        /*
+        DBG("dwtop.size(): " << dwtop.size());
+        DBG("app_len: " << app_len);
+        DBG("det_len: " << det_len);
+        DBG("i: " << i);
+        DBG("length.size(): " << length.size());
+        for (int j = 0; j < length.size(); ++j)
+            DBG("length[" << j << "] = " << length[j]);
+        */
+    }
+
+    // Remove zero padding safely
+    int zerop = (int)flag[0];
+
+
+    if (zerop == 0) {
+        // No zero padding to remove; do nothing.
+    }
+    else if (zerop > 0 && zerop <= (int)idwt_output.size()) {
+        idwt_output.erase(idwt_output.end() - zerop, idwt_output.end());
+    }
+    else {
+        DBG("Warning: zero padding count is invalid or larger than idwt_output size.");
+    }
+
+    /*
+    DBG("Zero padding count (zerop): " << zerop);
+    DBG("idwt_output size: " << idwt_output.size());
+    */
+
+    return 0;
 }
+
 
 void* idwt1_m(string wname, vector<double> &X, vector<double> &cA, vector<double> &cD) {
         vector<double> lpd1,hpd1, lpr1, hpr1;

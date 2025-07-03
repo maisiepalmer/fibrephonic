@@ -68,7 +68,7 @@
 	void* dwt1_sym_m(std::string, std::vector<double>&, std::vector<double>&, std::vector<double>&);
 	void* idwt1_sym_m(std::string, std::vector<double>&, std::vector<double>&, std::vector<double>&);
 	void* dwt(std::vector<double>&, int, std::string, std::vector<double>&, std::vector<double>&, std::vector<double>&);
-	void* idwt(std::vector<double>&, std::vector<double>&, std::string, std::vector<double>&, std::vector<double>&);
+	void* idwt(std::vector<double>&, std::vector<double>&, std::string, std::vector<double>&, std::vector<int>&);
 	void* dwt_2d(std::vector<std::vector<double>>&, int, std::string, std::vector<double>&, std::vector<double>&, std::vector<int>&);
 	void* dwt1_m(std::string, std::vector<double>&, std::vector<double>&, std::vector<double>&);
 	void* idwt_2d(std::vector<double>&, std::vector<double>&, std::string, std::vector<std::vector<double>>&, std::vector<int>&);
