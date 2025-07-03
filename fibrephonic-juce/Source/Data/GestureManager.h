@@ -47,20 +47,37 @@ private:
     };
 
     struct datastreams {
-        // Incoming
+        // Incoming sensor data
         double gX, gY, gZ;
         double accX, accY, accZ;
         double jerkX, jerkY, jerkZ;
 
-        // Raw Data Vectors
-        std::vector<double> accXData, accYData, accZData,
-                            XData, YData, ZData;
+        // Raw Data Vectors (time domain data)
+        std::vector<double> accXData, accYData, accZData;
+        std::vector<double> XData, YData, ZData;
 
-        // Wavelet Coefficients
-        std::vector<double> xApprox, xDetail;
-        std::vector<double> yApprox, yDetail;
-        std::vector<double> zApprox, zDetail;
+        // Wavelet decomposition coefficients and bookkeeping for X axis
+        std::vector<double> xCoeff;         // full wavelet coeffs vector (approx + details)
+        std::vector<double> xApprox;        // approximation coefficients extracted
+        std::vector<double> xDetail;        // detail coefficients extracted
+        std::vector<double> xBookkeeping;   // bookkeeping info (e.g., levels, zero padding)
+        std::vector<double> xLengths;       // lengths of coefficient segments
+
+        // Wavelet decomposition coefficients and bookkeeping for Y axis
+        std::vector<double> yCoeff;
+        std::vector<double> yApprox;
+        std::vector<double> yDetail;
+        std::vector<double> yBookkeeping;
+        std::vector<double> yLengths;
+
+        // Wavelet decomposition coefficients and bookkeeping for Z axis
+        std::vector<double> zCoeff;
+        std::vector<double> zApprox;
+        std::vector<double> zDetail;
+        std::vector<double> zBookkeeping;
+        std::vector<double> zLengths;
     };
+
 
 private:
 
@@ -82,12 +99,23 @@ private:
                                           double* accy,
                                           double* accz);
 
-    void perform1DWaveletTransform(std::vector<double>& xaccapprox,
-                                   std::vector<double>& xaccdetail,
-                                   std::vector<double>& yaccapprox,
-                                   std::vector<double>& yaccdetail,
-                                   std::vector<double>& zaccapprox,
-                                   std::vector<double>& zaccdetail);
+    void decomposeAxis(std::vector<double>& input, std::string wavelet, int levels,
+
+                       std::vector<double>& coeffs,
+                       std::vector<double>& approx,
+                       std::vector<double>& detail,
+                       std::vector<double>& bookkeeping,
+                       std::vector<double>& lengths);
+
+    void reconstructAxis(std::vector<double>& coeffs,
+                       std::vector<double>& approx,
+                       std::vector<double>& detail,
+                       std::vector<double>& bookkeeping,
+                       std::vector<double>& lengths,
+                       std::string wavelet,
+                       std::vector<double>& reconstructed);
+
+    void perform1DWaveletTransform();
 
 private:
 

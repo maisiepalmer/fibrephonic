@@ -47,9 +47,7 @@ void GestureManager::PollGestures()
     getConnectionManagerValues();
     fillDataVectors(&DATA.accXData, &DATA.accYData, &DATA.accZData, &DATA.XData, &DATA.YData, &DATA.ZData, &DATA.gX, &DATA.gY, &DATA.gZ, &DATA.accX, &DATA.accY, &DATA.accZ);
 
-    perform1DWaveletTransform(DATA.xApprox, DATA.xDetail,
-                              DATA.yApprox, DATA.yDetail,
-                              DATA.zApprox, DATA.zDetail);
+    perform1DWaveletTransform();
 
 }
 
@@ -104,61 +102,74 @@ void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
     }
 }
 
-void processAxis(std::vector<double>& input,
-                        std::string wavelet,
-                                 int levels,
-std::vector<double>& reconstructed,
-std::vector<double>& approx,
-std::vector<double>& detail)
+void GestureManager::decomposeAxis(std::vector<double>& input,
+                          std::string wavelet,
+                                   int levels,
 
+    std::vector<double>& coeffs,
+    std::vector<double>& approx,
+    std::vector<double>& detail,
+    std::vector<double>& bookkeeping,
+    std::vector<double>& lengths)
 {
-    std::vector<double> coeffs, bookkeeping, lengths;
-    std::vector<int> idwt_lengths;
-
-    // Perform DWT
     dwt(input, levels, wavelet, coeffs, bookkeeping, lengths);
 
-    // Extract coefficients
     if (lengths.size() >= 2) {
         approx.assign(coeffs.begin(), coeffs.begin() + lengths[0]);
         detail.assign(coeffs.begin() + lengths[0], coeffs.begin() + lengths[0] + lengths[1]);
     }
-    
-    /* Modify DATA.XYZ Here....
+}
 
+void GestureManager::reconstructAxis(std::vector<double>& coeffs,
+                     std::vector<double>& approx,
+                     std::vector<double>& detail,
+                     std::vector<double>& bookkeeping,
+                     std::vector<double>& lengths,
+                     std::string wavelet,
+                     std::vector<double>& reconstructed)
+{
+    // Update coeffs with modified approx and detail
+    std::copy(approx.begin(), approx.end(), coeffs.begin());
+    std::copy(detail.begin(), detail.end(), coeffs.begin() + lengths[0]);
 
+    std::vector<int> idwt_lengths(lengths.begin(), lengths.end());
 
-
-
-
-
-    */
-
-    // Reconstruct
-    idwt_lengths.assign(lengths.begin(), lengths.end());
-    reconstructed = input;  // Start from original size
     idwt(coeffs, bookkeeping, wavelet, reconstructed, idwt_lengths);
 }
 
-void GestureManager::perform1DWaveletTransform(std::vector<double>& xaccapprox,
-                                               std::vector<double>& xaccdetail,
-                                               std::vector<double>& yaccapprox,
-                                               std::vector<double>& yaccdetail,
-                                               std::vector<double>& zaccapprox,
-                                               std::vector<double>& zaccdetail)
+
+void GestureManager::perform1DWaveletTransform()
 {
+    std::string wavelet = "haar";
     int levels = 1;
-    std::string wavelet = "haar"; // db1
 
-    // Reconstructed versions will overwrite the original DATA vectors
-    processAxis(DATA.accXData, wavelet, levels, DATA.accXData, xaccapprox, xaccdetail);
-    processAxis(DATA.accYData, wavelet, levels, DATA.accYData, yaccapprox, yaccdetail);
-    processAxis(DATA.accZData, wavelet, levels, DATA.accZData, zaccapprox, zaccdetail);
+    // --- X axis ---
+    decomposeAxis(DATA.accXData, wavelet, levels, DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths);
 
-    for (int i = 0; i < DATA.accXData.size(); i++) {
-        DBG(DATA.accXData[i]);
+    // Modify DATA.xApprox and/or DATA.xDetail 
+
+    reconstructAxis(DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths, wavelet, DATA.accXData);
+
+    // --- Y axis ---
+    decomposeAxis(DATA.accYData, wavelet, levels, DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths);
+
+    // Modify DATA.yApprox and/or DATA.yDetail 
+
+    for (int i = 0; i < DATA.yDetail.size(); i++) {
+        DBG(DATA.yDetail[i]);
     }
+
+    reconstructAxis(DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths, wavelet, DATA.accYData);
+
+    // --- Z axis ---
+    decomposeAxis(DATA.accZData, wavelet, levels, DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths);
+
+    // Modify DATA.zApprox and/or DATA.zDetail 
+
+    reconstructAxis(DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths, wavelet, DATA.accZData);
 }
+
+
 
 
 
