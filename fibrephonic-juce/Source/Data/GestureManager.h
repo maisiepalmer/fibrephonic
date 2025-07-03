@@ -86,6 +86,7 @@ private:
 
     void getConnectionManagerValues();
 
+    // Fetches Sensor data from bluetooth manager class
     void fillDataVectors(std::vector<double>* xaccdata,
                          std::vector<double>* yaccdata,
                          std::vector<double>* zaccdata,
@@ -99,6 +100,7 @@ private:
                                           double* accy,
                                           double* accz);
 
+    // Performs DWT transforming signal into wavelet domain
     void decomposeAxis(std::vector<double>& input, std::string wavelet, int levels,
 
                        std::vector<double>& coeffs,
@@ -107,14 +109,16 @@ private:
                        std::vector<double>& bookkeeping,
                        std::vector<double>& lengths);
 
+    // Reconstructs singnal back to time domain via IDWT
     void reconstructAxis(std::vector<double>& coeffs,
-                       std::vector<double>& approx,
-                       std::vector<double>& detail,
-                       std::vector<double>& bookkeeping,
-                       std::vector<double>& lengths,
-                       std::string wavelet,
-                       std::vector<double>& reconstructed);
+                         std::vector<double>& approx,
+                         std::vector<double>& detail,
+                         std::vector<double>& bookkeeping,
+                         std::vector<double>& lengths,
+                         std::string wavelet,
+                         std::vector<double>& reconstructed);
 
+    // Performs all necessary transforms on all axis allows for signal editing and mapping
     void perform1DWaveletTransform();
 
 private:

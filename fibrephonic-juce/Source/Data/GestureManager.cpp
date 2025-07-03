@@ -49,6 +49,9 @@ void GestureManager::PollGestures()
 
     perform1DWaveletTransform();
 
+    for (int i = 0; i < DATA.yDetail.size(); i++) {
+        DBG(DATA.accYData[i]);
+    }
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -103,8 +106,8 @@ void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
 }
 
 void GestureManager::decomposeAxis(std::vector<double>& input,
-                          std::string wavelet,
-                                   int levels,
+                                          std::string wavelet,
+                                                   int levels,
 
     std::vector<double>& coeffs,
     std::vector<double>& approx,
@@ -155,9 +158,11 @@ void GestureManager::perform1DWaveletTransform()
 
     // Modify DATA.yApprox and/or DATA.yDetail 
 
+    /*
     for (int i = 0; i < DATA.yDetail.size(); i++) {
-        DBG(DATA.yDetail[i]);
+        DBG(DATA.yApprox[i]);
     }
+    */
 
     reconstructAxis(DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths, wavelet, DATA.accYData);
 
