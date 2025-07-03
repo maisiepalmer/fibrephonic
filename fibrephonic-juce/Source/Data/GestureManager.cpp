@@ -47,13 +47,10 @@ void GestureManager::PollGestures()
     getConnectionManagerValues();
     fillDataVectors(&DATA.accXData, &DATA.accYData, &DATA.accZData, &DATA.XData, &DATA.YData, &DATA.ZData, &DATA.gX, &DATA.gY, &DATA.gZ, &DATA.accX, &DATA.accY, &DATA.accZ);
 
-    perform1DWaveletTransform(DATA.accXData, DATA.accYData, DATA.accZData);
-   
-    /*
-    for (int i = 0; i < DATAWINDOW; i++) {
-        DBG(DATA.accXData[i]);
-    }
-    */
+    perform1DWaveletTransform(DATA.xApprox, DATA.xDetail,
+                              DATA.yApprox, DATA.yDetail,
+                              DATA.zApprox, DATA.zDetail);
+
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -107,58 +104,61 @@ void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
     }
 }
 
-void GestureManager::perform1DWaveletTransform(std::vector<double>& xaccdata,
-                                               std::vector<double>& xaccapprox,
-                                               std::vector<double>& xaccdetail)
+void processAxis(std::vector<double>& input,
+                        std::string wavelet,
+                                 int levels,
+std::vector<double>& reconstructed,
+std::vector<double>& approx,
+std::vector<double>& detail)
+
 {
-    int levels = 1;
-    std::string wavelet = "haar"; // haar = db1 
-
-    std::vector<double> coeffs;
-    std::vector<double> bookkeeping; // Bookeeping is data on the coefficients eg coefficient sizes, decomp level and length. 
-    std::vector<double> lengths;     // sizes of coeff vectors at each level
-
-    std::vector<double> idwt_output;
-
+    std::vector<double> coeffs, bookkeeping, lengths;
     std::vector<int> idwt_lengths;
 
-    coeffs.resize(DATAWINDOW);
-    idwt_output.resize(DATAWINDOW);
-    idwt_lengths.resize(DATAWINDOW);
-    xaccdata.resize(DATAWINDOW);
+    // Perform DWT
+    dwt(input, levels, wavelet, coeffs, bookkeeping, lengths);
 
-    dwt(xaccdata, levels, wavelet, coeffs, bookkeeping, lengths);
-
-    // Extract approx and detail coefficients from coeffs & lengths
-    xaccapprox.assign(coeffs.begin(), coeffs.begin() + lengths[0]);
-
-    // Detail coeffs for level 1
-    xaccdetail.assign(coeffs.begin() + lengths[0], coeffs.begin() + lengths[0] + lengths[1]);
-
-    /*
-    for (int i = 0; i < coeffs.size(); i++) {
-        DBG(coeffs[i]);
+    // Extract coefficients
+    if (lengths.size() >= 2) {
+        approx.assign(coeffs.begin(), coeffs.begin() + lengths[0]);
+        detail.assign(coeffs.begin() + lengths[0], coeffs.begin() + lengths[0] + lengths[1]);
     }
-    */
-
-    /*
-    Edit and scale the signal in wavelet domain.........edit detail and approx coeffs 
     
+    /* Modify DATA.XYZ Here....
+
+
+
+
+
 
 
     */
 
+    // Reconstruct
     idwt_lengths.assign(lengths.begin(), lengths.end());
+    reconstructed = input;  // Start from original size
+    idwt(coeffs, bookkeeping, wavelet, reconstructed, idwt_lengths);
+}
 
-    // DBG(bookkeeping[1]);
+void GestureManager::perform1DWaveletTransform(std::vector<double>& xaccapprox,
+                                               std::vector<double>& xaccdetail,
+                                               std::vector<double>& yaccapprox,
+                                               std::vector<double>& yaccdetail,
+                                               std::vector<double>& zaccapprox,
+                                               std::vector<double>& zaccdetail)
+{
+    int levels = 1;
+    std::string wavelet = "haar"; // db1
 
-    idwt(coeffs, bookkeeping, wavelet, DATA.accXData, idwt_lengths);
+    // Reconstructed versions will overwrite the original DATA vectors
+    processAxis(DATA.accXData, wavelet, levels, DATA.accXData, xaccapprox, xaccdetail);
+    processAxis(DATA.accYData, wavelet, levels, DATA.accYData, yaccapprox, yaccdetail);
+    processAxis(DATA.accZData, wavelet, levels, DATA.accZData, zaccapprox, zaccdetail);
 
-    /*
     for (int i = 0; i < DATA.accXData.size(); i++) {
         DBG(DATA.accXData[i]);
     }
-    */
 }
+
 
 

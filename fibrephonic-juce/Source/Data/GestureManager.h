@@ -47,15 +47,19 @@ private:
     };
 
     struct datastreams {
-
-        //Incoming
+        // Incoming
         double gX, gY, gZ;
         double accX, accY, accZ;
         double jerkX, jerkY, jerkZ;
 
-        // Data Vectors
+        // Raw Data Vectors
         std::vector<double> accXData, accYData, accZData,
-            XData, YData, ZData;
+                            XData, YData, ZData;
+
+        // Wavelet Coefficients
+        std::vector<double> xApprox, xDetail;
+        std::vector<double> yApprox, yDetail;
+        std::vector<double> zApprox, zDetail;
     };
 
 private:
@@ -78,9 +82,12 @@ private:
                                           double* accy,
                                           double* accz);
 
-    void perform1DWaveletTransform(std::vector<double>& xaccdata,
-                                   std::vector<double>& yaccdata,
-                                   std::vector<double>& zaccdata);
+    void perform1DWaveletTransform(std::vector<double>& xaccapprox,
+                                   std::vector<double>& xaccdetail,
+                                   std::vector<double>& yaccapprox,
+                                   std::vector<double>& yaccdetail,
+                                   std::vector<double>& zaccapprox,
+                                   std::vector<double>& zaccdetail);
 
 private:
 
