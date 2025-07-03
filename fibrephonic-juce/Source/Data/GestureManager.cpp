@@ -49,9 +49,11 @@ void GestureManager::PollGestures()
 
     perform1DWaveletTransform();
 
+    /*
     for (int i = 0; i < DATA.yDetail.size(); i++) {
         DBG(DATA.accYData[i]);
     }
+    */
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -140,11 +142,18 @@ void GestureManager::reconstructAxis(std::vector<double>& coeffs,
     idwt(coeffs, bookkeeping, wavelet, reconstructed, idwt_lengths);
 }
 
-
 void GestureManager::perform1DWaveletTransform()
 {
     std::string wavelet = "haar";
     int levels = 1;
+
+    // Lambda for printing data
+    auto vecToString = [](const std::vector<double>& vec) -> std::string {
+        if (vec.empty())
+            return "N/A";
+        else
+            return std::to_string(vec.back());
+        };
 
     // --- X axis ---
     decomposeAxis(DATA.accXData, wavelet, levels, DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths);
@@ -153,18 +162,22 @@ void GestureManager::perform1DWaveletTransform()
 
     reconstructAxis(DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths, wavelet, DATA.accXData);
 
+    std::string line = "X Approx: " + vecToString(DATA.xApprox) +
+        ", X Detail: " + vecToString(DATA.xDetail) +
+        ", X Reconstructed: " + vecToString(DATA.accXData);
+    DBG(line);
+
     // --- Y axis ---
     decomposeAxis(DATA.accYData, wavelet, levels, DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths);
 
     // Modify DATA.yApprox and/or DATA.yDetail 
 
-    /*
-    for (int i = 0; i < DATA.yDetail.size(); i++) {
-        DBG(DATA.yApprox[i]);
-    }
-    */
-
     reconstructAxis(DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths, wavelet, DATA.accYData);
+
+    line = "Y Approx: " + vecToString(DATA.yApprox) +
+        ", Y Detail: " + vecToString(DATA.yDetail) +
+        ", Y Reconstructed: " + vecToString(DATA.accYData);
+    DBG(line);
 
     // --- Z axis ---
     decomposeAxis(DATA.accZData, wavelet, levels, DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths);
@@ -172,6 +185,11 @@ void GestureManager::perform1DWaveletTransform()
     // Modify DATA.zApprox and/or DATA.zDetail 
 
     reconstructAxis(DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths, wavelet, DATA.accZData);
+
+    line = "Z Approx: " + vecToString(DATA.zApprox) +
+        ", Z Detail: " + vecToString(DATA.zDetail) +
+        ", Z Reconstructed: " + vecToString(DATA.accZData);
+    DBG(line);
 }
 
 
