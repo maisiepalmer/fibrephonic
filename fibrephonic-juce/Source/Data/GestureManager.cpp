@@ -25,6 +25,10 @@ GestureManager::GestureManager(std::shared_ptr<BluetoothConnectionManager> Bluet
     DATA.XData.resize(DATAWINDOW);
     DATA.YData.resize(DATAWINDOW);
     DATA.ZData.resize(DATAWINDOW);
+
+    DATA.xScaled.resize(DATAWINDOW);
+    DATA.yScaled.resize(DATAWINDOW);
+    DATA.zScaled.resize(DATAWINDOW);
 }
 
 GestureManager::~GestureManager()
@@ -36,6 +40,10 @@ GestureManager::~GestureManager()
     DATA.XData.clear();
     DATA.YData.clear();
     DATA.ZData.clear();
+
+    DATA.xScaled.clear();
+    DATA.yScaled.clear();
+    DATA.zScaled.clear();
 }
 
 void GestureManager::startPolling() { startTimerHz(IMUINERTIALREFRESH); }
@@ -49,11 +57,13 @@ void GestureManager::PollGestures()
 
     perform1DWaveletTransform();
 
-    /*
+    scaleandCopy(DATA.XData, DATA.YData, DATA.ZData, DATA.xScaled, DATA.yScaled, DATA.zScaled);
+
+    
     for (int i = 0; i < DATA.yDetail.size(); i++) {
-        DBG(DATA.accYData[i]);
+        DBG(DATA.yScaled[i]);
     }
-    */
+    
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -73,12 +83,12 @@ void GestureManager::getConnectionManagerValues()
     DATA.accZ = bluetoothConnection->getAccelerationZ();
 }
 
-void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
-                                     std::vector<double>* yaccdata,
-                                     std::vector<double>* zaccdata,
-                                     std::vector<double>* xdata,
-                                     std::vector<double>* ydata,
-                                     std::vector<double>* zdata,
+void GestureManager::fillDataVectors(vector<double>* xaccdata,
+                                     vector<double>* yaccdata,
+                                     vector<double>* zaccdata,
+                                     vector<double>* xdata,
+                                     vector<double>* ydata,
+                                     vector<double>* zdata,
                                                       double* x,
                                                       double* y,
                                                       double* z,
@@ -107,15 +117,15 @@ void GestureManager::fillDataVectors(std::vector<double>* xaccdata,
     }
 }
 
-void GestureManager::decomposeAxis(std::vector<double>& input,
-                                          std::string wavelet,
-                                                   int levels,
+void GestureManager::decomposeAxis(vector<double>& input,
+                                          string wavelet,
+                                              int levels,
 
-    std::vector<double>& coeffs,
-    std::vector<double>& approx,
-    std::vector<double>& detail,
-    std::vector<double>& bookkeeping,
-    std::vector<double>& lengths)
+    vector<double>& coeffs,
+    vector<double>& approx,
+    vector<double>& detail,
+    vector<double>& bookkeeping,
+    vector<double>& lengths)
 {
     dwt(input, levels, wavelet, coeffs, bookkeeping, lengths);
 
@@ -125,30 +135,30 @@ void GestureManager::decomposeAxis(std::vector<double>& input,
     }
 }
 
-void GestureManager::reconstructAxis(std::vector<double>& coeffs,
-                     std::vector<double>& approx,
-                     std::vector<double>& detail,
-                     std::vector<double>& bookkeeping,
-                     std::vector<double>& lengths,
-                     std::string wavelet,
-                     std::vector<double>& reconstructed)
+void GestureManager::reconstructAxis(vector<double>& coeffs,
+                                     vector<double>& approx,
+                                     vector<double>& detail,
+                                     vector<double>& bookkeeping,
+                                     vector<double>& lengths,
+                                     string wavelet,
+                                     vector<double>& reconstructed)
 {
     // Update coeffs with modified approx and detail
-    std::copy(approx.begin(), approx.end(), coeffs.begin());
-    std::copy(detail.begin(), detail.end(), coeffs.begin() + lengths[0]);
+    copy(approx.begin(), approx.end(), coeffs.begin());
+    copy(detail.begin(), detail.end(), coeffs.begin() + lengths[0]);
 
-    std::vector<int> idwt_lengths(lengths.begin(), lengths.end());
+    vector<int> idwt_lengths(lengths.begin(), lengths.end());
 
     idwt(coeffs, bookkeeping, wavelet, reconstructed, idwt_lengths);
 }
 
 void GestureManager::perform1DWaveletTransform()
 {
-    std::string wavelet = "haar";
-    int levels = 1;
+    string wavelet = "db4";
+    int levels = 3;
 
     // Lambda for printing data
-    auto vecToString = [](const std::vector<double>& vec) -> std::string {
+    auto vecToString = [](const vector<double>& vec) -> string {
         if (vec.empty())
             return "N/A";
         else
@@ -165,7 +175,13 @@ void GestureManager::perform1DWaveletTransform()
     std::string line = "X Approx: " + vecToString(DATA.xApprox) +
         ", X Detail: " + vecToString(DATA.xDetail) +
         ", X Reconstructed: " + vecToString(DATA.accXData);
-    DBG(line);
+    //DBG(line);
+
+    /*
+    for (int i = 0; i < DATA.xDetail.size(); i++) {
+        DBG(DATA.xDetail[i]);
+    }
+    */
 
     // --- Y axis ---
     decomposeAxis(DATA.accYData, wavelet, levels, DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths);
@@ -177,7 +193,13 @@ void GestureManager::perform1DWaveletTransform()
     line = "Y Approx: " + vecToString(DATA.yApprox) +
         ", Y Detail: " + vecToString(DATA.yDetail) +
         ", Y Reconstructed: " + vecToString(DATA.accYData);
-    DBG(line);
+    //DBG(line);
+
+    /*
+    for (int i = 0; i < DATA.xDetail.size(); i++) {
+        DBG(DATA.yDetail[i]);
+    }
+    */
 
     // --- Z axis ---
     decomposeAxis(DATA.accZData, wavelet, levels, DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths);
@@ -189,9 +211,55 @@ void GestureManager::perform1DWaveletTransform()
     line = "Z Approx: " + vecToString(DATA.zApprox) +
         ", Z Detail: " + vecToString(DATA.zDetail) +
         ", Z Reconstructed: " + vecToString(DATA.accZData);
-    DBG(line);
+    //DBG(line);
+
+    /*
+    for (int i = 0; i < DATA.xDetail.size(); i++) {
+        DBG(DATA.zDetail[i]);
+    }
+    */
 }
 
+vector<double> GestureManager::normaliseData(double min, double max, vector<double>& input)
+{
+    vector<double> rescaled;
+    rescaled.reserve(input.size());
+
+    if (min == max) {
+        // Prevent divide-by-zero, specify midpoint
+        rescaled.assign(input.size(), 64.0);  
+        return rescaled;
+    }
+    
+    for (double x : input) {
+        double normalised = (x - min) / (max - min); // Normalize to [0, 1]
+        double scaled = normalised * 126.0 + 1.0;    // Scale to [1, 127]
+        rescaled.push_back(scaled);
+    }
+
+    return rescaled;
+}
+
+void GestureManager::scaleandCopy(vector<double>& xaccdata, vector<double>& yaccdata, vector<double>& zaccdata,
+                                  vector<double>& xscale, vector<double>& yscale, vector<double>& zscale)
+{
+    if (xaccdata.empty() || yaccdata.empty() || zaccdata.empty()) {
+        DBG("Data vectors empty!");
+        return;
+    }
+
+    auto [minxT, maxxT] = minmax_element(xaccdata.begin(), xaccdata.end());
+    auto [minyT, maxyT] = minmax_element(yaccdata.begin(), yaccdata.end());
+    auto [minzT, maxzT] = minmax_element(zaccdata.begin(), zaccdata.end());
+
+    double minxVal = *minxT, maxxVal = *maxxT;
+    double minyVal = *minyT, maxyVal = *maxyT;
+    double minzVal = *minzT, maxzVal = *maxzT;
+
+    xscale = normaliseData(minxVal, maxxVal, xaccdata);
+    yscale = normaliseData(minyVal, maxyVal, yaccdata);
+    zscale = normaliseData(minzVal, maxzVal, zaccdata);
+}
 
 
 

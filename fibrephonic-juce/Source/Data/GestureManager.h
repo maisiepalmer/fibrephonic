@@ -18,7 +18,10 @@
 #include <JuceHeader.h>
 #include <vector>
 #include <memory>
+#include <algorithm>
 #include "../Wavelib/wavelet2s.h"
+
+using namespace std;
 
 class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Circular Dependancy. 
 
@@ -53,46 +56,51 @@ private:
         double jerkX, jerkY, jerkZ;
 
         // Raw Data Vectors (time domain data)
-        std::vector<double> accXData, accYData, accZData;
-        std::vector<double> XData, YData, ZData;
+        vector<double> accXData, accYData, accZData;
+        vector<double> XData, YData, ZData;
 
         // Wavelet decomposition coefficients and bookkeeping for X axis
-        std::vector<double> xCoeff;         // full wavelet coeffs vector (approx + details)
-        std::vector<double> xApprox;        // approximation coefficients extracted
-        std::vector<double> xDetail;        // detail coefficients extracted
-        std::vector<double> xBookkeeping;   // bookkeeping info (e.g., levels, zero padding)
-        std::vector<double> xLengths;       // lengths of coefficient segments
+        vector<double> xCoeff;         // full wavelet coeffs vector (approx + details)
+        vector<double> xApprox;        // approximation coefficients extracted
+        vector<double> xDetail;        // detail coefficients extracted
+        vector<double> xBookkeeping;   // bookkeeping info (e.g., levels, zero padding)
+        vector<double> xLengths;       // lengths of coefficient segments
 
         // Wavelet decomposition coefficients and bookkeeping for Y axis
-        std::vector<double> yCoeff;
-        std::vector<double> yApprox;
-        std::vector<double> yDetail;
-        std::vector<double> yBookkeeping;
-        std::vector<double> yLengths;
+        vector<double> yCoeff;
+        vector<double> yApprox;
+        vector<double> yDetail;
+        vector<double> yBookkeeping;
+        vector<double> yLengths;
 
         // Wavelet decomposition coefficients and bookkeeping for Z axis
-        std::vector<double> zCoeff;
-        std::vector<double> zApprox;
-        std::vector<double> zDetail;
-        std::vector<double> zBookkeeping;
-        std::vector<double> zLengths;
+        vector<double> zCoeff;
+        vector<double> zApprox;
+        vector<double> zDetail;
+        vector<double> zBookkeeping;
+        vector<double> zLengths;
+
+        // Scaled Data (post transform)
+        vector<double> xScaled;
+        vector<double> yScaled;
+        vector<double> zScaled;
     };
 
 
 private:
 
     void timerCallback() override;
-    void PollGestures();
+    void PollGestures(); // Main running function, to be called in main component
 
     void getConnectionManagerValues();
 
     // Fetches Sensor data from bluetooth manager class
-    void fillDataVectors(std::vector<double>* xaccdata,
-                         std::vector<double>* yaccdata,
-                         std::vector<double>* zaccdata,
-                         std::vector<double>* xdata,
-                         std::vector<double>* ydata,
-                         std::vector<double>* zdata,
+    void fillDataVectors(vector<double>* xaccdata,
+                         vector<double>* yaccdata,
+                         vector<double>* zaccdata,
+                         vector<double>* xdata,
+                         vector<double>* ydata,
+                         vector<double>* zdata,
                                           double* x,
                                           double* y,
                                           double* z,
@@ -101,25 +109,32 @@ private:
                                           double* accz);
 
     // Performs DWT transforming signal into wavelet domain
-    void decomposeAxis(std::vector<double>& input, std::string wavelet, int levels,
+    void decomposeAxis(vector<double>& input, string wavelet, int levels,
 
-                       std::vector<double>& coeffs,
-                       std::vector<double>& approx,
-                       std::vector<double>& detail,
-                       std::vector<double>& bookkeeping,
-                       std::vector<double>& lengths);
+                       vector<double>& coeffs,
+                       vector<double>& approx,
+                       vector<double>& detail,
+                       vector<double>& bookkeeping,
+                       vector<double>& lengths);
 
     // Reconstructs singnal back to time domain via IDWT
-    void reconstructAxis(std::vector<double>& coeffs,
-                         std::vector<double>& approx,
-                         std::vector<double>& detail,
-                         std::vector<double>& bookkeeping,
-                         std::vector<double>& lengths,
-                         std::string wavelet,
-                         std::vector<double>& reconstructed);
+    void reconstructAxis(vector<double>& coeffs,
+                         vector<double>& approx,
+                         vector<double>& detail,
+                         vector<double>& bookkeeping,
+                         vector<double>& lengths,
+                         string wavelet,
+                         vector<double>& reconstructed);
 
     // Performs all necessary transforms on all axis allows for signal editing and mapping
     void perform1DWaveletTransform();
+
+    // Takes in Vectors after transforming, calculates min/ max and scales in range 1 to 127 for MIDI CC.
+    void scaleandCopy(vector<double>& xaccdata, vector<double>& yaccdata, vector<double>& zaccdata,
+                      vector<double>& xscale,   vector<double>& yscale,   vector<double>& zscale);
+
+    // Normalises data to range and scales
+    vector<double> normaliseData(double min, double max, vector<double>& input);
 
 private:
 
