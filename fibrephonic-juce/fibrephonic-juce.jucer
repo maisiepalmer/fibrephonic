@@ -19,6 +19,10 @@
         <FILE id="DqEARk" name="OSCManager.h" compile="0" resource="0" file="Source/Data/OSCManager.h"/>
         <FILE id="NsmOll" name="BluetoothConnectionManager.h" compile="0" resource="0"
               file="Source/Data/BluetoothConnectionManager.h"/>
+        <FILE id="nqTAEU" name="MIDIDataHandler.cpp" compile="1" resource="0"
+              file="Source/Data/MIDIDataHandler.cpp"/>
+        <FILE id="EB0gn7" name="MIDIDataHandler.h" compile="0" resource="0"
+              file="Source/Data/MIDIDataHandler.h"/>
       </GROUP>
       <GROUP id="{7541B055-A622-1378-2963-F1E93D0288D9}" name="imuExamples">
         <FILE id="rdvEjC" name="BluetoothConnection.h" compile="0" resource="0"

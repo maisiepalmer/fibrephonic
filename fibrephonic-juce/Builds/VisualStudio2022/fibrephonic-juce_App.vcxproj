@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
     <ClCompile Include="..\..\Source\Data\SerialPort.cpp"/>
+    <ClCompile Include="..\..\Source\Data\MIDIDataHandler.cpp"/>
     <ClCompile Include="..\..\Source\imuExamples\Connection.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
@@ -3242,6 +3243,7 @@
     <ClInclude Include="..\..\Source\Data\SerialPort.h"/>
     <ClInclude Include="..\..\Source\Data\OSCManager.h"/>
     <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h"/>
+    <ClInclude Include="..\..\Source\Data\MIDIDataHandler.h"/>
     <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h"/>
     <ClInclude Include="..\..\Source\imuExamples\Helpers.hpp"/>
     <ClInclude Include="..\..\Source\imuExamples\SerialConnection.h"/>

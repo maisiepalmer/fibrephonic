@@ -784,6 +784,9 @@
     <ClCompile Include="..\..\Source\Data\SerialPort.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Data\MIDIDataHandler.cpp">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\imuExamples\Connection.cpp">
       <Filter>fibrephonic-juce\Source\imuExamples</Filter>
     </ClCompile>
@@ -4075,6 +4078,9 @@
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Data\MIDIDataHandler.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h">
