@@ -44,6 +44,8 @@ private:
 
     int pollcount = 0;
 
+public:
+
     enum Gesture {
         PITCH,
         ROLL,
@@ -51,8 +53,6 @@ private:
         TAP,
         STROKE
     };
-
-protected:
 
     struct datastreams {
         // Incoming sensor data
@@ -141,8 +141,11 @@ private:
     // Normalises data to range and scales
     vector<double> normaliseData(double min, double max, vector<double>& input);
 
-private:
+public:
 
     datastreams DATA;
     datastreams* pDATA = &DATA;
+
+    Gesture gesture;
+    Gesture* pGestures = &gesture;
 };

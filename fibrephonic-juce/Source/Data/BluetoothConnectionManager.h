@@ -93,8 +93,8 @@ public:
                 ConnectionInstance->runconnection(*connectionInfoPtr);  
 
                 gX = ConnectionInstance->getX(); 
-                gY = ConnectionInstance->getX();
-                gZ = ConnectionInstance->getX();
+                gY = ConnectionInstance->getY();
+                gZ = ConnectionInstance->getZ();
 
                 accX = ConnectionInstance->getaccX(); 
                 accY = ConnectionInstance->getaccY(); 

@@ -12,23 +12,36 @@
 
 #pragma once
 
-#include  "GestureManager.h"
+#include "GestureManager.h"
 
 using namespace juce;
 using namespace std;
 
-class MIDIHandler : protected GestureManager
+#define MAXNO_MIDICHANNELS 16
+#define MAXNO_MIDIVAL 127
+
+class MIDIHandler 
 {
 private:
 
     unique_ptr<MidiOutput> midiOut;
-    GestureManager* GesturManagerInstance = nullptr;
-    //GestureManager::datastreams* Data;
+    shared_ptr<GestureManager> gestureManager;
+    GestureManager::datastreams* Data;
+    GestureManager::Gesture* GESTURES;
+
+private:
+
+    bool midioutflag;
+    int Channel, Note, Velocity, CCVal;
+
+    vector<int> X, Y, Z;
 
 public:
 
-    MIDIHandler(shared_ptr<BluetoothConnectionManager> BluetoothConnectionManager);
+    MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance);
     ~MIDIHandler();
+
+private:
 
     // Initialisation
     bool openDeviceByIndex(int index);                         
@@ -42,10 +55,12 @@ public:
     // MIDI Send
     void sendNoteOn(int channel, int note, int velocity);       
     void sendNoteOff(int channel, int note);                    
-    void sendCC(int channel, int controller, int value);        
+    void sendCC(int channel, int CCVal, int CCParamVal);        
     void sendRawMessage(const juce::MidiMessage& msg);
+    void copyVectors();
 
-private:
+public:
 
-    void getDataFromManager(GestureManager::datastreams* DataStreamsPointer);
+    // Functionality 
+    void MIDIOUT();
 };

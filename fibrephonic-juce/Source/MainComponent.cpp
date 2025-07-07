@@ -4,8 +4,10 @@
 MainComponent::MainComponent()
     : presetTree("Presets")
 {
+    // Handler Objects initialisation
     bluetoothconnection = std::make_shared<BluetoothConnectionManager>();
-    gesturemanager = std::make_unique<GestureManager>(bluetoothconnection);
+    gesturemanager = std::make_shared<GestureManager>(bluetoothconnection);
+    midihandler = std::make_shared<MIDIHandler>(gesturemanager);
 
     {
         //Setup for XML file directory Ensures it exists and file path is valid....

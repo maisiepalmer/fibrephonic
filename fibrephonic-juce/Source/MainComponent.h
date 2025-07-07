@@ -9,6 +9,7 @@
 #include "Data/SerialPort.h"
 //#include "imuExamples/Connection.h"
 #include "Data/GestureManager.h"
+#include "../Source/Data/MIDIDataHandler.h"
 
 //==============================================================================
 
@@ -65,10 +66,9 @@ public:
     // Bluetooth Connection and Thread 
     std::shared_ptr<BluetoothConnectionManager> bluetoothconnection;
 
-    // Gestural Control
-    //GestureManager gesturemanager;
-
-    std::unique_ptr<GestureManager> gesturemanager;
+    // Gestural and MIDI Control
+    std::shared_ptr<GestureManager> gesturemanager;
+    std::shared_ptr<MIDIHandler> midihandler;
 
 private:
 
