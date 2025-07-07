@@ -5,6 +5,9 @@
     Created: 13 Jun 2025 3:33:06pm
     Author:  Joseph B 
 
+    Gesture Manager class to identify, scale, handle and export IMU sensor data 
+    over various connection types. 
+
   ==============================================================================
 */
 
@@ -29,7 +32,7 @@ class GestureManager : private juce::Timer
 {
 public:
 
-    GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance);
+    GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance);
     ~GestureManager();
 
     void startPolling();
@@ -37,7 +40,7 @@ public:
 
 private:
 
-    std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
+    shared_ptr<BluetoothConnectionManager> bluetoothConnection;
 
     int pollcount = 0;
 
@@ -48,6 +51,8 @@ private:
         TAP,
         STROKE
     };
+
+protected:
 
     struct datastreams {
         // Incoming sensor data
@@ -139,4 +144,5 @@ private:
 private:
 
     datastreams DATA;
+    datastreams* pDATA = &DATA;
 };

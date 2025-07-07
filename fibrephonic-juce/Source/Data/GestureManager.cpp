@@ -11,8 +11,8 @@
 #include "GestureManager.h"
 #include "BluetoothConnectionManager.h"
 
-GestureManager::GestureManager(std::shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
-    : bluetoothConnection(std::move(BluetoothConnectionManagerInstance))
+GestureManager::GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
+    : bluetoothConnection(move(BluetoothConnectionManagerInstance))
 {
     DATA.gX = DATA.gY = DATA.gZ = 
     DATA.accX = DATA.accY = DATA.accZ = 
