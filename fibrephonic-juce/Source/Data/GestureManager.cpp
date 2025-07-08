@@ -30,7 +30,6 @@ GestureManager::GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothC
     DATA.xScaled.resize(DATAWINDOW);
     DATA.yScaled.resize(DATAWINDOW);
     DATA.zScaled.resize(DATAWINDOW);
-    
 }
 
 GestureManager::~GestureManager()
