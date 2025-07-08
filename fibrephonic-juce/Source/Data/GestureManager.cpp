@@ -18,6 +18,7 @@ GestureManager::GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothC
     DATA.accX = DATA.accY = DATA.accZ = 
     DATA.jerkX = DATA.jerkY = DATA.jerkZ = 0;
 
+    
     DATA.accXData.resize(DATAWINDOW);
     DATA.accYData.resize(DATAWINDOW);
     DATA.accZData.resize(DATAWINDOW);
@@ -29,6 +30,7 @@ GestureManager::GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothC
     DATA.xScaled.resize(DATAWINDOW);
     DATA.yScaled.resize(DATAWINDOW);
     DATA.zScaled.resize(DATAWINDOW);
+    
 }
 
 GestureManager::~GestureManager()
@@ -59,11 +61,11 @@ void GestureManager::PollGestures()
 
     scaleandCopy(DATA.XData, DATA.YData, DATA.ZData, DATA.xScaled, DATA.yScaled, DATA.zScaled);
 
-    
-    for (int i = 0; i < DATA.yDetail.size(); i++) {
-        DBG(DATA.yScaled[i]);
+    /*
+    for (size_t i = 0; i < DATAWINDOW; ++i) {
+    DBG("Raw: " << DATA.XData[i] << ", Scaled: " << DATA.xScaled[i]);
     }
-    
+    */
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -96,25 +98,27 @@ void GestureManager::fillDataVectors(vector<double>* xaccdata,
                                                       double* accy,
                                                       double* accz)
 {
-    // Vector runnoff if not resized in this function
-    xaccdata->resize(DATAWINDOW);
-    yaccdata->resize(DATAWINDOW);
-    zaccdata->resize(DATAWINDOW);
-    xdata->resize(DATAWINDOW);
-    ydata->resize(DATAWINDOW);
-    zdata->resize(DATAWINDOW);
+    const int scaleVal = 1; // Optional Tweaking 
 
-    for (int i = 0; i < DATAWINDOW; i++)
-    {
-        // Populate Acceleration 
-        (*xaccdata)[i] = static_cast<double>(*accx);
-        (*yaccdata)[i] = static_cast<double>(*accy);
-        (*zaccdata)[i] = static_cast<double>(*accz);
+    // Populate Acc Data
+    if (xaccdata->size() >= DATAWINDOW) xaccdata->erase(xaccdata->begin());
+    if (yaccdata->size() >= DATAWINDOW) yaccdata->erase(yaccdata->begin());
+    if (zaccdata->size() >= DATAWINDOW) zaccdata->erase(zaccdata->begin());
 
-        (*xdata)[i] = static_cast<double>(*x);
-        (*ydata)[i] = static_cast<double>(*y);
-        (*zdata)[i] = static_cast<double>(*z);
-    }
+    // Populate Axis Data
+    if (xdata->size() >= DATAWINDOW) xdata->erase(xdata->begin());
+    if (ydata->size() >= DATAWINDOW) ydata->erase(ydata->begin());
+    if (zdata->size() >= DATAWINDOW) zdata->erase(zdata->begin());
+
+    // Push sample (Current Val)
+    xaccdata->push_back(static_cast<double>(*accx * scaleVal));
+    yaccdata->push_back(static_cast<double>(*accy * scaleVal));
+    zaccdata->push_back(static_cast<double>(*accz * scaleVal));
+
+    xdata->push_back(static_cast<double>(*x));
+    ydata->push_back(static_cast<double>(*y));
+    zdata->push_back(static_cast<double>(*z));
+    
 }
 
 void GestureManager::decomposeAxis(vector<double>& input,
@@ -255,6 +259,8 @@ void GestureManager::scaleandCopy(vector<double>& xaccdata, vector<double>& yacc
     double minxVal = *minxT, maxxVal = *maxxT;
     double minyVal = *minyT, maxyVal = *maxyT;
     double minzVal = *minzT, maxzVal = *maxzT;
+
+    // DBG("MIN: " << minxVal << ", MAX: " << maxxVal);
 
     xscale = normaliseData(minxVal, maxxVal, xaccdata);
     yscale = normaliseData(minyVal, maxyVal, yaccdata);
