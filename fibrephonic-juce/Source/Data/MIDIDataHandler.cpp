@@ -12,12 +12,12 @@
 
 // Initialisation
 MIDIHandler::MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance)
-    : gestureManager(move(gestureManagerInstance))
+    : Thread("MIDIOutThread"), gestureManager(move(gestureManagerInstance))
 {
+    midioutflag = false;
+
     Data = gestureManager->pDATA;
     GESTURES = gestureManager->pGestures;
-
-    midioutflag = false;
 
     Channel = Note = CCVal = Velocity = 0;
 
@@ -37,6 +37,20 @@ MIDIHandler::~MIDIHandler()
     delete GESTURES;
 
     X.clear(); Y.clear(); Z.clear();
+
+    stop();
+}
+
+void MIDIHandler::run()
+{
+    midioutflag = true;
+    MIDIOUT();
+}
+
+void MIDIHandler::stop()
+{
+    midioutflag = false;
+    stopThread(500);  
 }
 
 bool MIDIHandler::openDeviceByIndex(int index){ return false;}
@@ -63,21 +77,43 @@ void MIDIHandler::sendNoteOff(int channel, int note){}
 void MIDIHandler::sendCC(int channel, int controller, int value){}
 void MIDIHandler::sendRawMessage(const MidiMessage& msg){}
 
-void MIDIHandler::copyVectors() 
+void MIDIHandler::getGestureManagerData()
 {
-    copy(Data->xScaled.begin(), Data->xScaled.end(), X.begin());
-    copy(Data->yScaled.begin(), Data->yScaled.end(), Y.begin());
-    copy(Data->zScaled.begin(), Data->zScaled.end(), Z.begin());
+    if (!gestureManager) { DBG("GestureManager is null!"); return; }
+
+    vector<double> xScaledDouble = gestureManager->getScaledX();
+
+    /*
+    for (int i = 0; i < xScaledDouble.size(); i++) {
+        DBG(xScaledDouble[i]);
+    }
+    */
+
+    X.clear(); Y.clear(); Z.clear();
+
+    X.reserve(xScaledDouble.size());
+    for (double i : xScaledDouble)
+        X.push_back(static_cast<int>(i));
+    
+    vector<double> yScaledDouble = gestureManager->getScaledY();
+
+    Y.reserve(yScaledDouble.size());
+    for (double i : yScaledDouble)
+        Y.push_back(static_cast<int>(i));
+
+    vector<double> zScaledDouble = gestureManager->getScaledZ();
+
+    Z.reserve(zScaledDouble.size());
+    for (double i : zScaledDouble)
+        Z.push_back(static_cast<int>(i));
 }
 
 // Functionality 
 void MIDIHandler::MIDIOUT() 
 {
-    midioutflag = true; // Allows for force stop 
+    while (midioutflag) {
 
-    copyVectors();
-
-    while (midioutflag == true) {
+        getGestureManagerData();
 
         for (int channel = 0; channel < MAXNO_MIDICHANNELS; channel++) {
 
@@ -100,6 +136,7 @@ void MIDIHandler::MIDIOUT()
              
                 NOTE: this will be wrapped up with send functions 
                 */
+                DBG(Note);
             }
         }
         this_thread::sleep_for(chrono::milliseconds(5));

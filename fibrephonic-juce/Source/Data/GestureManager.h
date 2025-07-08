@@ -143,6 +143,12 @@ private:
 
 public:
 
+    inline vector<double>& getScaledX() { return DATA.xScaled; }
+    inline vector<double>& getScaledY() { return DATA.yScaled; }
+    inline vector<double>& getScaledZ() { return DATA.zScaled; }
+
+public:
+
     datastreams DATA;
     datastreams* pDATA = &DATA;
 

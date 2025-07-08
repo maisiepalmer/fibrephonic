@@ -20,7 +20,7 @@ using namespace std;
 #define MAXNO_MIDICHANNELS 16
 #define MAXNO_MIDIVAL 127
 
-class MIDIHandler 
+class MIDIHandler : public Thread 
 {
 private:
 
@@ -39,7 +39,10 @@ private:
 public:
 
     MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance);
-    ~MIDIHandler();
+    ~MIDIHandler() override;
+
+    void run() override;
+    void stop();
 
 private:
 
@@ -57,9 +60,9 @@ private:
     void sendNoteOff(int channel, int note);                    
     void sendCC(int channel, int CCVal, int CCParamVal);        
     void sendRawMessage(const juce::MidiMessage& msg);
-    void copyVectors();
+    void getGestureManagerData();
 
-public:
+private:
 
     // Functionality 
     void MIDIOUT();

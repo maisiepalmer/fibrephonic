@@ -74,12 +74,13 @@ MainComponent::MainComponent()
                 if (isBlutoothToggled)
                 {
                     bluetoothconnection->startThread(); // Triggers thread run function
-                    //gesturemanager->PollGestures();
                     gesturemanager->startPolling();
+                    midihandler->startThread();
                 }
                 else {
 
                     bluetoothconnection->wait(100);
+                    midihandler->wait(100);
 
                     //bluetoothconnection->signalThreadShouldExit();
                     //bluetoothconnection->stopThread(1000);
