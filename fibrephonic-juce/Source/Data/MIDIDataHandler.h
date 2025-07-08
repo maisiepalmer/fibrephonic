@@ -32,7 +32,7 @@ private:
 private:
 
     bool midioutflag;
-    int Channel, Note, Velocity, CCVal;
+    int NoofChannels, Note, Velocity, CCVal;
 
     vector<int> X, Y, Z;
 
@@ -51,9 +51,13 @@ private:
     bool openDeviceByName(const String& deviceName);      
     void closeDevice();
 
+public:
+
     // Utility (Not entirely necessary but kept anyway)
     StringArray getAvailableDeviceNames() const;          
     int getNumAvailableDevices() const;
+
+private:
 
     // MIDI Send
     void sendNoteOn(int channel, int note, int velocity);       

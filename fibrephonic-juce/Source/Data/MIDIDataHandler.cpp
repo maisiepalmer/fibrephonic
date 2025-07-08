@@ -14,25 +14,25 @@
 MIDIHandler::MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance)
     : Thread("MIDIOutThread"), 
     gestureManager(move(gestureManagerInstance)),
-    midioutflag(false)
+    midioutflag(false),
+    NoofChannels(3)
 {
     Data = gestureManager->pDATA;
     GESTURES = gestureManager->pGestures;
 
-    Channel = Note = CCVal = Velocity = 0;
+    Note = CCVal = Velocity = 0;
 
-    X.resize(DATAWINDOW);
-    Y.resize(DATAWINDOW);
-    Z.resize(DATAWINDOW);
+    X.resize(DATAWINDOW); Y.resize(DATAWINDOW); Z.resize(DATAWINDOW);
 
-    /*
+    auto names = getAvailableDeviceNames();
+    for (const auto& name : names)
+        DBG("MIDI Output Device: " << name);
+
     bool ConnectionSuccess = openDeviceByName("Springbeats vMIDI1");
     if (!ConnectionSuccess)
         DBG("Failed to Open Device...");
     else
         DBG("Connection Successful");
-    */
-    //getAvailableDeviceNames();
 }
 
 MIDIHandler::~MIDIHandler()
@@ -177,34 +177,28 @@ void MIDIHandler::getGestureManagerData()
 }
 
 // Functionality 
-void MIDIHandler::MIDIOUT() 
+void MIDIHandler::MIDIOUT()
 {
-    while (midioutflag) {
-
+    while (midioutflag)
+    {
         getGestureManagerData();
 
-        for (int channel = 0; channel < MAXNO_MIDICHANNELS; channel++) {
+        int Note = X.back();
+        int Velocity = Y.back();
+        int CCVal = Z.back();
 
-            int CurrentXMessage, CurrentYMessage, CurrentZMessage;
+        if (isPositiveAndBelow(Note, 128))
+        {
+            // Play all notes at once
+            for (int channel = 1; channel <= NoofChannels; ++channel)
+                sendNoteOn(channel, Note, Velocity);
 
-            for (int midibufferpos = 0; midibufferpos < MAXNO_MIDIVAL; midibufferpos++) {
+            this_thread::sleep_for(chrono::milliseconds(300)); // Hold notes
 
-                Note = X[midibufferpos]; Velocity = Y[midibufferpos]; CCVal = Z[midibufferpos];
-
-                /* Send note on based on identified gesture from gesture manager...
-                
-                // Example: send note-on
-                if (midiOut && juce::isPositiveAndBelow(note, 128))
-                {
-                    midiOut->sendMessageNow(juce::MidiMessage::noteOn(channel, note, (uint8)velocity));
-                    midiOut->sendMessageNow(juce::MidiMessage::controllerEvent(channel, 74, ccValue)); // CC74 = brightness
-                }
-             
-                NOTE: this will be wrapped up with send functions 
-                */
-                
-            }
+            for (int channel = 1; channel <= NoofChannels; ++channel)
+                sendNoteOff(channel, Note);
         }
-        this_thread::sleep_for(chrono::milliseconds(5));
+        this_thread::sleep_for(chrono::milliseconds(500)); // Interval before next group
     }
 }
+
