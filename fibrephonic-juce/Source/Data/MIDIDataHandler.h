@@ -31,7 +31,7 @@ private:
 
 private:
 
-    bool midioutflag;
+    bool midioutflag, Quantise;
     int NoofChannels, Note, Velocity, CCVal;
 
     vector<int> X, Y, Z;
@@ -70,4 +70,11 @@ private:
 
     // Functionality 
     void MIDIOUT();
+
+public:
+
+    // More Getters
+    int BPM;
+
+    void getBPMSliderVal(int val) { BPM = val; }
 };

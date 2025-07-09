@@ -15,6 +15,7 @@ MIDIHandler::MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance)
     : Thread("MIDIOutThread"), 
     gestureManager(move(gestureManagerInstance)),
     midioutflag(false),
+    Quantise(true),
     NoofChannels(3)
 {
     Data = gestureManager->pDATA;
@@ -187,18 +188,32 @@ void MIDIHandler::MIDIOUT()
         int Velocity = Y.back();
         int CCVal = Z.back();
 
+        double normZ = (Z.back() - 1.0) / (6.0 - 1.0); // normalize between 0 and 1
+        normZ = clamp(normZ, 0.0, 1.0);
+
+        double bpm = static_cast<double>(BPM);
+
+        double minHoldBeats = 0.25; // quarter note min hold
+        double maxHoldBeats = 2.0;  // 2 beats max hold
+
+        double holdBeats = minHoldBeats + (maxHoldBeats - minHoldBeats) * (1.0 - normZ);
+
+        int holdMs = static_cast<int>((60000.0 / bpm) * holdBeats);
+
+        auto start = chrono::steady_clock::now();
+
         if (isPositiveAndBelow(Note, 128))
         {
             // Play all notes at once
             for (int channel = 1; channel <= NoofChannels; ++channel)
                 sendNoteOn(channel, Note, Velocity);
 
-            this_thread::sleep_for(chrono::milliseconds(300)); // Hold notes
+            this_thread::sleep_until(start + chrono::milliseconds(holdMs)); // Hold notes (Time Between NoteOff)
 
             for (int channel = 1; channel <= NoofChannels; ++channel)
                 sendNoteOff(channel, Note);
         }
-        this_thread::sleep_for(chrono::milliseconds(500)); // Interval before next group
+        this_thread::sleep_for(chrono::milliseconds(holdMs)); // Interval before next group
     }
 }
 

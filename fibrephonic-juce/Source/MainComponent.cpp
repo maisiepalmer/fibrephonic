@@ -39,6 +39,8 @@ MainComponent::MainComponent()
                 isCalibrationToggled = false;
 
                 BluetoothButton.setVisible(false);
+                BPMSlider.setVisible(false);
+                BPMSliderLabel.setVisible(false);
             }
          };
 
@@ -54,6 +56,11 @@ MainComponent::MainComponent()
                 isConnectionsToggled = false;
 
                 addAndMakeVisible(BluetoothButton);
+                addAndMakeVisible(BPMSlider);
+                addAndMakeVisible(BPMSliderLabel);
+
+                BPMSlider.setVisible(true);
+                BPMSliderLabel.setVisible(true);
             }
          };
 
@@ -140,6 +147,22 @@ MainComponent::MainComponent()
         {
             DBG("Failed to create XML from presetTree");
         }
+
+        // UI Paramaters
+        {
+            BPMSlider.setLookAndFeel(&sliderlookandfeel);
+            BPMSlider.setSliderStyle(Slider::RotaryHorizontalVerticalDrag);
+            BPMSlider.setTextBoxStyle(Slider::TextBoxBelow, false, 60, 20);
+            BPMSlider.setRange(1, 300, 1);
+            BPMSlider.setValue(120);
+
+            BPMSlider.onValueChange = [this]() {
+                midihandler->getBPMSliderVal(BPMSlider.getValue());
+                };
+
+            BPMSliderLabel.setText("BPM", dontSendNotification);
+            BPMSliderLabel.attachToComponent(&BPMSlider, true);
+        }
     }
 
     {
@@ -219,13 +242,12 @@ void MainComponent::paint(juce::Graphics& g)
 
     // Extra UI Element control for different toggle elements....
 
-    //MUST CALL REPAINT
     if (isConnectionsToggled == true) {
         
 
 
 
-        repaint(); 
+        //repaint(); 
     }
     else if (isCalibrationToggled == true){
 
@@ -233,16 +255,19 @@ void MainComponent::paint(juce::Graphics& g)
 
 
 
-        repaint();
+        //repaint();
     }
 }
 
 void MainComponent::resized()
 {
-    //Buttons and Toggles
+    // Buttons and Toggles
     connectionsbutton.setBounds(0, 50, getWidth() / 2, 60);
     calibrationbutton.setBounds(getWidth() / 2, 50, getWidth() / 2, 60);
     BluetoothButton.setBounds(100, 150, 100, 100);
+
+    // Sliders
+    BPMSlider.setBounds(100, 280, 100, 100);
 }
 //==============================================================================
 void MainComponent::parseIMUData(const juce::String& data)
@@ -286,8 +311,6 @@ void MainComponent::timerCallback(){
     repaint();
 
     {
-   
-
 //        // Serial Connection
 //        if (!serialConnected || !inputStream)
 //            return;

@@ -82,5 +82,63 @@ public:
     }
 };
 
+class SliderLookAndFeel : public juce::LookAndFeel_V4
+{
+public:
+    void drawRotarySlider(juce::Graphics& g,
+        int x, int y, int width, int height,
+        float sliderPosProportional,
+        float rotaryStartAngle, float rotaryEndAngle,
+        juce::Slider& slider) override
+    {
+        const float radius = juce::jmin(width, height) / 2.0f - 2.0f;
+        const float centreX = x + width / 2.0f;
+        const float centreY = y + height / 2.0f;
+        const float rx = centreX - radius;
+        const float ry = centreY - radius;
+        const float rw = radius * 2.0f;
+
+        const float angle = rotaryStartAngle + sliderPosProportional * (rotaryEndAngle - rotaryStartAngle);
+
+        // Draw base ring
+        g.setColour(juce::Colours::white.withAlpha(0.2f));
+        g.drawEllipse(rx, ry, rw, rw, 1.5f);
+
+        // Draw arc (value ring)
+        juce::Path valueArc;
+        valueArc.addArc(rx, ry, rw, rw, rotaryStartAngle, angle, true);
+
+        g.setColour(juce::Colours::white);
+        g.strokePath(valueArc, juce::PathStrokeType(2.0f)); // thinner ring
+    }
+
+    Slider::SliderLayout getSliderLayout(juce::Slider& slider) override
+    {
+        juce::Slider::SliderLayout layout;
+
+        auto bounds = slider.getLocalBounds();
+        const int textBoxHeight = 20;
+        const int textBoxOffset = 6; // move it down a bit
+
+        // Reserve space at the bottom for the text box
+        auto sliderArea = bounds.reduced(2);
+        sliderArea.removeFromBottom(textBoxHeight + textBoxOffset);
+
+        layout.sliderBounds = sliderArea;
+
+        // Position the text box
+        layout.textBoxBounds = {
+            (bounds.getWidth() - 60) / 2,
+            sliderArea.getBottom() + textBoxOffset,
+            60,
+            textBoxHeight
+        };
+
+        return layout;
+    }
+
+
+
+};
 
 

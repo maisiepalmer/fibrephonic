@@ -33,6 +33,7 @@ private:
     //Custom Look and Feel Instances
     ButtonLookandFeel buttonlookandfeel;
     RoundedButtonLookandFeel roundedbuttonlookandfeel;
+    SliderLookAndFeel sliderlookandfeel;
 
     //Toggle Buttons and Functions
     bool isConnectionsToggled = true, isCalibrationToggled = false,
@@ -73,6 +74,12 @@ public:
 private:
 
     int functioncount = 0;
+
+public:
+
+    // UI Paramaters
+    Slider BPMSlider;
+    Label BPMSliderLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

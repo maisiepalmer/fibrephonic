@@ -93,8 +93,8 @@ public:
     };
 
 private:
-    std::unique_ptr<MainWindow> mainWindow;
 
+    std::unique_ptr<MainWindow> mainWindow;
 };
 
 //==============================================================================
