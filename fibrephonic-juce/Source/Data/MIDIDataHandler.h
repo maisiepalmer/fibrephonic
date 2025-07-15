@@ -69,6 +69,7 @@ private:
 private:
 
     // Functionality 
+    void MIDIgestureHandling(vector<int>& X, vector<int>& Y, vector<int>& Z, int& Note, int& Velocity, int& CCVal);
     void MIDIOUT();
 
 public:

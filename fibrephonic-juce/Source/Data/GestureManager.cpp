@@ -30,6 +30,8 @@ GestureManager::GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothC
     DATA.xScaled.resize(DATAWINDOW);
     DATA.yScaled.resize(DATAWINDOW);
     DATA.zScaled.resize(DATAWINDOW);
+
+    gesture = NO_GESTURE;
 }
 
 GestureManager::~GestureManager()
@@ -159,6 +161,8 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
                                          vector<double>& YApprox, vector<double> YDetail,
                                          vector<double>& ZApprox, vector<double> ZDetail) 
 {
+    // Smooting and transfer functions in modification points here (Applied to all axis constantly)
+
     // Lambda for printing data
     auto vecToString = [](const vector<double>& vec) -> string {
         if (vec.empty())
@@ -194,7 +198,8 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
         ", Z Reconstructed: " + vecToString(DATA.accZData);
     //DBG(line);
 
-    // What do do immediately if particular gesture is identified
+    // What do do immediately if particular gesture is identified (Apply addition gesture specific scaling/ smoothing).
+    // MIDI Handler handles primarily what happens upon gesture identification so only tweak slightly.
     switch (gesture) {
     case NO_GESTURE:
         break;
@@ -261,6 +266,7 @@ void GestureManager::scaleandCopy(vector<double>& xaccdata, vector<double>& yacc
         return;
     }
 
+    // Identifies the minimum and maximum of the data in real time. 
     auto [minxT, maxxT] = minmax_element(xaccdata.begin(), xaccdata.end());
     auto [minyT, maxyT] = minmax_element(yaccdata.begin(), yaccdata.end());
     auto [minzT, maxzT] = minmax_element(zaccdata.begin(), zaccdata.end());

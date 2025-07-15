@@ -175,6 +175,38 @@ void MIDIHandler::getGestureManagerData()
     Z.reserve(zScaledDouble.size());
     for (double i : zScaledDouble)
         Z.push_back(static_cast<int>(i));
+
+    GESTURES = gestureManager->pGestures;
+}
+
+void MIDIHandler::MIDIgestureHandling(vector<int>& X, vector<int>& Y, vector<int>& Z, 
+                                      int& Note, int& Velocity, int& CCVal)
+{
+    switch (*GESTURES) {
+    case GestureManager::Gesture::NO_GESTURE:
+        Note = 0;
+        Velocity = 0;
+        CCVal = 0;
+        break;
+
+    case GestureManager::Gesture::PITCH:
+        break;
+    case GestureManager::Gesture::ROLL:
+
+        break;
+    case GestureManager::Gesture::YAW:
+
+        break;
+    case GestureManager::Gesture::TAP:
+
+        break;
+    case GestureManager::Gesture::STROKE:
+
+        break;
+    default:
+        *GESTURES = GestureManager::Gesture::NO_GESTURE;
+        break;
+    }
 }
 
 // Functionality 
@@ -188,7 +220,9 @@ void MIDIHandler::MIDIOUT()
         int Velocity = Y.back();
         int CCVal = Z.back();
 
-        double normZ = (Z.back() - 1.0) / (6.0 - 1.0); // normalize between 0 and 1
+        MIDIgestureHandling(X, Y, Z, Note, Velocity, CCVal);
+
+        double normZ = (Z.back() - 1.0) / (6.0 - 1.0); // normalize between 0 and 1, for What CC Val is controlling 
         normZ = clamp(normZ, 0.0, 1.0);
 
         double normY = std::clamp(Y.back() / 127.0, 0.0, 1.0);
@@ -212,7 +246,7 @@ void MIDIHandler::MIDIOUT()
         double mappedResonance = juce::jmap(normY, 0.0, 1.0, 0.0, 127.0);
         resonanceval = juce::jlimit(0, 127, static_cast<int>(mappedResonance));
 
-        if (isPositiveAndBelow(Note, 128))
+        if (isPositiveAndBelow(Note, 128)) // Checks if incoming note is posotive and above 128
         {
             // Play all notes at once
             for (int channel = 1; channel <= NoofChannels; ++channel) 
