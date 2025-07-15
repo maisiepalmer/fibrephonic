@@ -190,18 +190,35 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
+    stopTimer();
+
     if (bluetoothconnection)
     {
         bluetoothconnection->signalThreadShouldExit();
 
-        if (!bluetoothconnection->stopThread(1000))
-            DBG("Thread did not stop cleanly");
+        // Important: call stopThread only from a different thread
+        // Make sure this destructor runs on the GUI thread, NOT the Bluetooth thread
+        if (Thread::getCurrentThreadId() != bluetoothconnection->getThreadId())
+        {
+            if (!bluetoothconnection->stopThread(1000))
+                DBG("Thread did not stop cleanly");
 
-        // Reset shared_ptr to release ownership and allow destruction if no other refs
-        bluetoothconnection.reset();
+            bluetoothconnection.reset();
+        }
+        else
+        {
+            // If destructor somehow called from inside thread,
+            // defer cleanup to GUI thread asynchronously
+            auto threadPtr = std::move(bluetoothconnection);
+            MessageManager::callAsync([threadPtr = std::move(threadPtr)]() mutable
+                {
+                    threadPtr->signalThreadShouldExit();
+                    if (!threadPtr->stopThread(1000))
+                        DBG("Thread did not stop cleanly (deferred)");
+                    // threadPtr destroyed here
+                });
+        }
     }
-
-    stopTimer();
 }
 
 //==============================================================================

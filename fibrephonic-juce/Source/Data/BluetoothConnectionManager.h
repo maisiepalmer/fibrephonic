@@ -90,7 +90,10 @@ public:
 
                 if (threadShouldExit()) break;
 
-                ConnectionInstance->runconnection(*connectionInfoPtr);  
+                //ConnectionInstance->runconnection(*connectionInfoPtr);  
+
+                ConnectionInstance->runconnection(*connectionInfoPtr, [this]() { return threadShouldExit(); });
+
 
                 gX = ConnectionInstance->getX(); 
                 gY = ConnectionInstance->getY();

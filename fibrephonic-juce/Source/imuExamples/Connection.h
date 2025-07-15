@@ -20,7 +20,7 @@ public:
 
     explicit Connection(BluetoothConnectionManager* parent = nullptr);
 
-    void runconnection(const ximu3::ConnectionInfo& connectionInfo);
+    void runconnection(const ximu3::ConnectionInfo& connectionInfo, std::function<bool()> shouldExit);
 
     float gx, gy, gz;
     float accx, accy, accz;

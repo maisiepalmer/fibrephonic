@@ -132,6 +132,12 @@ void GestureManager::decomposeAxis(vector<double>& input,
     vector<double>& bookkeeping,
     vector<double>& lengths)
 {
+    coeffs.clear();
+    approx.clear();
+    detail.clear();
+    bookkeeping.clear();
+    lengths.clear();
+
     dwt(input, levels, wavelet, coeffs, bookkeeping, lengths);
 
     if (lengths.size() >= 2) {
@@ -148,6 +154,11 @@ void GestureManager::reconstructAxis(vector<double>& coeffs,
                                      string wavelet,
                                      vector<double>& reconstructed)
 {
+    // Resize coeffs to avoid memory overrun
+    size_t totalLength = 0;
+    for (auto len : lengths) totalLength += static_cast<size_t>(len);
+    coeffs.resize(totalLength);
+
     // Update coeffs with modified approx and detail
     copy(approx.begin(), approx.end(), coeffs.begin());
     copy(detail.begin(), detail.end(), coeffs.begin() + lengths[0]);
@@ -161,6 +172,34 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
                                          vector<double>& YApprox, vector<double> YDetail,
                                          vector<double>& ZApprox, vector<double> ZDetail) 
 {
+    /* 
+    ======================================================================================================================
+    Annoyingly.....Separating wavelet modification points caused significant feedback of coeff data.
+    This meant data had to be clamped -_-, coeffs now are in a managable range of -1 to 1. This can be changed accordingly 
+    and precision adjusted via damping factor.
+    ======================================================================================================================
+    */
+
+    {
+        // Ugly clamping block...
+
+        double damping = 0.95; //control feedback
+
+        auto clampCoeff = [](double& val, double minVal, double maxVal) {
+            if (val < minVal) val = minVal;
+            else if (val > maxVal) val = maxVal;
+            };
+
+        for (auto& val : XApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : XDetail) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+
+        for (auto& val : YApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : YDetail) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+
+        for (auto& val : ZApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : ZDetail) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+    }
+    
     // Smooting and transfer functions in modification points here (Applied to all axis constantly)
 
     // Lambda for printing data
@@ -187,7 +226,7 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
     line = "Y Approx: " + vecToString(DATA.yApprox) +
         ", Y Detail: " + vecToString(DATA.yDetail) +
         ", Y Reconstructed: " + vecToString(DATA.accYData);
-    //DBG(line);
+    DBG(line);
 
     {
         // Modify Z....
@@ -223,8 +262,15 @@ GestureManager::Gesture GestureManager::IdentifyGesture(vector<double>& XApprox,
                                                         vector<double>& YApprox, vector<double> YDetail,
                                                         vector<double>& ZApprox, vector<double> ZDetail)
 {
+    int minSize = std::min({
+    XApprox.size(), XDetail.size(),
+    YApprox.size(), YDetail.size(),
+    ZApprox.size(), ZDetail.size(),
+    static_cast<size_t>(DATAWINDOW / 2)
+        });
+
     // Identify NO_GESTURE 
-    for (int i = 0; i < DATAWINDOW / 2; i++) 
+    for (int i = 0; i < minSize / 2; i++) 
     {
         if (XApprox[i] == 0 && XDetail[i] == 0 &&
             YApprox[i] == 0 && YDetail[i] == 0 &&
