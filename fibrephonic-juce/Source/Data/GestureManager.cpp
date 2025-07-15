@@ -219,6 +219,23 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
     }
 }
 
+GestureManager::Gesture GestureManager::IdentifyGesture(vector<double>& XApprox, vector<double> XDetail,
+                                                        vector<double>& YApprox, vector<double> YDetail,
+                                                        vector<double>& ZApprox, vector<double> ZDetail)
+{
+    // Identify NO_GESTURE 
+    for (int i = 0; i < DATAWINDOW / 2; i++) 
+    {
+        if (XApprox[i] == 0 && XDetail[i] == 0 &&
+            YApprox[i] == 0 && YDetail[i] == 0 &&
+            ZApprox[i] == 0 && ZDetail[i] == 0)
+        {
+            return NO_GESTURE;
+        }
+    }
+}
+
+
 void GestureManager::perform1DWaveletTransform()
 {
     string wavelet = "db4";
@@ -231,6 +248,9 @@ void GestureManager::perform1DWaveletTransform()
 
     // Modify and Observe Trends
     ModifyWaveletDomain(DATA.xApprox, DATA.xDetail, DATA.yApprox, DATA.yDetail, DATA.zApprox, DATA.zDetail);
+
+    // Identify Gestures
+    gesture = IdentifyGesture(DATA.xApprox, DATA.xDetail, DATA.yApprox, DATA.yDetail, DATA.zApprox, DATA.zDetail);
 
     // Reconstruct each axis (Transform back to time domain)
     reconstructAxis(DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths, wavelet, DATA.accXData);

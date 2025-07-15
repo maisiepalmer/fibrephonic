@@ -123,8 +123,13 @@ private:
                        vector<double>& bookkeeping,
                        vector<double>& lengths);
 
-    // Passes results of axis DWT providing point of modification and gestural identification
+    // Passes results of axis DWT providing point of modification and future gestural identification
     void ModifyWaveletDomain(vector<double>& XApprox, vector<double> XDetail,
+                             vector<double>& YApprox, vector<double> YDetail,
+                             vector<double>& ZApprox, vector<double> ZDetail);
+
+    // Returns Identified Gesture based on transformed data
+    Gesture IdentifyGesture (vector<double>& XApprox, vector<double> XDetail,
                              vector<double>& YApprox, vector<double> YDetail,
                              vector<double>& ZApprox, vector<double> ZDetail);
 
