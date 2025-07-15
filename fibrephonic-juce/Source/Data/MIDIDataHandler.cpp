@@ -191,6 +191,8 @@ void MIDIHandler::MIDIOUT()
         double normZ = (Z.back() - 1.0) / (6.0 - 1.0); // normalize between 0 and 1
         normZ = clamp(normZ, 0.0, 1.0);
 
+        double normY = std::clamp(Y.back() / 127.0, 0.0, 1.0);
+
         double bpm = static_cast<double>(BPM);
 
         double minHoldBeats = 0.25; // quarter note min hold
@@ -202,16 +204,32 @@ void MIDIHandler::MIDIOUT()
 
         auto start = chrono::steady_clock::now();
 
+        // Filter CC
+        int cutoffval, resonanceval;
+
+        cutoffval = juce::jlimit(0, 127, static_cast<int>(normZ * 127.0)); 
+
+        double mappedResonance = juce::jmap(normY, 0.0, 1.0, 0.0, 127.0);
+        resonanceval = juce::jlimit(0, 127, static_cast<int>(mappedResonance));
+
         if (isPositiveAndBelow(Note, 128))
         {
             // Play all notes at once
-            for (int channel = 1; channel <= NoofChannels; ++channel)
-                sendNoteOn(channel, Note, Velocity);
+            for (int channel = 1; channel <= NoofChannels; ++channel) 
+            {
+                sendCC(channel, 74, cutoffval);
+                sendCC(channel, 71, resonanceval);
 
+                sendNoteOn(channel, Note, Velocity);
+            }
+                
             this_thread::sleep_until(start + chrono::milliseconds(holdMs)); // Hold notes (Time Between NoteOff)
 
             for (int channel = 1; channel <= NoofChannels; ++channel)
+            {
                 sendNoteOff(channel, Note);
+            }
+                
         }
         this_thread::sleep_for(chrono::milliseconds(holdMs)); // Interval before next group
     }

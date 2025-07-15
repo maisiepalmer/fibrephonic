@@ -47,6 +47,7 @@ private:
 public:
 
     enum Gesture {
+        NO_GESTURE,
         PITCH,
         ROLL,
         YAW,
@@ -121,6 +122,11 @@ private:
                        vector<double>& detail,
                        vector<double>& bookkeeping,
                        vector<double>& lengths);
+
+    // Passes results of axis DWT providing point of modification and gestural identification
+    void ModifyWaveletDomain(vector<double>& XApprox, vector<double> XDetail,
+                             vector<double>& YApprox, vector<double> YDetail,
+                             vector<double>& ZApprox, vector<double> ZDetail);
 
     // Reconstructs singnal back to time domain via IDWT
     void reconstructAxis(vector<double>& coeffs,

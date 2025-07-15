@@ -155,11 +155,10 @@ void GestureManager::reconstructAxis(vector<double>& coeffs,
     idwt(coeffs, bookkeeping, wavelet, reconstructed, idwt_lengths);
 }
 
-void GestureManager::perform1DWaveletTransform()
+void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double> XDetail,
+                                         vector<double>& YApprox, vector<double> YDetail,
+                                         vector<double>& ZApprox, vector<double> ZDetail) 
 {
-    string wavelet = "db4";
-    int levels = 3;
-
     // Lambda for printing data
     auto vecToString = [](const vector<double>& vec) -> string {
         if (vec.empty())
@@ -168,59 +167,70 @@ void GestureManager::perform1DWaveletTransform()
             return std::to_string(vec.back());
         };
 
-    // --- X axis ---
-    decomposeAxis(DATA.accXData, wavelet, levels, DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths);
-
-    // Modify DATA.xApprox and/or DATA.xDetail 
-
-    reconstructAxis(DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths, wavelet, DATA.accXData);
+    {
+        // Modify X....
+    }
 
     std::string line = "X Approx: " + vecToString(DATA.xApprox) +
         ", X Detail: " + vecToString(DATA.xDetail) +
         ", X Reconstructed: " + vecToString(DATA.accXData);
     //DBG(line);
 
-    /*
-    for (int i = 0; i < DATA.xDetail.size(); i++) {
-        DBG(DATA.xDetail[i]);
+    {
+        // Modify Y....
     }
-    */
-
-    // --- Y axis ---
-    decomposeAxis(DATA.accYData, wavelet, levels, DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths);
-
-    // Modify DATA.yApprox and/or DATA.yDetail 
-
-    reconstructAxis(DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths, wavelet, DATA.accYData);
 
     line = "Y Approx: " + vecToString(DATA.yApprox) +
         ", Y Detail: " + vecToString(DATA.yDetail) +
         ", Y Reconstructed: " + vecToString(DATA.accYData);
     //DBG(line);
 
-    /*
-    for (int i = 0; i < DATA.xDetail.size(); i++) {
-        DBG(DATA.yDetail[i]);
+    {
+        // Modify Z....
     }
-    */
-
-    // --- Z axis ---
-    decomposeAxis(DATA.accZData, wavelet, levels, DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths);
-
-    // Modify DATA.zApprox and/or DATA.zDetail 
-
-    reconstructAxis(DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths, wavelet, DATA.accZData);
 
     line = "Z Approx: " + vecToString(DATA.zApprox) +
         ", Z Detail: " + vecToString(DATA.zDetail) +
         ", Z Reconstructed: " + vecToString(DATA.accZData);
     //DBG(line);
 
-    /*
-    for (int i = 0; i < DATA.xDetail.size(); i++) {
-        DBG(DATA.zDetail[i]);
+    // What do do immediately if particular gesture is identified
+    switch (gesture) {
+    case NO_GESTURE:
+        break;
+    case PITCH:
+        break;
+    case ROLL:
+        break;
+    case YAW:
+        break;
+    case TAP:
+        break;
+    case STROKE:
+        break;
+    default:
+        gesture = NO_GESTURE;
+        break;
     }
-    */
+}
+
+void GestureManager::perform1DWaveletTransform()
+{
+    string wavelet = "db4";
+    int levels = 3; // Presision of coeffs
+
+    // Decompose each axis (Transform to Wavelet Domaian)
+    decomposeAxis(DATA.accXData, wavelet, levels, DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths);
+    decomposeAxis(DATA.accYData, wavelet, levels, DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths);
+    decomposeAxis(DATA.accZData, wavelet, levels, DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths);
+
+    // Modify and Observe Trends
+    ModifyWaveletDomain(DATA.xApprox, DATA.xDetail, DATA.yApprox, DATA.yDetail, DATA.zApprox, DATA.zDetail);
+
+    // Reconstruct each axis (Transform back to time domain)
+    reconstructAxis(DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths, wavelet, DATA.accXData);
+    reconstructAxis(DATA.yCoeff, DATA.yApprox, DATA.yDetail, DATA.yBookkeeping, DATA.yLengths, wavelet, DATA.accYData);
+    reconstructAxis(DATA.zCoeff, DATA.zApprox, DATA.zDetail, DATA.zBookkeeping, DATA.zLengths, wavelet, DATA.accZData);  
 }
 
 vector<double> GestureManager::normaliseData(double min, double max, vector<double>& input)
