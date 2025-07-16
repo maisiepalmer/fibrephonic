@@ -168,6 +168,32 @@ void GestureManager::reconstructAxis(vector<double>& coeffs,
     idwt(coeffs, bookkeeping, wavelet, reconstructed, idwt_lengths);
 }
 
+void GestureManager::softThresholding(std::vector<double>& DetailCoeffs)
+{
+    // Estimate noise std dev from MAD
+    std::vector<double> AbsCoeffs(DetailCoeffs.size());
+
+    for (size_t i = 0; i < DetailCoeffs.size(); ++i)
+        AbsCoeffs[i] = std::abs(DetailCoeffs[i]);
+
+    // Calculate true median
+    std::sort(AbsCoeffs.begin(), AbsCoeffs.end());
+    double Median;
+    size_t n = AbsCoeffs.size();
+    if (n % 2 == 0)
+        Median = (AbsCoeffs[n / 2 - 1] + AbsCoeffs[n / 2]) / 2.0;
+    else
+        Median = AbsCoeffs[n / 2];
+
+    double NSD = Median / 0.6745; // Noise Standard Deviation
+    double Threshold = NSD * std::sqrt(2.0 * std::log(n));
+
+    // Apply soft thresholding
+    for (auto& x : DetailCoeffs)
+        x = std::copysign(std::max(std::abs(x) - Threshold, 0.0), x);
+}
+
+
 void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double> XDetail,
                                          vector<double>& YApprox, vector<double> YDetail,
                                          vector<double>& ZApprox, vector<double> ZDetail) 
@@ -179,6 +205,11 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
     and precision adjusted via damping factor.
     ======================================================================================================================
     */
+
+    // Apply Soft thresholding (denoising) to detail coeffs 
+    softThresholding(XDetail);
+    softThresholding(YDetail);
+    softThresholding(ZDetail);
 
     {
         // Ugly clamping block...
@@ -200,7 +231,7 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
         for (auto& val : ZDetail) { val *= damping; clampCoeff(val, -1.0, 1.0); }
     }
     
-    // Smooting and transfer functions in modification points here (Applied to all axis constantly)
+    // Smooting and transfer functions in modification points here (Applied to axis constantly)
 
     // Lambda for printing data
     auto vecToString = [](const vector<double>& vec) -> string {
@@ -217,7 +248,7 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
     std::string line = "X Approx: " + vecToString(DATA.xApprox) +
         ", X Detail: " + vecToString(DATA.xDetail) +
         ", X Reconstructed: " + vecToString(DATA.accXData);
-    //DBG(line);
+    DBG(line);
 
     {
         // Modify Y....
@@ -226,7 +257,7 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
     line = "Y Approx: " + vecToString(DATA.yApprox) +
         ", Y Detail: " + vecToString(DATA.yDetail) +
         ", Y Reconstructed: " + vecToString(DATA.accYData);
-    DBG(line);
+    //DBG(line);
 
     {
         // Modify Z....
@@ -281,11 +312,10 @@ GestureManager::Gesture GestureManager::IdentifyGesture(vector<double>& XApprox,
     }
 }
 
-
 void GestureManager::perform1DWaveletTransform()
 {
     string wavelet = "db4";
-    int levels = 3; // Presision of coeffs
+    int levels = 1; // Doesn't matter what's here it'll be 1D, has to use other wavelet functions to return other levels
 
     // Decompose each axis (Transform to Wavelet Domaian)
     decomposeAxis(DATA.accXData, wavelet, levels, DATA.xCoeff, DATA.xApprox, DATA.xDetail, DATA.xBookkeeping, DATA.xLengths);

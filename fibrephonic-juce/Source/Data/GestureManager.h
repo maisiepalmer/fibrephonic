@@ -142,6 +142,8 @@ private:
                          string wavelet,
                          vector<double>& reconstructed);
 
+    void softThresholding(vector<double>& DetailCoeffs);
+
     // Performs all necessary transforms on all axis allows for signal editing and mapping
     void perform1DWaveletTransform();
 
