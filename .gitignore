@@ -66,3 +66,4 @@ extras/Projucer/JUCECompileEngine.dylib
 
 CMakeUserPresets.json
 .editorconfig
+fibrephonic-juce/Builds/MacOSX/fibrephonic-juce.xcodeproj/project.xcworkspace/xcuserdata/m22-palmer.xcuserdatad/UserInterfaceState.xcuserstate
