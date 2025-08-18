@@ -68,9 +68,9 @@
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022" externalLibraries="ximu3.lib&#10;libfftw3-3.lib&#10;wavelet2d.lib&#10;&#10;">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" headerPath="&quot;../../Libs/x-IMU3/include&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;&#10;"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="fbrphnc" headerPath="&quot;../../Libs/x-IMU3/include&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;&#10;"
                        libraryPath="&quot;../../Libs/x-IMU3/lib/windows&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" headerPath="&quot;../../Libs/x-IMU3/include&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;"
+        <CONFIGURATION isDebug="0" name="Release" targetName="fbrphnc" headerPath="&quot;../../Libs/x-IMU3/include&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;"
                        libraryPath="&quot;../../Libs/x-IMU3/lib/windows&quot;&#10;&quot;../../Libs/fftw3&quot;&#10;&quot;../../Libs/Wavelib&quot;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -96,10 +96,11 @@
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="ximu3">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="NewProject" usePrecompiledHeaderFile="1"
-                       headerPath="../../Libs/x-IMU3/include" libraryPath="../../Libs/x-IMU3/lib/macOS"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="NewProject" headerPath="../../Libs/x-IMU3/include"
-                       libraryPath="../../Libs/x-IMU3/lib/macOS"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="fbrphnc" headerPath="../../Libs/x-IMU3/include&#10;/opt/homebrew/include"
+                       libraryPath="../../Libs/x-IMU3/lib/macOS&#10;/opt/homebrew/lib"
+                       optimisation="3"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="fbrphnc" headerPath="../../Libs/x-IMU3/include&#10;/opt/homebrew/include"
+                       libraryPath="../../Libs/x-IMU3/lib/macOS&#10;/opt/homebrew/lib"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_analytics" path="../../JUCE/modules"/>
