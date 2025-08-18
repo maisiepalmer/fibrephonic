@@ -58,7 +58,7 @@ public:
         gX = gY = gZ = 0;
         accX = accY = accZ = 0;
 
-        bluetoothconnectioninfo = std::make_unique<ximu3::BluetoothConnectionInfo>("COM11");
+        bluetoothconnectioninfo = std::make_unique<ximu3::BluetoothConnectionInfo>("tty.Maisiex-IMU3");
         ConnectionInstance = std::make_unique<Connection>(this);
     }
 

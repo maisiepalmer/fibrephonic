@@ -96,11 +96,12 @@
     </VS2022>
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="ximu3">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="fbrphnc" headerPath="../../Libs/x-IMU3/include&#10;/opt/homebrew/include"
-                       libraryPath="../../Libs/x-IMU3/lib/macOS&#10;/opt/homebrew/lib"
-                       optimisation="3"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="fbrphnc" headerPath="../../Libs/x-IMU3/include&#10;/opt/homebrew/include"
-                       libraryPath="../../Libs/x-IMU3/lib/macOS&#10;/opt/homebrew/lib"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="fbrphnc" headerPath="../../Libs/x-IMU3/include&#10;../../Libs/fftw3"
+                       libraryPath="../../Libs/x-IMU3/lib/macOS&#10;../../Libs/fftw3"
+                       optimisation="3" extraLinkerFlags="-lfftw3"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="fbrphnc" headerPath="../../Libs/x-IMU3/include&#10;../../Libs/fftw3"
+                       libraryPath="../../Libs/x-IMU3/lib/macOS&#10;../../Libs/fftw3"
+                       extraLinkerFlags="-lfftw3"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_analytics" path="../../JUCE/modules"/>

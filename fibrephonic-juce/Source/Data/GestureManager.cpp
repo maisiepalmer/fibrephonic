@@ -248,7 +248,7 @@ void GestureManager::ModifyWaveletDomain(vector<double>& XApprox, vector<double>
     std::string line = "X Approx: " + vecToString(DATA.xApprox) +
         ", X Detail: " + vecToString(DATA.xDetail) +
         ", X Reconstructed: " + vecToString(DATA.accXData);
-    DBG(line);
+    //DBG(line);
 
     {
         // Modify Y....
