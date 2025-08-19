@@ -17,7 +17,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../imuExamples/Connection.h"
+#include "../Connection.h"
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
 
 class BluetoothConnectionManager : public Connection, public Thread
@@ -41,7 +41,7 @@ public:
     inline void setGyroscopeValues(double x, double y, double z) { gX = x; gY = y; gZ = z; }
     inline void setAccelerometerValues(double x, double y, double z) { accX = x; accY = y; accZ = z; }
 
-    inline void setConnectionbool(bool MainBool) { isConnected = MainBool; }
+    inline void setConnectionBool(bool MainBool) { isConnected = MainBool; }
 
     inline double getGyroscopeX() { return gX; }
     inline double getGyroscopeY() { return gY; }
@@ -92,7 +92,7 @@ public:
 
                 //ConnectionInstance->runconnection(*connectionInfoPtr);  
 
-                ConnectionInstance->runconnection(*connectionInfoPtr, [this]() { return threadShouldExit(); });
+                ConnectionInstance->runConnection(*connectionInfoPtr, [this]() { return threadShouldExit(); });
 
 
                 gX = ConnectionInstance->getX(); 

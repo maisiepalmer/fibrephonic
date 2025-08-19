@@ -9,7 +9,7 @@
 */
 
 #include "Connection.h"
-#include "../Data/BluetoothConnectionManager.h"
+#include "Data/BluetoothConnectionManager.h"
 
 #include <chrono>
 #include <iostream>
@@ -66,31 +66,7 @@ void Connection::setupCallbacks()
         };
 }
 
-/*
-void Connection::runconnection(const ximu3::ConnectionInfo& connectionInfo)
-{
-    ximu3::Connection connection(connectionInfo);
-
-    connection.addDecodeErrorCallback(decodeErrorCallback);
-    connection.addStatisticsCallback(statisticsCallback);
-    connection.addInertialCallback(inertialCallback);
-    connection.addEndOfFileCallback(endOfFileCallback);
-
-    if (connection.open() != ximu3::XIMU3_ResultOk)
-    {
-        std::cout << "Unable to open " << connectionInfo.toString() << std::endl;
-        return;
-    }
-
-    const std::vector<std::string> commands{ "{\"strobe\":null}" };
-    connection.sendCommands(commands, 2, 500);
-
-    std::this_thread::sleep_for(std::chrono::seconds(60));
-    connection.close();
-}
-*/
-
-void Connection::runconnection(const ximu3::ConnectionInfo& connectionInfo,
+void Connection::runConnection(const ximu3::ConnectionInfo& connectionInfo,
     std::function<bool()> shouldExit)
 {
     ximu3::Connection connection(connectionInfo);
@@ -115,5 +91,3 @@ void Connection::runconnection(const ximu3::ConnectionInfo& connectionInfo,
 
     connection.close();
 }
-
-

@@ -4,7 +4,6 @@
 #include <functional>
 #include <JuceHeader.h>
 #include <vector>
-#include "../imuExamples/Helpers.hpp"
 
 #define TIMESTAMP_FORMAT "%8" PRIu64 " us"
 #define UINT32_FORMAT " %8" PRIu32
@@ -20,7 +19,7 @@ public:
 
     explicit Connection(BluetoothConnectionManager* parent = nullptr);
 
-    void runconnection(const ximu3::ConnectionInfo& connectionInfo, std::function<bool()> shouldExit);
+    void runConnection(const ximu3::ConnectionInfo& connectionInfo, std::function<bool()> shouldExit);
 
     float gx, gy, gz;
     float accx, accy, accz;

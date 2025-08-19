@@ -8,9 +8,6 @@
     <Filter Include="fibrephonic-juce\Source\Data">
       <UniqueIdentifier>{ABAC7ACC-B3F3-2ECD-91D5-1541811C2534}</UniqueIdentifier>
     </Filter>
-    <Filter Include="fibrephonic-juce\Source\imuExamples">
-      <UniqueIdentifier>{9F4624C6-C740-D9EA-46F0-92971E04158F}</UniqueIdentifier>
-    </Filter>
     <Filter Include="fibrephonic-juce\Source">
       <UniqueIdentifier>{75EC8CFA-5B96-3A32-0DBF-6FE2D853F61E}</UniqueIdentifier>
     </Filter>
@@ -787,13 +784,13 @@
     <ClCompile Include="..\..\Source\Data\MIDIDataHandler.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\imuExamples\Connection.cpp">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\MainComponent.cpp">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Connection.cpp">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Wavelib\wavelet2s.cpp">
@@ -4062,8 +4059,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\UI\Calibration.h">
+      <Filter>fibrephonic-juce\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Connections.h">
+      <Filter>fibrephonic-juce\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\LookandFeel.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\GestureManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
@@ -4074,31 +4080,13 @@
     <ClInclude Include="..\..\Source\Data\SerialPort.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Data\OSCManager.h">
-      <Filter>fibrephonic-juce\Source\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h">
-      <Filter>fibrephonic-juce\Source\Data</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Data\MIDIDataHandler.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\imuExamples\BluetoothConnection.h">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\imuExamples\Helpers.hpp">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\imuExamples\SerialConnection.h">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\imuExamples\Connection.h">
-      <Filter>fibrephonic-juce\Source\imuExamples</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Objects.h">
+    <ClInclude Include="..\..\Source\MainComponent.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\MainComponent.h">
+    <ClInclude Include="..\..\Source\Connection.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Wavelib\wavelet2s.h">
