@@ -4059,10 +4059,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\UI\Calibration.h">
+    <ClInclude Include="..\..\Source\UI\Connections.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Connections.h">
+    <ClInclude Include="..\..\Source\UI\Calibration.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\LookandFeel.h">

@@ -22,22 +22,7 @@
 
 class BluetoothConnectionManager : public Connection, public Thread
 {
-private:
-
-    std::unique_ptr<ximu3::BluetoothConnectionInfo> bluetoothconnectioninfo;
-    std::unique_ptr<Connection> ConnectionInstance;
-
-private:
-
-    const int pollRate = 125;
-
-    float gX, gY, gZ;
-    float accX, accY, accZ;
-
-    bool isConnected = false;
-
 public:
-
     inline void setGyroscopeValues(double x, double y, double z) { gX = x; gY = y; gZ = z; }
     inline void setAccelerometerValues(double x, double y, double z) { accX = x; accY = y; accZ = z; }
 
@@ -50,8 +35,6 @@ public:
     inline double getAccelerationX() { return accX; }
     inline double getAccelerationY() { return accY; }
     inline double getAccelerationZ() { return accZ; }
-
-public:
 
     BluetoothConnectionManager() : Thread("Bluetooth Connection Thread")
     {
@@ -107,4 +90,16 @@ public:
             wait(pollRate);
         }
     }
+    
+private:
+
+    std::unique_ptr<ximu3::BluetoothConnectionInfo> bluetoothconnectioninfo;
+    std::unique_ptr<Connection> ConnectionInstance;
+
+    const int pollRate = 125;
+
+    float gX, gY, gZ;
+    float accX, accY, accZ;
+
+    bool isConnected = false;
 };

@@ -1,11 +1,13 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "UI/LookandFeel.h"
 #include "Data/BluetoothConnectionManager.h"
 #include "Data/SerialPort.h"
 #include "Data/GestureManager.h"
 #include "Data/MIDIDataHandler.h"
+#include "UI/LookandFeel.h"
+#include "UI/Connections.h"
+#include "UI/Calibration.h"
 
 //==============================================================================
 
@@ -43,6 +45,34 @@ private:
     TextButton* pConnectionsButton = &connections;
     TextButton* pCalibrationButton = &calibration;
     TextButton* pBluetoothButton = &bluetooth;
+    
+    Connections connectionsWindow;
+    Calibration calibrationWindow;
+    
+    enum Windows
+    {
+        CONNECTIONS_WINDOW = 0,
+        CALIBRATION_WINDOW,
+        TOTAL_WINDOWS
+    };
+    
+    void updateWindows(int visibleWindow)
+    {
+        windowSelected = visibleWindow;
+        switch(visibleWindow)
+        {
+            case Windows::CONNECTIONS_WINDOW:
+                connectionsWindow.setVisible(true);
+                calibrationWindow.setVisible(false);
+                break;
+            case Windows::CALIBRATION_WINDOW:
+                calibrationWindow.setVisible(true);
+                connectionsWindow.setVisible(false);
+                break;
+            default:
+                break;
+        }
+    }
  
     //std::vector<juce::Button> SwatchButtons;
 

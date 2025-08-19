@@ -5,8 +5,8 @@
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
       <GROUP id="{F30E0362-D0A6-DDE3-F493-98DA9AB8D8E0}" name="UI">
-        <FILE id="tEVc4K" name="Calibration.h" compile="0" resource="0" file="Source/UI/Calibration.h"/>
         <FILE id="ZGrNqS" name="Connections.h" compile="0" resource="0" file="Source/UI/Connections.h"/>
+        <FILE id="tEVc4K" name="Calibration.h" compile="0" resource="0" file="Source/UI/Calibration.h"/>
         <FILE id="ATX9uk" name="LookandFeel.h" compile="0" resource="0" file="Source/UI/LookandFeel.h"/>
       </GROUP>
       <GROUP id="{10A6A6E9-BAAD-CFB0-07C7-1EFB0943290B}" name="Data">
@@ -26,9 +26,9 @@
               file="Source/Data/MIDIDataHandler.h"/>
       </GROUP>
       <FILE id="fkCq2l" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
-      <FILE id="emtHeO" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="Zniqtw" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
+      <FILE id="emtHeO" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="UaJ06G" name="Connection.cpp" compile="1" resource="0" file="Source/Connection.cpp"/>
       <FILE id="evltju" name="Connection.h" compile="0" resource="0" file="Source/Connection.h"/>
     </GROUP>

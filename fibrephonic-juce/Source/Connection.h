@@ -16,7 +16,6 @@ class BluetoothConnectionManager;
 class Connection
 {
 public:
-
     explicit Connection(BluetoothConnectionManager* parent = nullptr);
 
     void runConnection(const ximu3::ConnectionInfo& connectionInfo, std::function<bool()> shouldExit);
@@ -33,7 +32,6 @@ public:
     inline double getaccZ() const { return accz; }
 
 private:
-
     BluetoothConnectionManager* parentManager = nullptr;
 
     std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback;

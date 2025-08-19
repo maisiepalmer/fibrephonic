@@ -22,42 +22,37 @@ using namespace std;
 
 class MIDIHandler : public Thread 
 {
-private:
+public:
+    MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance);
+    ~MIDIHandler() override;
 
+    void run() override;
+    void stop();
+    
+    // Utility (Not entirely necessary but kept anyway)
+    StringArray getAvailableDeviceNames() const;
+    int getNumAvailableDevices() const;
+    
+    // More Getters
+    int BPM;
+    void getBPMSliderVal(int val) { BPM = val; }
+    
+    
+private:
     unique_ptr<MidiOutput> midiOut;
     shared_ptr<GestureManager> gestureManager;
     GestureManager::datastreams* Data;
     GestureManager::Gesture* GESTURES;
-
-private:
 
     bool midioutflag, Quantise;
     int NoofChannels, Note, Velocity, CCVal;
 
     vector<int> X, Y, Z;
 
-public:
-
-    MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance);
-    ~MIDIHandler() override;
-
-    void run() override;
-    void stop();
-
-private:
-
     // Initialisation
     bool openDeviceByIndex(int index);                         
     bool openDeviceByName(const String& deviceName);      
     void closeDevice();
-
-public:
-
-    // Utility (Not entirely necessary but kept anyway)
-    StringArray getAvailableDeviceNames() const;          
-    int getNumAvailableDevices() const;
-
-private:
 
     // MIDI Send
     void sendNoteOn(int channel, int note, int velocity);       
@@ -66,16 +61,7 @@ private:
     void sendRawMessage(const juce::MidiMessage& msg);
     void getGestureManagerData();
 
-private:
-
     // Functionality 
     void MIDIgestureHandling(vector<int>& X, vector<int>& Y, vector<int>& Z, int& Note, int& Velocity, int& CCVal);
     void MIDIOUT();
-
-public:
-
-    // More Getters
-    int BPM;
-
-    void getBPMSliderVal(int val) { BPM = val; }
 };

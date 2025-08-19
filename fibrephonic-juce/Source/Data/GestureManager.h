@@ -31,21 +31,12 @@ class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Av
 class GestureManager : private juce::Timer
 {
 public:
-
     GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance);
     ~GestureManager();
 
     void startPolling();
     void stopPolling();
-
-private:
-
-    shared_ptr<BluetoothConnectionManager> bluetoothConnection;
-
-    int pollcount = 0;
-
-public:
-
+    
     enum Gesture {
         NO_GESTURE,
         PITCH,
@@ -91,9 +82,22 @@ public:
         vector<double> yScaled;
         vector<double> zScaled;
     };
+    
+    inline vector<double>& getScaledX() { return DATA.xScaled; }
+    inline vector<double>& getScaledY() { return DATA.yScaled; }
+    inline vector<double>& getScaledZ() { return DATA.zScaled; }
+
+    datastreams DATA;
+    datastreams* pDATA = &DATA;
+
+    Gesture gesture;
+    Gesture* pGestures = &gesture;
 
 
 private:
+    shared_ptr<BluetoothConnectionManager> bluetoothConnection;
+
+    int pollcount = 0;
 
     void timerCallback() override;
     void PollGestures(); // Main running function, to be called in main component
@@ -153,18 +157,4 @@ private:
 
     // Normalises data to range and scales
     vector<double> normaliseData(double min, double max, vector<double>& input);
-
-public:
-
-    inline vector<double>& getScaledX() { return DATA.xScaled; }
-    inline vector<double>& getScaledY() { return DATA.yScaled; }
-    inline vector<double>& getScaledZ() { return DATA.zScaled; }
-
-public:
-
-    datastreams DATA;
-    datastreams* pDATA = &DATA;
-
-    Gesture gesture;
-    Gesture* pGestures = &gesture;
 };

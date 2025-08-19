@@ -20,33 +20,32 @@ MainComponent::MainComponent()
     //Resize Main Window
     setSize (1200, 700);
     
-    //Buttons and Toggles
+    // Menu
     connections.setLookAndFeel(&buttonlookandfeel);
     connections.setButtonText("Connections");
-    
-    bluetooth.setLookAndFeel(&roundedbuttonlookandfeel);
-    bluetooth.setButtonText("Bluetooth \n Connection");
-    
+
     pConnectionsButton->onClick = [this] {
-        windowSelected = 0;
         DBG("Window = Connections");
-        // set window visible, set other windows invisible
+        updateWindows(Windows::CONNECTIONS_WINDOW);
     };
     
     calibration.setLookAndFeel(&buttonlookandfeel);
     calibration.setButtonText("Calibration");
     
     pCalibrationButton->onClick = [this] {
-        windowSelected = 1;
         DBG("Window = Calibration");
-        // set window visible, set other windows invisible
+        updateWindows(Windows::CALIBRATION_WINDOW);
     };
     
     addAndMakeVisible(connections);
     addAndMakeVisible(calibration);
+    addAndMakeVisible(connectionsWindow);
+    addAndMakeVisible(calibrationWindow);
     
     // Bluetooth Connection Handling Via Button.
     // Thread Closing and Handling Included within button logic.
+    bluetooth.setLookAndFeel(&roundedbuttonlookandfeel);
+    bluetooth.setButtonText("Bluetooth \n Connection");
     
     pBluetoothButton->onClick = [this] {
         isBluetoothToggled = !isBluetoothToggled;
@@ -118,8 +117,6 @@ MainComponent::MainComponent()
     {
         DBG("Failed to create XML from presetTree");
     }
-    
-    // UI Paramaters
 }
 
 MainComponent::~MainComponent()
@@ -181,22 +178,23 @@ void MainComponent::paint(juce::Graphics& g)
     float lineY = cornerRadius + outlinethickness * 0.5f;
     
     g.fillRect(0.0f, lineY - (outlinethickness / 2.0f), (float)getWidth(), outlinethickness);
-    
-    // Draw title text centered above the line
-    float textY = lineY - 40.0f;
-    
-    g.setColour(juce::Colours::white);
-    g.setFont(juce::Font(juce::FontOptions(20.0f, juce::Font::bold)));
-    g.drawText("Fibrephonic Mapper", 0, (int)textY, getWidth(), 30, juce::Justification::centred);
-    
-    g.setFont(juce::Font(juce::FontOptions(15.0f)));
 }
 
 void MainComponent::resized()
 {
-    // Buttons and Toggles
-    connections.setBounds(0, 50, getWidth() / 2, 60);
-    calibration.setBounds(getWidth() / 2, 50, getWidth() / 2, 60);
+    auto height = getHeight();
+    auto width = getWidth();
+    
+    auto menuHeight = 50;
+    
+    // menu
+    connections.setBounds(0, 0, width/2, menuHeight);
+    calibration.setBounds(width/2, 0, width/ 2, menuHeight);
+    
+    // windows
+    connectionsWindow.setBounds(0, menuHeight, width, height-menuHeight);
+    calibrationWindow.setBounds(0, menuHeight, width, height-menuHeight);
+    
     bluetooth.setBounds(100, 150, 100, 100);
 }
 
