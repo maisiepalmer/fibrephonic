@@ -12,16 +12,16 @@
 
 // Initialisation
 MIDIHandler::MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance)
-    : Thread("MIDIOutThread"), 
-    gestureManager(move(gestureManagerInstance)),
-    midioutflag(false),
-    Quantise(true),
-    NoofChannels(3)
+    : Thread("MIDIOutThread"),
+    gestureManager(gestureManagerInstance),
+    midiOutFlag(false),
+    quantise(true),
+    numChannels(3)
 {
     Data = gestureManager->pDATA;
     GESTURES = gestureManager->pGestures;
 
-    Note = CCVal = Velocity = 0;
+    note = ccVal = velocity = 0;
 
     X.resize(DATAWINDOW); Y.resize(DATAWINDOW); Z.resize(DATAWINDOW);
 
@@ -38,7 +38,7 @@ MIDIHandler::MIDIHandler(shared_ptr<GestureManager> gestureManagerInstance)
 
 MIDIHandler::~MIDIHandler()
 {
-    midioutflag = false;
+    midiOutFlag = false;
 
     Data = nullptr;
     delete Data;
@@ -53,13 +53,13 @@ MIDIHandler::~MIDIHandler()
 
 void MIDIHandler::run()
 {
-    midioutflag = true;
+    midiOutFlag = true;
     MIDIOUT();
 }
 
 void MIDIHandler::stop()
 {
-    midioutflag = false;
+    midiOutFlag = false;
     stopThread(500);  
 }
 
@@ -212,7 +212,7 @@ void MIDIHandler::MIDIgestureHandling(vector<int>& X, vector<int>& Y, vector<int
 // Functionality 
 void MIDIHandler::MIDIOUT()
 {
-    while (midioutflag)
+    while (midiOutFlag)
     {
         getGestureManagerData();
 
@@ -249,7 +249,7 @@ void MIDIHandler::MIDIOUT()
         if (isPositiveAndBelow(Note, 128)) // Checks if incoming note is posotive and above 128
         {
             // Play all notes at once
-            for (int channel = 1; channel <= NoofChannels; ++channel) 
+            for (int channel = 1; channel <= numChannels; ++channel) 
             {
                 sendCC(channel, 74, cutoffval);
                 sendCC(channel, 71, resonanceval);
@@ -259,7 +259,7 @@ void MIDIHandler::MIDIOUT()
                 
             this_thread::sleep_until(start + chrono::milliseconds(holdMs)); // Hold notes (Time Between NoteOff)
 
-            for (int channel = 1; channel <= NoofChannels; ++channel)
+            for (int channel = 1; channel <= numChannels; ++channel)
             {
                 sendNoteOff(channel, Note);
             }

@@ -1,21 +1,25 @@
 #include "MainComponent.h"
+#include "Identifiers.h"
 
 //==============================================================================
 MainComponent::MainComponent()
-: presetTree("Presets")
+: parameters(initialiseTree())
+, calTree(std::make_shared<juce::ValueTree>(parameters->getChildWithName("calibration")))
+, conTree(std::make_shared<juce::ValueTree>(parameters->getChildWithName("connections")))
+, swaTree(std::make_shared<juce::ValueTree>(parameters->getChildWithName("swatches")))
+, bluetoothConnection(std::make_shared<BluetoothConnectionManager>(calTree))
+, gestureManager(std::make_shared<GestureManager>(bluetoothConnection))
+, midiHandler(std::make_shared<MIDIHandler>(gestureManager))
+, calibrationWindow(calTree, swaTree)
 {
-    // Handler Objects initialisation
-    bluetoothConnection = std::make_shared<BluetoothConnectionManager>();
-    gestureManager = std::make_shared<GestureManager>(bluetoothConnection);
-    midiHandler = std::make_shared<MIDIHandler>(gestureManager);
+    loadState(false);
     
-    //Setup for XML file directory Ensures it exists and file path is valid....
+    // save state
     juce::File directory = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory)
-        .getChildFile("fibrephonic-juce");
-    
+        .getChildFile("fibrephonic-save-state");
     directory.createDirectory();
+    stateFile = directory.getChildFile("State.xml");
     
-    xmlFile = directory.getChildFile("Presets.xml");
     
     //Resize Main Window
     setSize (1200, 700);
@@ -25,7 +29,6 @@ MainComponent::MainComponent()
     connections.setButtonText("Connections");
 
     pConnectionsButton->onClick = [this] {
-        DBG("Window = Connections");
         updateWindows(Windows::CONNECTIONS_WINDOW);
     };
     
@@ -33,7 +36,6 @@ MainComponent::MainComponent()
     calibration.setButtonText("Calibration");
     
     pCalibrationButton->onClick = [this] {
-        DBG("Window = Calibration");
         updateWindows(Windows::CALIBRATION_WINDOW);
     };
     
@@ -41,115 +43,11 @@ MainComponent::MainComponent()
     addAndMakeVisible(calibration);
     addAndMakeVisible(connectionsWindow);
     addAndMakeVisible(calibrationWindow);
-    
-    // Bluetooth Connection Handling Via Button.
-    // Thread Closing and Handling Included within button logic.
-    bluetooth.setLookAndFeel(&roundedbuttonlookandfeel);
-    bluetooth.setButtonText("Bluetooth \n Connection");
-    
-    pBluetoothButton->onClick = [this] {
-        isBluetoothToggled = !isBluetoothToggled;
-        
-        bluetoothConnection->setConnectionBool(isBluetoothToggled); // Passes to Bluetooth Connection Manager instance
-        
-        DBG("Bluetooth = " << (isBluetoothToggled ? "true" : "false"));
-        
-        if (isBluetoothToggled)
-        {
-            bluetoothConnection->startThread(); // Triggers thread run function
-            gestureManager->startPolling();
-            midiHandler->startThread();
-        }
-        else {
-            
-            bluetoothConnection->wait(100);
-            midiHandler->wait(100);
-        }
-    };
-    
-    //Parameters
-    
-    juce::ValueTree mainTree("MainTreeRoot");
-    
-    swatchTree.clear();
-    swatchTree.resize(6);
-    
-    presetTree = juce::ValueTree("PresetTree");
-    presetTree.removeAllChildren(nullptr);
-    
-    // Clear previous children to avoid duplicates
-    presetTree.removeAllChildren(nullptr);
-    
-    for (int i = 0; i < swatchTree.size(); ++i)
-    {
-        swatchTree[i] = juce::ValueTree("Swatch");
-        
-        swatchTree[i].setProperty("index", i, nullptr);
-        swatchTree[i].setProperty("enabled", true, nullptr);
-        swatchTree[i].setProperty("VID_NFC", 1111, nullptr);
-        swatchTree[i].setProperty("MIDI_Channel", 0, nullptr);
-        swatchTree[i].setProperty("Input_Max", 1111, nullptr);
-        swatchTree[i].setProperty("Input_Min", 0, nullptr);
-        swatchTree[i].setProperty("Transform", (int)0, nullptr);
-        swatchTree[i].setProperty("Output_Max", 1111, nullptr);
-        swatchTree[i].setProperty("Output_Min", 0, nullptr);
-        swatchTree[i].setProperty("Reset", (bool)0, nullptr);
-        
-        // Add to the parameterTree as child
-        presetTree.addChild(swatchTree[i], -1, nullptr);
-    }
-    
-    juce::ValueTree parameterTree("ParameterTree");
-    parameterTree.setProperty("someParameter", 42, nullptr);
-    
-    mainTree.addChild(presetTree, 0, nullptr);
-    mainTree.addChild(parameterTree, -1, nullptr);
-    
-    // Save parameters to XML file
-    if (auto xml = mainTree.createXml())
-    {
-        if (xml->writeTo(xmlFile))
-            DBG("Saved XML successfully to: " << xmlFile.getFullPathName());
-        else
-            DBG("Failed to save XML to: " << xmlFile.getFullPathName());
-    }
-    else
-    {
-        DBG("Failed to create XML from presetTree");
-    }
 }
 
 MainComponent::~MainComponent()
 {
-    stopTimer();
-    
-    if (bluetoothConnection)
-    {
-        bluetoothConnection->signalThreadShouldExit();
-        
-        // Important: call stopThread only from a different thread
-        // Make sure this destructor runs on the GUI thread, NOT the Bluetooth thread
-        if (Thread::getCurrentThreadId() != bluetoothConnection->getThreadId())
-        {
-            if (!bluetoothConnection->stopThread(1000))
-                DBG("Thread did not stop cleanly");
-            
-            bluetoothConnection.reset();
-        }
-        else
-        {
-            // If destructor somehow called from inside thread,
-            // defer cleanup to GUI thread asynchronously
-            auto threadPtr = std::move(bluetoothConnection);
-            MessageManager::callAsync([threadPtr = std::move(threadPtr)]() mutable
-                                      {
-                threadPtr->signalThreadShouldExit();
-                if (!threadPtr->stopThread(1000))
-                    DBG("Thread did not stop cleanly (deferred)");
-                // threadPtr destroyed here
-            });
-        }
-    }
+    saveState(false);
 }
 
 //==============================================================================
@@ -194,49 +92,101 @@ void MainComponent::resized()
     // windows
     connectionsWindow.setBounds(0, menuHeight, width, height-menuHeight);
     calibrationWindow.setBounds(0, menuHeight, width, height-menuHeight);
-    
-    bluetooth.setBounds(100, 150, 100, 100);
 }
 
 //==============================================================================
-void MainComponent::parseIMUData(const juce::String& data)
+std::shared_ptr<juce::ValueTree> MainComponent::initialiseTree()
 {
-    // Expected format: "ACC:0.01,0.02,9.8;GYRO:0.01,0.00,0.1;"
-    DBG("IMU Raw Data: " << data);
+    juce::ValueTree stateTree (Identifiers::EntireState::State);
     
-    juce::StringArray sections;
-    sections.addTokens(data, ";", "");
-    
-    for (auto& section : sections)
+    juce::ValueTree connectionsTree (Identifiers::Connections::State);
+    for (int i = 0; i < 8; ++i)
     {
-        if (section.startsWith("ACC:"))
-        {
-            auto accValues = juce::StringArray::fromTokens(section.fromFirstOccurrenceOf("ACC:", false, false), ",", "");
-            if (accValues.size() == 3)
-            {
-                float ax = accValues[0].getFloatValue();
-                float ay = accValues[1].getFloatValue();
-                float az = accValues[2].getFloatValue();
-                DBG("Accel: " << ax << ", " << ay << ", " << az);
-            }
-        }
-        else if (section.startsWith("GYRO:"))
-        {
-            auto gyroValues = juce::StringArray::fromTokens(section.fromFirstOccurrenceOf("GYRO:", false, false), ",", "");
-            if (gyroValues.size() == 3)
-            {
-                float gx = gyroValues[0].getFloatValue();
-                float gy = gyroValues[1].getFloatValue();
-                float gz = gyroValues[2].getFloatValue();
-                DBG("Gyro: " << gx << ", " << gy << ", " << gz);
-            }
-        }
+        juce::ValueTree connection(Identifiers::Connections::Connection::State);
+        connection.setProperty(Identifiers::Connections::Connection::MidiChannel, 0, nullptr);
+        connection.setProperty(Identifiers::Connections::Connection::MidiCC, 0, nullptr);
+        connectionsTree.addChild(connection, i, nullptr);
     }
+    stateTree.addChild(connectionsTree, 0, nullptr);
+    
+    juce::ValueTree calibrationTree (Identifiers::Calibration::State);
+    calibrationTree.setProperty(Identifiers::Calibration::BluetoothPoll, false, nullptr);
+    calibrationTree.setProperty(Identifiers::Calibration::BluetoothOptions, "", nullptr);
+    calibrationTree.setProperty(Identifiers::Calibration::BluetoothSelection, 0, nullptr);
+    calibrationTree.setProperty(Identifiers::Calibration::SerialPoll, false, nullptr);
+    calibrationTree.setProperty(Identifiers::Calibration::SerialOptions, 0, nullptr);
+    calibrationTree.setProperty(Identifiers::Calibration::SerialSelection, 0, nullptr);
+    
+    stateTree.addChild(calibrationTree, 1, nullptr);
+    
+    juce::ValueTree swatchesTree (Identifiers::Swatches::State);
+    for (int i = 0; i < 8; ++i)
+    {
+        juce::ValueTree swatch (Identifiers::Swatches::Swatch::State);
+        swatch.setProperty(Identifiers::Swatches::Swatch::Index, i, nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::Name, "swatch", nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::Enabled, false, nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::NfcId, 0, nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::InputMin, 0, nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::InputMax, 0, nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::Transform, 0, nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::OutputMin, 0, nullptr);
+        swatch.setProperty(Identifiers::Swatches::Swatch::OutputMax, 0, nullptr);
+        
+        swatchesTree.addChild(swatch, i, nullptr);
+    }
+    
+    stateTree.addChild(swatchesTree, 2, nullptr);
+    
+    return make_shared<juce::ValueTree>(stateTree);
 }
 
-//==============================================================================
-void MainComponent::timerCallback()
+
+void MainComponent::saveState(bool asPreset)
 {
-    startTimerHz(30);
-    repaint();
+    auto xml = parameters->createXml();
+    juce::File saveLocation = stateFile;
+    
+    if (asPreset)
+    {
+        std::unique_ptr<juce::FileChooser> chooser = std::make_unique<juce::FileChooser> ("Please select where you want to save...",
+                                                   juce::File::getSpecialLocation (juce::File::userDocumentsDirectory));
+     
+        auto folderChooserFlags = juce::FileBrowserComponent::saveMode | juce::FileBrowserComponent::canSelectDirectories;
+     
+        chooser->launchAsync (folderChooserFlags, [&, this] (const juce::FileChooser& chooser)
+        {
+            juce::File file = chooser.getResult();
+            saveLocation = chooser.getResult();
+        });
+    }
+    
+    xml->writeTo(saveLocation);
+    DBG("Saved XML successfully to: " << stateFile.getFullPathName());
+}
+
+void MainComponent::loadState(bool asPreset)
+{
+    juce::File loadLocation = stateFile;
+    
+    if (asPreset)
+    {
+        std::unique_ptr<juce::FileChooser> chooser = std::make_unique<juce::FileChooser> ("Please select the file you want to load...",
+                                                   juce::File::getSpecialLocation (juce::File::userDocumentsDirectory),
+                                                   "*.xml");
+     
+        auto folderChooserFlags = juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectDirectories;
+     
+        chooser->launchAsync (folderChooserFlags, [&, this] (const juce::FileChooser& chooser)
+        {
+            juce::File file = chooser.getResult();
+            loadLocation = chooser.getResult();
+        });
+    }
+    
+    if (auto xml = juce::XmlDocument::parse(loadLocation))
+    {
+        juce::ValueTree tree = juce::ValueTree::fromXml(*xml);
+        parameters = std::make_shared<juce::ValueTree>(tree.createCopy());
+    }
 }

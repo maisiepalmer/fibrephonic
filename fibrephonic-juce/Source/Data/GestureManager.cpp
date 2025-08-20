@@ -12,7 +12,7 @@
 #include "BluetoothConnectionManager.h"
 
 GestureManager::GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance)
-    : bluetoothConnection(move(BluetoothConnectionManagerInstance))
+: bluetoothConnection(BluetoothConnectionManagerInstance)
 {
     DATA.gX = DATA.gY = DATA.gZ = 
     DATA.accX = DATA.accY = DATA.accZ = 
@@ -51,9 +51,9 @@ GestureManager::~GestureManager()
 
 void GestureManager::startPolling() { startTimerHz(IMUINERTIALREFRESH); }
 void GestureManager::stopPolling() { stopTimer(); }
-void GestureManager::timerCallback() { PollGestures(); } // pollcount++; DBG(pollcount); }
+void GestureManager::timerCallback() { pollGestures(); } // pollcount++; DBG(pollcount); }
 
-void GestureManager::PollGestures()
+void GestureManager::pollGestures()
 {
     getConnectionManagerValues();
     fillDataVectors(&DATA.accXData, &DATA.accYData, &DATA.accZData, &DATA.XData, &DATA.YData, &DATA.ZData, &DATA.gX, &DATA.gY, &DATA.gZ, &DATA.accX, &DATA.accY, &DATA.accZ);

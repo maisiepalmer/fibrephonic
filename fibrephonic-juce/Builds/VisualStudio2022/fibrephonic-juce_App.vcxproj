@@ -3237,9 +3237,13 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Identifiers.h"/>
     <ClInclude Include="..\..\Source\UI\Connections.h"/>
     <ClInclude Include="..\..\Source\UI\Calibration.h"/>
+    <ClInclude Include="..\..\Source\UI\LEDSignal.h"/>
+    <ClInclude Include="..\..\Source\UI\SwatchConnector.h"/>
     <ClInclude Include="..\..\Source\UI\LookandFeel.h"/>
+    <ClInclude Include="..\..\Source\Data\SerialConnectionManager.h"/>
     <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h"/>
     <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h"/>

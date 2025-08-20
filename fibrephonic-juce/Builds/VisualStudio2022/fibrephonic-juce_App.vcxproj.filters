@@ -4059,14 +4059,26 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Identifiers.h">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Connections.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Calibration.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\LEDSignal.h">
+      <Filter>fibrephonic-juce\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\SwatchConnector.h">
+      <Filter>fibrephonic-juce\Source\UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\LookandFeel.h">
       <Filter>fibrephonic-juce\Source\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Data\SerialConnectionManager.h">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>

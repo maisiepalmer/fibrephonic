@@ -95,12 +95,14 @@ public:
 
 
 private:
+    shared_ptr<ValueTree> vt;
     shared_ptr<BluetoothConnectionManager> bluetoothConnection;
+    
 
     int pollcount = 0;
 
     void timerCallback() override;
-    void PollGestures(); // Main running function, to be called in main component
+    void pollGestures(); // Main running function, to be called in main component
 
     void getConnectionManagerValues();
 

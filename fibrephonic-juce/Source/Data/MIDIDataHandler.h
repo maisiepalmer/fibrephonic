@@ -39,13 +39,15 @@ public:
     
     
 private:
+    std::shared_ptr<ValueTree> vt;
+    
     unique_ptr<MidiOutput> midiOut;
     shared_ptr<GestureManager> gestureManager;
     GestureManager::datastreams* Data;
     GestureManager::Gesture* GESTURES;
 
-    bool midioutflag, Quantise;
-    int NoofChannels, Note, Velocity, CCVal;
+    bool midiOutFlag, quantise;
+    int numChannels, note, velocity, ccVal;
 
     vector<int> X, Y, Z;
 
