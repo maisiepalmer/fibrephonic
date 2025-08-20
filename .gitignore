@@ -68,3 +68,10 @@ CMakeUserPresets.json
 .editorconfig
 fibrephonic-juce/Builds/MacOSX/fibrephonic-juce.xcodeproj/project.xcworkspace/xcuserdata/m22-palmer.xcuserdatad/UserInterfaceState.xcuserstate
 *.xcuserstate
+
+# Max/MSP files to ignore
+.DS_Store
+*.maxpat.maxpat
+*.maxpat~
+*.maxhelp
+/max-temp
