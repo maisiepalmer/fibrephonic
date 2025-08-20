@@ -4,7 +4,6 @@
 MainComponent::MainComponent()
 : bluetoothConnection(std::make_shared<BluetoothConnectionManager>())
 , gestureManager(std::make_shared<GestureManager>(bluetoothConnection))
-, midiHandler(std::make_shared<MIDIHandler>(gestureManager))
 {
     //Resize Main Window
     setSize (1200, 700);

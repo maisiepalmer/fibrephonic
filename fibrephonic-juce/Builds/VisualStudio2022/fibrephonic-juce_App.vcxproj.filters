@@ -775,9 +775,6 @@
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Data\MIDIDataHandler.cpp">
-      <Filter>fibrephonic-juce\Source\Data</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClCompile>
@@ -4060,9 +4057,6 @@
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h">
-      <Filter>fibrephonic-juce\Source\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Data\MIDIDataHandler.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">

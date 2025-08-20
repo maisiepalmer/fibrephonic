@@ -13,10 +13,6 @@
               file="Source/Data/GestureManager.h"/>
         <FILE id="NXG67P" name="Ximu3DeviceManager.h" compile="0" resource="0"
               file="Source/Data/Ximu3DeviceManager.h"/>
-        <FILE id="nqTAEU" name="MIDIDataHandler.cpp" compile="1" resource="0"
-              file="Source/Data/MIDIDataHandler.cpp"/>
-        <FILE id="EB0gn7" name="MIDIDataHandler.h" compile="0" resource="0"
-              file="Source/Data/MIDIDataHandler.h"/>
       </GROUP>
       <FILE id="fkCq2l" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="Zniqtw" name="MainComponent.cpp" compile="1" resource="0"

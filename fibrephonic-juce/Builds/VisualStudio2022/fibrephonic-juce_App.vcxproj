@@ -159,7 +159,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
-    <ClCompile Include="..\..\Source\Data\MIDIDataHandler.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\Source\Connection.cpp"/>
@@ -3239,7 +3238,6 @@
     <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h"/>
     <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h"/>
-    <ClInclude Include="..\..\Source\Data\MIDIDataHandler.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
     <ClInclude Include="..\..\Source\Connection.h"/>
     <ClInclude Include="..\..\Source\Wavelib\wavelet2s.h"/>

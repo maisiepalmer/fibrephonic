@@ -3,7 +3,6 @@
 #include <JuceHeader.h>
 #include "Data/BluetoothConnectionManager.h"
 #include "Data/GestureManager.h"
-#include "Data/MIDIDataHandler.h"
 
 //==============================================================================
 
@@ -22,7 +21,6 @@ private:
     //==============================================================================
     std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
     std::shared_ptr<GestureManager> gestureManager;
-    std::shared_ptr<MIDIHandler> midiHandler;
     
     int functionCount = 0;
     
