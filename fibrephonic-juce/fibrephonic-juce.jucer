@@ -5,6 +5,8 @@
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
       <GROUP id="{10A6A6E9-BAAD-CFB0-07C7-1EFB0943290B}" name="Data">
+        <FILE id="eFOeZQ" name="BluetoothConnectionManager.cpp" compile="1"
+              resource="0" file="Source/Data/BluetoothConnectionManager.cpp"/>
         <FILE id="HCEz1i" name="BluetoothConnectionManager.h" compile="0" resource="0"
               file="Source/Data/BluetoothConnectionManager.h"/>
         <FILE id="CZmvGW" name="GestureManager.cpp" compile="1" resource="0"

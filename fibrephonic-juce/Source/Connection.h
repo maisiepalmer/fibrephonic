@@ -27,9 +27,9 @@ public:
     inline double getY() const { return gy; }
     inline double getZ() const { return gz; }
 
-    inline double getaccX() const { return accx; }
-    inline double getaccY() const { return accy; }
-    inline double getaccZ() const { return accz; }
+    inline double getAccX() const { return accx; }
+    inline double getAccY() const { return accy; }
+    inline double getAccZ() const { return accz; }
 
 private:
     BluetoothConnectionManager* parentManager = nullptr;

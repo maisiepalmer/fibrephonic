@@ -1,14 +1,14 @@
 /*
-  ==============================================================================
+  ==============================================================================
 
-    GestureManager.h
-    Created: 13 Jun 2025 3:33:06pm
-    Author:  Joseph B 
+    GestureManager.h
+    Created: 13 Jun 2025 3:33:06pm
+    Author:  Joseph B
 
-    Gesture Manager class to identify, scale, handle and export IMU sensor data 
-    over various connection types. 
+    Gesture Manager class to identify, scale, handle and export IMU sensor data
+    over various connection types.
 
-  ==============================================================================
+  ==============================================================================
 */
 
 #pragma once
@@ -22,16 +22,20 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <string> // Added for std::string
 #include "../Wavelib/wavelet2s.h"
 
-using namespace std;
+// Forward Declare Bluetooth Manager Class, Avoids Circular Dependancy.
+class BluetoothConnectionManager;
 
-class BluetoothConnectionManager; // Forward Declare Bluetooth Manager Class, Avoids Circular Dependancy. 
+// Explicitly include JUCE modules
+#include <juce_core/juce_core.h>
+#include <juce_osc/juce_osc.h>
 
 class GestureManager : private juce::Timer
 {
 public:
-    GestureManager(shared_ptr<BluetoothConnectionManager> BluetoothConnectionManagerInstance);
+    GestureManager(std::shared_ptr<BluetoothConnectionManager> bluetoothConnectionManagerInstance);
     ~GestureManager();
 
     void startPolling();
@@ -46,116 +50,110 @@ public:
         STROKE
     };
 
-    struct datastreams {
+    struct DataStreams { // Renamed from datastreams to follow PascalCase for structs
         // Incoming sensor data
-        double gX, gY, gZ;
+        double gx, gy, gz; // Renamed to gx, gy, gz to conform to camelCase
         double accX, accY, accZ;
         double jerkX, jerkY, jerkZ;
 
         // Raw Data Vectors (time domain data)
-        vector<double> accXData, accYData, accZData;
-        vector<double> XData, YData, ZData;
+        std::vector<double> accXData, accYData, accZData;
+        std::vector<double> xData, yData, zData; // Renamed to xData, yData, zData
 
         // Wavelet decomposition coefficients and bookkeeping for X axis
-        vector<double> xCoeff;         // full wavelet coeffs vector (approx + details)
-        vector<double> xApprox;        // approximation coefficients extracted
-        vector<double> xDetail;        // detail coefficients extracted
-        vector<double> xBookkeeping;   // bookkeeping info (e.g., levels, zero padding)
-        vector<double> xLengths;       // lengths of coefficient segments
+        std::vector<double> xCoeff;
+        std::vector<double> xApprox;
+        std::vector<double> xDetail;
+        std::vector<double> xBookkeeping;
+        std::vector<double> xLengths;
 
         // Wavelet decomposition coefficients and bookkeeping for Y axis
-        vector<double> yCoeff;
-        vector<double> yApprox;
-        vector<double> yDetail;
-        vector<double> yBookkeeping;
-        vector<double> yLengths;
+        std::vector<double> yCoeff;
+        std::vector<double> yApprox;
+        std::vector<double> yDetail;
+        std::vector<double> yBookkeeping;
+        std::vector<double> yLengths;
 
         // Wavelet decomposition coefficients and bookkeeping for Z axis
-        vector<double> zCoeff;
-        vector<double> zApprox;
-        vector<double> zDetail;
-        vector<double> zBookkeeping;
-        vector<double> zLengths;
+        std::vector<double> zCoeff;
+        std::vector<double> zApprox;
+        std::vector<double> zDetail;
+        std::vector<double> zBookkeeping;
+        std::vector<double> zLengths;
 
         // Scaled Data (post transform)
-        vector<double> xScaled;
-        vector<double> yScaled;
-        vector<double> zScaled;
+        std::vector<double> xScaled;
+        std::vector<double> yScaled;
+        std::vector<double> zScaled;
     };
     
-    inline vector<double>& getScaledX() { return DATA.xScaled; }
-    inline vector<double>& getScaledY() { return DATA.yScaled; }
-    inline vector<double>& getScaledZ() { return DATA.zScaled; }
+    std::vector<double>& getScaledX() { return data.xScaled; }
+    std::vector<double>& getScaledY() { return data.yScaled; }
+    std::vector<double>& getScaledZ() { return data.zScaled; }
 
-    datastreams DATA;
-    datastreams* pDATA = &DATA;
-
+    DataStreams data; // Renamed from DATA to data
     Gesture gesture;
-    Gesture* pGestures = &gesture;
-
 
 private:
-    shared_ptr<BluetoothConnectionManager> bluetoothConnection;
+    std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
     
-
-    int pollcount = 0;
+    int pollCount = 0; // Renamed pollcount to pollCount
+    
+    juce::OSCSender oscSender;
 
     void timerCallback() override;
-    void pollGestures(); // Main running function, to be called in main component
+    void pollGestures();
 
     void getConnectionManagerValues();
 
-    // Fetches Sensor data from bluetooth manager class
-    void fillDataVectors(vector<double>* xaccdata,
-                         vector<double>* yaccdata,
-                         vector<double>* zaccdata,
-                         vector<double>* xdata,
-                         vector<double>* ydata,
-                         vector<double>* zdata,
-                                          double* x,
-                                          double* y,
-                                          double* z,
-                                          double* accx,
-                                          double* accy,
-                                          double* accz);
+    void fillDataVectors(std::vector<double>& xaccdata,
+                         std::vector<double>& yaccdata,
+                         std::vector<double>& zaccdata,
+                         std::vector<double>& xdata,
+                         std::vector<double>& ydata,
+                         std::vector<double>& zdata,
+                         double& x,
+                         double& y,
+                         double& z,
+                         double& accx,
+                         double& accy,
+                         double& accz);
 
-    // Performs DWT transforming signal into wavelet domain
-    void decomposeAxis(vector<double>& input, string wavelet, int levels,
+    void decomposeAxis(std::vector<double>& input,
+                       std::string wavelet,
+                       int levels,
+                       std::vector<double>& coeffs,
+                       std::vector<double>& approx,
+                       std::vector<double>& detail,
+                       std::vector<double>& bookkeeping,
+                       std::vector<double>& lengths);
 
-                       vector<double>& coeffs,
-                       vector<double>& approx,
-                       vector<double>& detail,
-                       vector<double>& bookkeeping,
-                       vector<double>& lengths);
+    void modifyWaveletDomain(std::vector<double>& xApprox, const std::vector<double>& xDetail,
+                             std::vector<double>& yApprox, const std::vector<double>& yDetail,
+                             std::vector<double>& zApprox, const std::vector<double>& zDetail); // Renamed to modifyWaveletDomain
 
-    // Passes results of axis DWT providing point of modification and future gestural identification
-    void ModifyWaveletDomain(vector<double>& XApprox, vector<double> XDetail,
-                             vector<double>& YApprox, vector<double> YDetail,
-                             vector<double>& ZApprox, vector<double> ZDetail);
+    Gesture identifyGesture(const std::vector<double>& xApprox, const std::vector<double>& xDetail,
+                            const std::vector<double>& yApprox, const std::vector<double>& yDetail,
+                            const std::vector<double>& zApprox, const std::vector<double>& zDetail); // Renamed to identifyGesture
 
-    // Returns Identified Gesture based on transformed data
-    Gesture IdentifyGesture (vector<double>& XApprox, vector<double> XDetail,
-                             vector<double>& YApprox, vector<double> YDetail,
-                             vector<double>& ZApprox, vector<double> ZDetail);
+    void reconstructAxis(std::vector<double>& coeffs,
+                         std::vector<double>& approx,
+                         std::vector<double>& detail,
+                         std::vector<double>& bookkeeping,
+                         std::vector<double>& lengths,
+                         std::string wavelet,
+                         std::vector<double>& reconstructed);
 
-    // Reconstructs singnal back to time domain via IDWT
-    void reconstructAxis(vector<double>& coeffs,
-                         vector<double>& approx,
-                         vector<double>& detail,
-                         vector<double>& bookkeeping,
-                         vector<double>& lengths,
-                         string wavelet,
-                         vector<double>& reconstructed);
+    void softThresholding(std::vector<double>& detailCoeffs); // Renamed to softThresholding
 
-    void softThresholding(vector<double>& DetailCoeffs);
-
-    // Performs all necessary transforms on all axis allows for signal editing and mapping
     void perform1DWaveletTransform();
 
-    // Takes in Vectors after transforming, calculates min/ max and scales in range 1 to 127 for MIDI CC.
-    void scaleandCopy(vector<double>& xaccdata, vector<double>& yaccdata, vector<double>& zaccdata,
-                      vector<double>& xscale,   vector<double>& yscale,   vector<double>& zscale);
+    void scaleAndCopy(std::vector<double>& xaccdata, std::vector<double>& yaccdata, std::vector<double>& zaccdata,
+                      std::vector<double>& xscale, std::vector<double>& yscale, std::vector<double>& zscale); // Renamed to scaleAndCopy
 
-    // Normalises data to range and scales
-    vector<double> normaliseData(double min, double max, vector<double>& input);
+    std::vector<double> normaliseData(double min, double max, const std::vector<double>& input); // Renamed to normaliseData
+    
+    void sendProcessedDataAsBundle(const std::vector<double>& accelXData,
+                                   const std::vector<double>& accelYData,
+                                   const std::vector<double>& accelZData);
 };

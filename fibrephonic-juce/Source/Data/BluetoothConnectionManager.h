@@ -1,18 +1,18 @@
 /*
- ==============================================================================
- 
- BluetoothConnectionManager.h
- Created: 11 Jun 2025 10:32:59am
- Author:  Joseph B
- 
- Establlishes bluetooth connection using IMU connection example and separates
- and sends sensor data values.
- 
- Use for immediate input scaling and poll rate adjustment, also manage port
- connections.
- 
- ==============================================================================
- */
+ ==============================================================================
+ 
+ BluetoothConnectionManager.h
+ Created: 11 Jun 2025 10:32:59am
+ Author:  Joseph B
+ 
+ Establishes bluetooth connection using IMU connection example and separates
+ and sends sensor data values.
+ 
+ Use for immediate input scaling and poll rate adjustment, also manage port
+ connections.
+ 
+ ==============================================================================
+ */
 
 #pragma once
 
@@ -20,81 +20,41 @@
 #include "../Connection.h"
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
 
-class BluetoothConnectionManager : public Connection, public Thread
+class BluetoothConnectionManager : public Connection, public juce::Thread
 {
 public:
-    BluetoothConnectionManager() : Thread("Bluetooth Connection Thread")
-    {
-        gX = gY = gZ = 0;
-        accX = accY = accZ = 0;
-        
-        bluetoothConnectionInfo = std::make_unique<ximu3::BluetoothConnectionInfo>("COM11");
-        connectionInstance = std::make_unique<Connection>(this);
-    }
+    //==============================================================================
+    BluetoothConnectionManager();
+    ~BluetoothConnectionManager();
     
-    ~BluetoothConnectionManager()
-    {
-        signalThreadShouldExit();
-        stopThread(500);
-    }
+    //==============================================================================
+    void startConnection();
+    void stopConnection();
+    bool getIsConnected() const { return isConnected; }
     
-    void run() override
-    {
-        while (!threadShouldExit())
-        {
-            auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
-            if (devices.empty())
-            {
-                DBG("No Bluetooth connections available");
-            }
-            else
-            {
-                DBG("Found " << devices[0].device_name << " " << devices[0].serial_number);
-                
-                auto connectionInfoPtr = ximu3::connectionInfoFrom(devices[0]);
-                if (!connectionInfoPtr)
-                {
-                    DBG("Failed to create connection info.");
-                    return;
-                }
-                
-                if (threadShouldExit()) break;
-                
-                connectionInstance->runConnection(*connectionInfoPtr, [this]() { return threadShouldExit(); });
-                
-                
-                gX = connectionInstance->getX();
-                gY = connectionInstance->getY();
-                gZ = connectionInstance->getZ();
-                
-                accX = connectionInstance->getaccX();
-                accY = connectionInstance->getaccY();
-                accZ = connectionInstance->getaccZ();
-            }
-            
-            wait(pollRate);
-        }
-    }
-    
-    inline void setGyroscopeValues(double x, double y, double z) { gX = x; gY = y; gZ = z; }
-    inline void setAccelerometerValues(double x, double y, double z) { accX = x; accY = y; accZ = z; }
+    //==============================================================================
+    inline void setGyroscopeValues(double x, double y, double z) { gyroscopeX = x; gyroscopeY = y; gyroscopeZ = z; }
+    inline void setAccelerometerValues(double x, double y, double z) { accelerationX = x; accelerationY = y; accelerationZ = z; }
     
     inline void setConnectionBool(bool b) { isConnected = b; }
     
-    inline double getGyroscopeX() { return gX; }
-    inline double getGyroscopeY() { return gY; }
-    inline double getGyroscopeZ() { return gZ; }
+    inline double getGyroscopeX() const { return gyroscopeX; }
+    inline double getGyroscopeY() const { return gyroscopeY; }
+    inline double getGyroscopeZ() const { return gyroscopeZ; }
     
-    inline double getAccelerationX() { return accX; }
-    inline double getAccelerationY() { return accY; }
-    inline double getAccelerationZ() { return accZ; }
+    inline double getAccelerationX() const { return accelerationX; }
+    inline double getAccelerationY() const { return accelerationY; }
+    inline double getAccelerationZ() const { return accelerationZ; }
     
+    //==============================================================================
+    void run() override;
+
 private:
     //==============================================================================
-    std::unique_ptr<Connection> connectionInstance;
+    std::unique_ptr<Connection> connectionHandler;
     
-    float gX, gY, gZ;
-    float accX, accY, accZ;
+    float gyroscopeX, gyroscopeY, gyroscopeZ;
+    float accelerationX, accelerationY, accelerationZ;
     
     bool isConnected = false;
     
@@ -104,5 +64,4 @@ private:
     std::unique_ptr<ximu3::BluetoothConnectionInfo> bluetoothConnectionInfo;
     
     const int pollRate = 125;
-    
 };
