@@ -39,8 +39,6 @@ public:
     
     
 private:
-    std::shared_ptr<ValueTree> vt;
-    
     unique_ptr<MidiOutput> midiOut;
     shared_ptr<GestureManager> gestureManager;
     GestureManager::datastreams* Data;

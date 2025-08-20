@@ -95,7 +95,6 @@ public:
 
 
 private:
-    shared_ptr<ValueTree> vt;
     shared_ptr<BluetoothConnectionManager> bluetoothConnection;
     
 

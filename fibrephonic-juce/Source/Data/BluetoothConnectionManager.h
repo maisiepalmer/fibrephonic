@@ -19,97 +19,67 @@
 #include <JuceHeader.h>
 #include "../Connection.h"
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
-#include "../Identifiers.h"
 
-class BluetoothConnectionManager : public Connection, public Thread, public ValueTree::Listener
+class BluetoothConnectionManager : public Connection, public Thread
 {
 public:
-    //==============================================================================
-    BluetoothConnectionManager(std::shared_ptr<ValueTree> calibrationTree)
-    : Thread("Bluetooth Connection Thread")
-    , vt(calibrationTree)
+    BluetoothConnectionManager() : Thread("Bluetooth Connection Thread")
     {
         gX = gY = gZ = 0;
         accX = accY = accZ = 0;
         
+        bluetoothConnectionInfo = std::make_unique<ximu3::BluetoothConnectionInfo>("COM11");
         connectionInstance = std::make_unique<Connection>(this);
-        
-        vt->addListener(this);
     }
     
     ~BluetoothConnectionManager()
     {
         signalThreadShouldExit();
         stopThread(500);
-        vt->removeListener(this);
-    }
-    
-    //==============================================================================
-    juce::StringArray pollConnections()
-    {
-        deviceList = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
-        juce::StringArray names;
-        names.clear();
-        if (!deviceList.empty())
-        {
-            for (int i = 0; i < deviceList.size(); i++)
-            {
-                juce::String deviceName (deviceList[i].device_name);
-                names.add(deviceName);
-            }
-        }
-        return names;
-    }
-    
-    void selectDevice(int index)
-    {
-        selectedDevice = deviceList[index];
     }
     
     void run() override
     {
         while (!threadShouldExit())
         {
-            auto connectionInfoPtr = ximu3::connectionInfoFrom(selectedDevice);
-            if (!connectionInfoPtr)
+            auto devices = ximu3::PortScanner::scanFilter(ximu3::XIMU3_ConnectionTypeBluetooth);
+            if (devices.empty())
             {
-                DBG("Failed to create connection info.");
-                return;
+                DBG("No Bluetooth connections available");
+            }
+            else
+            {
+                DBG("Found " << devices[0].device_name << " " << devices[0].serial_number);
+                
+                auto connectionInfoPtr = ximu3::connectionInfoFrom(devices[0]);
+                if (!connectionInfoPtr)
+                {
+                    DBG("Failed to create connection info.");
+                    return;
+                }
+                
+                if (threadShouldExit()) break;
+                
+                connectionInstance->runConnection(*connectionInfoPtr, [this]() { return threadShouldExit(); });
+                
+                
+                gX = connectionInstance->getX();
+                gY = connectionInstance->getY();
+                gZ = connectionInstance->getZ();
+                
+                accX = connectionInstance->getaccX();
+                accY = connectionInstance->getaccY();
+                accZ = connectionInstance->getaccZ();
             }
             
-            connectionInstance->runConnection(*connectionInfoPtr, [this]() { return threadShouldExit(); });
-            
-            gX = connectionInstance->getX();
-            gY = connectionInstance->getY();
-            gZ = connectionInstance->getZ();
-            
-            accX = connectionInstance->getaccX();
-            accY = connectionInstance->getaccY();
-            accZ = connectionInstance->getaccZ();
+            wait(pollRate);
         }
     }
     
-    //==============================================================================
-    void valueTreePropertyChanged (ValueTree &treeWhosePropertyHasChanged, const Identifier &property) override
-    {
-        if(property == Identifiers::Calibration::BluetoothPoll && treeWhosePropertyHasChanged.getProperty(property))
-        {
-            juce::Atomic<juce::StringArray> names;
-            names.set(pollConnections());
-            names.get().isEmpty() ? vt->setProperty(Identifiers::Calibration::BluetoothOptions, "", nullptr) : vt->setProperty(Identifiers::Calibration::BluetoothOptions, names.get(), nullptr);
-            vt->setProperty(Identifiers::Calibration::BluetoothPoll, false, nullptr);
-        }
-        else if(property == Identifiers::Calibration::BluetoothSelection)
-        {
-            int index = treeWhosePropertyHasChanged.getProperty(property);
-            selectDevice(index);
-            startThread();
-        }
-    }
-    
-    //==============================================================================
     inline void setGyroscopeValues(double x, double y, double z) { gX = x; gY = y; gZ = z; }
     inline void setAccelerometerValues(double x, double y, double z) { accX = x; accY = y; accZ = z; }
+    
+    inline void setConnectionBool(bool b) { isConnected = b; }
     
     inline double getGyroscopeX() { return gX; }
     inline double getGyroscopeY() { return gY; }
@@ -122,7 +92,6 @@ public:
 private:
     //==============================================================================
     std::unique_ptr<Connection> connectionInstance;
-    std::shared_ptr<ValueTree> vt;
     
     float gX, gY, gZ;
     float accX, accY, accZ;
@@ -131,4 +100,9 @@ private:
     
     std::vector<ximu3::XIMU3_Device> deviceList;
     ximu3::XIMU3_Device selectedDevice;
+    
+    std::unique_ptr<ximu3::BluetoothConnectionInfo> bluetoothConnectionInfo;
+    
+    const int pollRate = 125;
+    
 };
