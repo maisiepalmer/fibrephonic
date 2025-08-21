@@ -336,6 +336,7 @@
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					70AFDFBB90D899A5DA14D412 = {
+						LastSwiftMigration = 1600;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 0;
@@ -529,6 +530,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -597,6 +599,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.fibrephonicjuce;
 				PRODUCT_NAME = fbrphnc;
+				SWIFT_VERSION = 6.0;
 				USE_HEADERMAP = NO;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGL;
 				VALID_ARCHS = "i386 x86_64 arm64 arm64e";
@@ -608,6 +611,7 @@
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_LINK_OBJC_RUNTIME = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
@@ -677,6 +681,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.fibrephonicjuce;
 				PRODUCT_NAME = fbrphnc;
+				SWIFT_VERSION = 6.0;
 				USE_HEADERMAP = NO;
 				VALIDATE_WORKSPACE_SKIPPED_SDK_FRAMEWORKS = OpenGL;
 				VALID_ARCHS = "i386 x86_64 arm64 arm64e";

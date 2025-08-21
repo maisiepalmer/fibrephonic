@@ -17,10 +17,11 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Connection.h"
+#include "../Connection.h" 
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
+#include <vector>
 
-class BluetoothConnectionManager : public Connection, public juce::Thread
+class BluetoothConnectionManager : public juce::Thread
 {
 public:
     //==============================================================================
@@ -52,6 +53,7 @@ public:
 private:
     //==============================================================================
     std::unique_ptr<Connection> connectionHandler;
+    juce::WaitableEvent connectionEstablishedEvent;
     
     float gyroscopeX, gyroscopeY, gyroscopeZ;
     float accelerationX, accelerationY, accelerationZ;
@@ -60,8 +62,6 @@ private:
     
     std::vector<ximu3::XIMU3_Device> deviceList;
     ximu3::XIMU3_Device selectedDevice;
-    
-    std::unique_ptr<ximu3::BluetoothConnectionInfo> bluetoothConnectionInfo;
     
     const int pollRate = 125;
 };

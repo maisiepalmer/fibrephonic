@@ -11,14 +11,16 @@
 #define FLOAT_FORMAT " %8.3f"
 #define STRING_FORMAT " \"%s\""
 
-class BluetoothConnectionManager; 
+class BluetoothConnectionManager;
 
 class Connection
 {
 public:
     explicit Connection(BluetoothConnectionManager* parent = nullptr);
 
-    void runConnection(const ximu3::ConnectionInfo& connectionInfo, std::function<bool()> shouldExit);
+    void runConnection(const ximu3::ConnectionInfo& connectionInfo,
+                       std::function<bool()> shouldExit,
+                       std::function<void()> onConnectionSuccess);
 
     float gx, gy, gz;
     float accx, accy, accz;
@@ -39,6 +41,5 @@ private:
     std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback;
     std::function<void()> endOfFileCallback;
 
-    void setupCallbacks(); 
+    void setupCallbacks();
 };
-
