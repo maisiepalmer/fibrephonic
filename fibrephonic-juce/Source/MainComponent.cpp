@@ -2,9 +2,16 @@
 
 //==============================================================================
 MainComponent::MainComponent()
-: bluetoothConnection(std::make_shared<BluetoothConnectionManager>()),
-  gestureManager(std::make_shared<GestureManager>(bluetoothConnection))
 {
+    // Create the gesture manager first.
+    gestureManager = std::make_shared<GestureManager>();
+    
+    // Now, create the Bluetooth connection manager and pass the gesture manager to it.
+    connectionManager = std::make_shared<ConnectionManager>(gestureManager);
+    
+    // Finally, set the connection manager back on the gesture manager to complete the circular dependency.
+    gestureManager->setConnectionManager(connectionManager);
+    
     // Configure and add the "Connect" button
     addAndMakeVisible(connectButton);
     connectButton.setButtonText("Connect");
@@ -12,7 +19,7 @@ MainComponent::MainComponent()
 
     // Configure and add the status label
     addAndMakeVisible(statusLabel);
-    statusLabel.setFont(juce::Font(20.0f, juce::Font::bold));
+    statusLabel.setFont(juce::FontOptions(20.0f, juce::Font::bold));
     statusLabel.setJustificationType(juce::Justification::centred);
 
     // Resize Main Window
@@ -57,15 +64,15 @@ void MainComponent::buttonClicked(juce::Button* button)
 {
     if (button == &connectButton)
     {
-        if (!bluetoothConnection->getIsConnected())
+        if (!connectionManager->getIsConnected())
         {
             DBG("Attempting to start connection...");
-            bluetoothConnection->startConnection();
+            connectionManager->startConnection();
         }
         else
         {
             DBG("Attempting to stop connection...");
-            bluetoothConnection->stopConnection();
+            connectionManager->stopConnection();
         }
     }
 }
@@ -73,12 +80,10 @@ void MainComponent::buttonClicked(juce::Button* button)
 void MainComponent::timerCallback()
 {
     // Update the UI with the connection status and data
-    if (bluetoothConnection->getIsConnected())
+    if (connectionManager->getIsConnected())
     {
         statusLabel.setColour(juce::Label::textColourId, juce::Colours::green);
-        statusLabel.setText("Connected! Gyro X: " + juce::String(bluetoothConnection->getGyroscopeX(), 2) +
-                            " | Accel X: " + juce::String(bluetoothConnection->getAccelerationX(), 2),
-                            juce::dontSendNotification);
+        statusLabel.setText("Connected!", juce::dontSendNotification);
         connectButton.setButtonText("Disconnect");
     }
     else

@@ -1,7 +1,7 @@
 /*
  ==============================================================================
  
- BluetoothConnectionManager.h
+ ConnectionManager.h
  Created: 11 Jun 2025 10:32:59am
  Author:  Joseph B
  
@@ -21,12 +21,14 @@
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
 #include <vector>
 
-class BluetoothConnectionManager : public juce::Thread
+class GestureManager; // Forward declare GestureManager to resolve circular dependency
+
+class ConnectionManager : public juce::Thread
 {
 public:
     //==============================================================================
-    BluetoothConnectionManager();
-    ~BluetoothConnectionManager();
+    ConnectionManager(std::shared_ptr<GestureManager> gestureManagerInstance);
+    ~ConnectionManager();
     
     //==============================================================================
     void startConnection();
@@ -54,6 +56,8 @@ private:
     //==============================================================================
     std::unique_ptr<Connection> connectionHandler;
     juce::WaitableEvent connectionEstablishedEvent;
+    
+    std::shared_ptr<GestureManager> gestureManager;
     
     float gyroscopeX, gyroscopeY, gyroscopeZ;
     float accelerationX, accelerationY, accelerationZ;

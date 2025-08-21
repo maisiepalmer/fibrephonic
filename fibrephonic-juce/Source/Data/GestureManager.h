@@ -22,21 +22,19 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
-#include <string> // Added for std::string
+#include <string>
 #include "../Wavelib/wavelet2s.h"
 
-// Forward Declare Bluetooth Manager Class, Avoids Circular Dependancy.
-class BluetoothConnectionManager;
-
-// Explicitly include JUCE modules
-#include <juce_core/juce_core.h>
-#include <juce_osc/juce_osc.h>
+// Forward Declare Manager Class, Avoids Circular Dependancy.
+class ConnectionManager;
 
 class GestureManager : private juce::Timer
 {
 public:
-    GestureManager(std::shared_ptr<BluetoothConnectionManager> bluetoothConnectionManagerInstance);
+    GestureManager();
     ~GestureManager();
+    
+    void setConnectionManager(std::shared_ptr<ConnectionManager> connectionManagerInstance) { connectionManager = connectionManagerInstance; };
 
     void startPolling();
     void stopPolling();
@@ -95,7 +93,7 @@ public:
     Gesture gesture;
 
 private:
-    std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
+    std::shared_ptr<ConnectionManager> connectionManager;
     
     int pollCount = 0; // Renamed pollcount to pollCount
     

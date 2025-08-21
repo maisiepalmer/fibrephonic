@@ -772,7 +772,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Data\BluetoothConnectionManager.cpp">
+    <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp">
@@ -4053,7 +4053,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h">
+    <ClInclude Include="..\..\Source\Data\ConnectionManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\GestureManager.h">

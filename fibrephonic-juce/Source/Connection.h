@@ -11,12 +11,12 @@
 #define FLOAT_FORMAT " %8.3f"
 #define STRING_FORMAT " \"%s\""
 
-class BluetoothConnectionManager;
+class ConnectionManager;
 
 class Connection
 {
 public:
-    explicit Connection(BluetoothConnectionManager* parent = nullptr);
+    explicit Connection(ConnectionManager* parent = nullptr);
 
     void runConnection(const ximu3::ConnectionInfo& connectionInfo,
                        std::function<bool()> shouldExit,
@@ -34,7 +34,7 @@ public:
     inline double getAccZ() const { return accz; }
 
 private:
-    BluetoothConnectionManager* parentManager = nullptr;
+    ConnectionManager* parentManager = nullptr;
 
     std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback;
     std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback;

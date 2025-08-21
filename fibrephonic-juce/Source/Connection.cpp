@@ -1,12 +1,12 @@
 #include "Connection.h"
-#include "Data/BluetoothConnectionManager.h"
+#include "Data/ConnectionManager.h"
 
 #include <chrono>
 #include <iostream>
 #include <thread>
 #include <inttypes.h>
 
-Connection::Connection(BluetoothConnectionManager* parent) : parentManager(parent)
+Connection::Connection(ConnectionManager* parent) : parentManager(parent)
 {
     setupCallbacks();
 }
@@ -51,7 +51,7 @@ void Connection::runConnection(const ximu3::ConnectionInfo& connectionInfo, std:
     ximu3::Connection connection(connectionInfo);
     
     connection.addDecodeErrorCallback(decodeErrorCallback);
-    connection.addStatisticsCallback(statisticsCallback);
+    //connection.addStatisticsCallback(statisticsCallback);
     connection.addInertialCallback(inertialCallback);
     connection.addEndOfFileCallback(endOfFileCallback);
     

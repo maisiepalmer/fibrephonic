@@ -158,7 +158,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Data\BluetoothConnectionManager.cpp"/>
+    <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp"/>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
@@ -3236,7 +3236,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Data\BluetoothConnectionManager.h"/>
+    <ClInclude Include="..\..\Source\Data\ConnectionManager.h"/>
     <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>

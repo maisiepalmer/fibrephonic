@@ -9,13 +9,9 @@
  */
 
 #include "GestureManager.h"
-#include "BluetoothConnectionManager.h"
+#include "ConnectionManager.h"
 
-// JUCE and standard library includes
-#include <juce_osc/juce_osc.h>
-
-GestureManager::GestureManager(std::shared_ptr<BluetoothConnectionManager> bluetoothConnectionManagerInstance)
-: bluetoothConnection(bluetoothConnectionManagerInstance)
+GestureManager::GestureManager()
 {
     // Initialize data streams to zero
     data.gx = data.gy = data.gz =
@@ -38,7 +34,7 @@ GestureManager::GestureManager(std::shared_ptr<BluetoothConnectionManager> bluet
     gesture = NO_GESTURE;
     
     // Connect the OSC sender to the local machine's port 5006.
-    if (!oscSender.connect("127.0.0.1", 5006)) {
+    if (!oscSender.connect("192.169.1.2", 5006)) {
         DBG("Error: Could not connect to OSC port!");
     }
 }
@@ -76,19 +72,19 @@ void GestureManager::pollGestures()
 
 void GestureManager::getConnectionManagerValues()
 {
-    if (!bluetoothConnection)
+    if (!connectionManager)
     {
-        DBG("BluetoothConnectionManager is null!");
+        DBG("ConnectionManager is null!");
         return;
     }
     
-    data.gx = bluetoothConnection->getGyroscopeX();
-    data.gy = bluetoothConnection->getGyroscopeY();
-    data.gz = bluetoothConnection->getGyroscopeZ();
+    data.gx = connectionManager->getGyroscopeX();
+    data.gy = connectionManager->getGyroscopeY();
+    data.gz = connectionManager->getGyroscopeZ();
     
-    data.accX = bluetoothConnection->getAccelerationX();
-    data.accY = bluetoothConnection->getAccelerationY();
-    data.accZ = bluetoothConnection->getAccelerationZ();
+    data.accX = connectionManager->getAccelerationX();
+    data.accY = connectionManager->getAccelerationY();
+    data.accZ = connectionManager->getAccelerationZ();
 }
 
 void GestureManager::fillDataVectors(std::vector<double>& xaccdata,

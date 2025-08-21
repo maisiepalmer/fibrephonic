@@ -1,7 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Data/BluetoothConnectionManager.h"
+#include "Data/ConnectionManager.h"
 #include "Data/GestureManager.h"
 
 //==============================================================================
@@ -28,7 +28,7 @@ private:
     void timerCallback() override;
 
     // Class instances, shared pointer for managing lifetimes
-    std::shared_ptr<BluetoothConnectionManager> bluetoothConnection;
+    std::shared_ptr<ConnectionManager> connectionManager;
     std::shared_ptr<GestureManager> gestureManager;
     
     // GUI components
