@@ -48,54 +48,59 @@ public:
         STROKE
     };
 
-    struct DataStreams { // Renamed from datastreams to follow PascalCase for structs
-        // Incoming sensor data
-        double gx, gy, gz; // Renamed to gx, gy, gz to conform to camelCase
-        double accX, accY, accZ;
+    struct DataStreams {
+        // Incoming raw sensor data from ConnectionManager
+        double gx_raw, gy_raw, gz_raw;
+        double accX_raw, accY_raw, accZ_raw;
         double jerkX, jerkY, jerkZ;
 
         // Raw Data Vectors (time domain data)
-        std::vector<double> accXData, accYData, accZData;
-        std::vector<double> xData, yData, zData; // Renamed to xData, yData, zData
+        std::vector<double> accelXData, accelYData, accelZData;
+        std::vector<double> gyroXData, gyroYData, gyroZData;
 
-        // Wavelet decomposition coefficients and bookkeeping for X axis
-        std::vector<double> xCoeff;
-        std::vector<double> xApprox;
-        std::vector<double> xDetail;
-        std::vector<double> xBookkeeping;
-        std::vector<double> xLengths;
+        // Wavelet decomposition coefficients and bookkeeping for Accelerometer X axis
+        std::vector<double> accelXCoeff;
+        std::vector<double> accelXApprox;
+        std::vector<double> accelXDetail;
+        std::vector<double> accelXBookkeeping;
+        std::vector<double> accelXLengths;
 
-        // Wavelet decomposition coefficients and bookkeeping for Y axis
-        std::vector<double> yCoeff;
-        std::vector<double> yApprox;
-        std::vector<double> yDetail;
-        std::vector<double> yBookkeeping;
-        std::vector<double> yLengths;
+        // Wavelet decomposition coefficients and bookkeeping for Accelerometer Y axis
+        std::vector<double> accelYCoeff;
+        std::vector<double> accelYApprox;
+        std::vector<double> accelYDetail;
+        std::vector<double> accelYBookkeeping;
+        std::vector<double> accelYLengths;
 
-        // Wavelet decomposition coefficients and bookkeeping for Z axis
-        std::vector<double> zCoeff;
-        std::vector<double> zApprox;
-        std::vector<double> zDetail;
-        std::vector<double> zBookkeeping;
-        std::vector<double> zLengths;
+        // Wavelet decomposition coefficients and bookkeeping for Accelerometer Z axis
+        std::vector<double> accelZCoeff;
+        std::vector<double> accelZApprox;
+        std::vector<double> accelZDetail;
+        std::vector<double> accelZBookkeeping;
+        std::vector<double> accelZLengths;
 
-        // Scaled Data (post transform)
-        std::vector<double> xScaled;
-        std::vector<double> yScaled;
-        std::vector<double> zScaled;
+        // Scaled Data (post wavelet transform filtering)
+        std::vector<double> accelXScaled;
+        std::vector<double> accelYScaled;
+        std::vector<double> accelZScaled;
+        
+        // Scaled Gyroscope Data (Raw Data, not filtered)
+        std::vector<double> gyroXScaled;
+        std::vector<double> gyroYScaled;
+        std::vector<double> gyroZScaled;
     };
     
-    std::vector<double>& getScaledX() { return data.xScaled; }
-    std::vector<double>& getScaledY() { return data.yScaled; }
-    std::vector<double>& getScaledZ() { return data.zScaled; }
+    std::vector<double>& getScaledAccelX() { return data.accelXScaled; }
+    std::vector<double>& getScaledAccelY() { return data.accelYScaled; }
+    std::vector<double>& getScaledAccelZ() { return data.accelZScaled; }
 
-    DataStreams data; // Renamed from DATA to data
+    DataStreams data;
     Gesture gesture;
 
 private:
-    std::shared_ptr<ConnectionManager> connectionManager;
+    std::weak_ptr<ConnectionManager> connectionManager;
     
-    int pollCount = 0; // Renamed pollcount to pollCount
+    int pollCount = 0;
     
     juce::OSCSender oscSender;
 
@@ -104,18 +109,18 @@ private:
 
     void getConnectionManagerValues();
 
-    void fillDataVectors(std::vector<double>& xaccdata,
-                         std::vector<double>& yaccdata,
-                         std::vector<double>& zaccdata,
-                         std::vector<double>& xdata,
-                         std::vector<double>& ydata,
-                         std::vector<double>& zdata,
-                         double& x,
-                         double& y,
-                         double& z,
-                         double& accx,
-                         double& accy,
-                         double& accz);
+    void fillDataVectors(std::vector<double>& accelXData,
+                         std::vector<double>& accelYData,
+                         std::vector<double>& accelZData,
+                         std::vector<double>& gyroXData,
+                         std::vector<double>& gyroYData,
+                         std::vector<double>& gyroZData,
+                         double& gyroX_in,
+                         double& gyroY_in,
+                         double& gyroZ_in,
+                         double& accelX_in,
+                         double& accelY_in,
+                         double& accelZ_in);
 
     void decomposeAxis(std::vector<double>& input,
                        std::string wavelet,
@@ -126,13 +131,13 @@ private:
                        std::vector<double>& bookkeeping,
                        std::vector<double>& lengths);
 
-    void modifyWaveletDomain(std::vector<double>& xApprox, const std::vector<double>& xDetail,
-                             std::vector<double>& yApprox, const std::vector<double>& yDetail,
-                             std::vector<double>& zApprox, const std::vector<double>& zDetail); // Renamed to modifyWaveletDomain
+    void modifyWaveletDomain(std::vector<double>& accelXApprox, const std::vector<double>& accelXDetail,
+                             std::vector<double>& accelYApprox, const std::vector<double>& accelYDetail,
+                             std::vector<double>& accelZApprox, const std::vector<double>& accelZDetail);
 
-    Gesture identifyGesture(const std::vector<double>& xApprox, const std::vector<double>& xDetail,
-                            const std::vector<double>& yApprox, const std::vector<double>& yDetail,
-                            const std::vector<double>& zApprox, const std::vector<double>& zDetail); // Renamed to identifyGesture
+    Gesture identifyGesture(const std::vector<double>& accelXApprox, const std::vector<double>& accelXDetail,
+                            const std::vector<double>& accelYApprox, const std::vector<double>& accelYDetail,
+                            const std::vector<double>& accelZApprox, const std::vector<double>& accelZDetail);
 
     void reconstructAxis(std::vector<double>& coeffs,
                          std::vector<double>& approx,
@@ -142,16 +147,18 @@ private:
                          std::string wavelet,
                          std::vector<double>& reconstructed);
 
-    void softThresholding(std::vector<double>& detailCoeffs); // Renamed to softThresholding
+    void softThresholding(std::vector<double>& detailCoeffs);
 
     void perform1DWaveletTransform();
 
-    void scaleAndCopy(std::vector<double>& xaccdata, std::vector<double>& yaccdata, std::vector<double>& zaccdata,
-                      std::vector<double>& xscale, std::vector<double>& yscale, std::vector<double>& zscale); // Renamed to scaleAndCopy
+    void scaleAndCopy(const std::vector<double>& input, std::vector<double>& output);
 
-    std::vector<double> normaliseData(double min, double max, const std::vector<double>& input); // Renamed to normaliseData
+    std::vector<double> normaliseData(double min, double max, const std::vector<double>& input);
     
     void sendProcessedDataAsBundle(const std::vector<double>& accelXData,
                                    const std::vector<double>& accelYData,
-                                   const std::vector<double>& accelZData);
+                                   const std::vector<double>& accelZData,
+                                   const std::vector<double>& gyroXData,
+                                   const std::vector<double>& gyroYData,
+                                   const std::vector<double>& gyroZData);
 };

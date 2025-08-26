@@ -11,25 +11,31 @@
 #include "GestureManager.h"
 #include "ConnectionManager.h"
 
+//==============================================================================
 GestureManager::GestureManager()
 {
     // Initialize data streams to zero
-    data.gx = data.gy = data.gz =
-    data.accX = data.accY = data.accZ =
+    data.gx_raw = data.gy_raw = data.gz_raw =
+    data.accX_raw = data.accY_raw = data.accZ_raw =
     data.jerkX = data.jerkY = data.jerkZ = 0;
     
     // Resize data vectors to the defined window size
-    data.accXData.resize(DATAWINDOW);
-    data.accYData.resize(DATAWINDOW);
-    data.accZData.resize(DATAWINDOW);
+    data.accelXData.resize(DATAWINDOW);
+    data.accelYData.resize(DATAWINDOW);
+    data.accelZData.resize(DATAWINDOW);
     
-    data.xData.resize(DATAWINDOW);
-    data.yData.resize(DATAWINDOW);
-    data.zData.resize(DATAWINDOW);
+    data.gyroXData.resize(DATAWINDOW);
+    data.gyroYData.resize(DATAWINDOW);
+    data.gyroZData.resize(DATAWINDOW);
     
-    data.xScaled.resize(DATAWINDOW);
-    data.yScaled.resize(DATAWINDOW);
-    data.zScaled.resize(DATAWINDOW);
+    data.accelXScaled.resize(DATAWINDOW);
+    data.accelYScaled.resize(DATAWINDOW);
+    data.accelZScaled.resize(DATAWINDOW);
+    
+    // Resize new gyroscope scaled vectors
+    data.gyroXScaled.resize(DATAWINDOW);
+    data.gyroYScaled.resize(DATAWINDOW);
+    data.gyroZScaled.resize(DATAWINDOW);
     
     gesture = NO_GESTURE;
     
@@ -41,8 +47,6 @@ GestureManager::GestureManager()
 
 GestureManager::~GestureManager()
 {
-    // The C++ standard library handles the cleanup of vectors and other
-    // members automatically, so explicit clear() calls are not needed.
 }
 
 void GestureManager::startPolling() { startTimerHz(IMUINERTIALREFRESH); }
@@ -51,72 +55,83 @@ void GestureManager::timerCallback() { pollGestures(); }
 
 void GestureManager::pollGestures()
 {
-    // 1. Get raw data from the Bluetooth manager
+    // Get raw data from the Connection manager
     getConnectionManagerValues();
     
-    // 2. Fill the data vectors for processing
-    fillDataVectors(data.accXData, data.accYData, data.accZData,
-                    data.xData, data.yData, data.zData,
-                    data.gx, data.gy, data.gz,
-                    data.accX, data.accY, data.accZ);
+    // Fill the data vectors for processing
+    fillDataVectors(data.accelXData, data.accelYData, data.accelZData,
+                    data.gyroXData, data.gyroYData, data.gyroZData,
+                    data.gx_raw, data.gy_raw, data.gz_raw,
+                    data.accX_raw, data.accY_raw, data.accZ_raw);
     
-    // 3. Perform the wavelet transform and filtering
+    // Scale the raw gyroscope data
+    scaleAndCopy(data.gyroXData, data.gyroXScaled);
+    scaleAndCopy(data.gyroYData, data.gyroYScaled);
+    scaleAndCopy(data.gyroZData, data.gyroZScaled);
+    
+    // Perform the wavelet transform and filtering on accelerometer data
     perform1DWaveletTransform();
     
-    // 4. Scale the *processed* data for OSC/MIDI
-    scaleAndCopy(data.accXData, data.accYData, data.accZData, data.xScaled, data.yScaled, data.zScaled);
+    // Scale the *processed* accelerometer data
+    scaleAndCopy(data.accelXData, data.accelXScaled);
+    scaleAndCopy(data.accelYData, data.accelYScaled);
+    scaleAndCopy(data.accelZData, data.accelZScaled);
     
-    // 5. Send the scaled, processed data as an OSC bundle
-    sendProcessedDataAsBundle(data.xScaled, data.yScaled, data.zScaled);
+    // Send all the scaled data as an OSC bundle
+    sendProcessedDataAsBundle(data.accelXScaled, data.accelYScaled, data.accelZScaled,
+                              data.gyroXScaled, data.gyroYScaled, data.gyroZScaled);
 }
 
 void GestureManager::getConnectionManagerValues()
 {
-    if (!connectionManager)
+    // Correctly check if the weak_ptr is still valid by locking it.
+    if (auto lockedManager = connectionManager.lock())
     {
-        DBG("ConnectionManager is null!");
+        data.gx_raw = lockedManager->getGyroscopeX();
+        data.gy_raw = lockedManager->getGyroscopeY();
+        data.gz_raw = lockedManager->getGyroscopeZ();
+        
+        data.accX_raw = lockedManager->getAccelerationX();
+        data.accY_raw = lockedManager->getAccelerationY();
+        data.accZ_raw = lockedManager->getAccelerationZ();
+    }
+    else
+    {
+        DBG("ConnectionManager is no longer available!");
         return;
     }
-    
-    data.gx = connectionManager->getGyroscopeX();
-    data.gy = connectionManager->getGyroscopeY();
-    data.gz = connectionManager->getGyroscopeZ();
-    
-    data.accX = connectionManager->getAccelerationX();
-    data.accY = connectionManager->getAccelerationY();
-    data.accZ = connectionManager->getAccelerationZ();
 }
 
-void GestureManager::fillDataVectors(std::vector<double>& xaccdata,
-                                     std::vector<double>& yaccdata,
-                                     std::vector<double>& zaccdata,
-                                     std::vector<double>& xdata,
-                                     std::vector<double>& ydata,
-                                     std::vector<double>& zdata,
-                                     double& x,
-                                     double& y,
-                                     double& z,
-                                     double& accx,
-                                     double& accy,
-                                     double& accz)
+void GestureManager::fillDataVectors(std::vector<double>& accelXData,
+                                     std::vector<double>& accelYData,
+                                     std::vector<double>& accelZData,
+                                     std::vector<double>& gyroXData,
+                                     std::vector<double>& gyroYData,
+                                     std::vector<double>& gyroZData,
+                                     double& gyroX_in,
+                                     double& gyroY_in,
+                                     double& gyroZ_in,
+                                     double& accelX_in,
+                                     double& accelY_in,
+                                     double& accelZ_in)
 {
     const int scaleVal = 1;
     
-    if (xaccdata.size() == DATAWINDOW) xaccdata.erase(xaccdata.begin());
-    if (yaccdata.size() == DATAWINDOW) yaccdata.erase(yaccdata.begin());
-    if (zaccdata.size() == DATAWINDOW) zaccdata.erase(zaccdata.begin());
+    if (accelXData.size() == DATAWINDOW) accelXData.erase(accelXData.begin());
+    if (accelYData.size() == DATAWINDOW) accelYData.erase(accelYData.begin());
+    if (accelZData.size() == DATAWINDOW) accelZData.erase(accelZData.begin());
     
-    if (xdata.size() == DATAWINDOW) xdata.erase(xdata.begin());
-    if (ydata.size() == DATAWINDOW) ydata.erase(ydata.begin());
-    if (zdata.size() == DATAWINDOW) zdata.erase(zdata.begin());
+    if (gyroXData.size() == DATAWINDOW) gyroXData.erase(gyroXData.begin());
+    if (gyroYData.size() == DATAWINDOW) gyroYData.erase(gyroYData.begin());
+    if (gyroZData.size() == DATAWINDOW) gyroZData.erase(gyroZData.begin());
     
-    xaccdata.push_back(accx * scaleVal);
-    yaccdata.push_back(accy * scaleVal);
-    zaccdata.push_back(accz * scaleVal);
+    accelXData.push_back(accelX_in * scaleVal);
+    accelYData.push_back(accelY_in * scaleVal);
+    accelZData.push_back(accelZ_in * scaleVal);
     
-    xdata.push_back(x);
-    ydata.push_back(y);
-    zdata.push_back(z);
+    gyroXData.push_back(gyroX_in);
+    gyroYData.push_back(gyroY_in);
+    gyroZData.push_back(gyroZ_in);
 }
 
 void GestureManager::decomposeAxis(std::vector<double>& input,
@@ -184,17 +199,17 @@ void GestureManager::softThresholding(std::vector<double>& detailCoeffs)
         x = std::copysign(std::max(std::abs(x) - threshold, 0.0), x);
 }
 
-void GestureManager::modifyWaveletDomain(std::vector<double>& xApprox, const std::vector<double>& xDetail,
-                                         std::vector<double>& yApprox, const std::vector<double>& yDetail,
-                                         std::vector<double>& zApprox, const std::vector<double>& zDetail)
+void GestureManager::modifyWaveletDomain(std::vector<double>& accelXApprox, const std::vector<double>& accelXDetail,
+                                         std::vector<double>& accelYApprox, const std::vector<double>& accelYDetail,
+                                         std::vector<double>& accelZApprox, const std::vector<double>& accelZDetail)
 {
-    std::vector<double> xDetailCopy = xDetail;
-    std::vector<double> yDetailCopy = yDetail;
-    std::vector<double> zDetailCopy = zDetail;
+    std::vector<double> accelXDetailCopy = accelXDetail;
+    std::vector<double> accelYDetailCopy = accelYDetail;
+    std::vector<double> accelZDetailCopy = accelZDetail;
 
-    softThresholding(xDetailCopy);
-    softThresholding(yDetailCopy);
-    softThresholding(zDetailCopy);
+    softThresholding(accelXDetailCopy);
+    softThresholding(accelYDetailCopy);
+    softThresholding(accelZDetailCopy);
     
     {
         double damping = 0.95;
@@ -204,31 +219,31 @@ void GestureManager::modifyWaveletDomain(std::vector<double>& xApprox, const std
             else if (val > maxVal) val = maxVal;
         };
         
-        for (auto& val : xApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
-        for (auto& val : xDetailCopy) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : accelXApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : accelXDetailCopy) { val *= damping; clampCoeff(val, -1.0, 1.0); }
         
-        for (auto& val : yApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
-        for (auto& val : yDetailCopy) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : accelYApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : accelYDetailCopy) { val *= damping; clampCoeff(val, -1.0, 1.0); }
         
-        for (auto& val : zApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
-        for (auto& val : zDetailCopy) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : accelZApprox) { val *= damping; clampCoeff(val, -1.0, 1.0); }
+        for (auto& val : accelZDetailCopy) { val *= damping; clampCoeff(val, -1.0, 1.0); }
     }
 }
 
-GestureManager::Gesture GestureManager::identifyGesture(const std::vector<double>& xApprox, const std::vector<double>& xDetail,
-                                                       const std::vector<double>& yApprox, const std::vector<double>& yDetail,
-                                                       const std::vector<double>& zApprox, const std::vector<double>& zDetail)
+GestureManager::Gesture GestureManager::identifyGesture(const std::vector<double>& accelXApprox, const std::vector<double>& accelXDetail,
+                                                       const std::vector<double>& accelYApprox, const std::vector<double>& accelYDetail,
+                                                       const std::vector<double>& accelZApprox, const std::vector<double>& accelZDetail)
 {
     const double EPSILON = 1e-9;
     
-    for (size_t i = 0; i < xApprox.size(); ++i)
+    for (size_t i = 0; i < accelXApprox.size(); ++i)
     {
-        if (std::abs(xApprox[i]) > EPSILON ||
-            std::abs(xDetail[i]) > EPSILON ||
-            std::abs(yApprox[i]) > EPSILON ||
-            std::abs(yDetail[i]) > EPSILON ||
-            std::abs(zApprox[i]) > EPSILON ||
-            std::abs(zDetail[i]) > EPSILON)
+        if (std::abs(accelXApprox[i]) > EPSILON ||
+            std::abs(accelXDetail[i]) > EPSILON ||
+            std::abs(accelYApprox[i]) > EPSILON ||
+            std::abs(accelYDetail[i]) > EPSILON ||
+            std::abs(accelZApprox[i]) > EPSILON ||
+            std::abs(accelZDetail[i]) > EPSILON)
         {
             return NO_GESTURE;
         }
@@ -242,17 +257,32 @@ void GestureManager::perform1DWaveletTransform()
     std::string wavelet = "db4";
     int levels = 1;
     
-    decomposeAxis(data.accXData, wavelet, levels, data.xCoeff, data.xApprox, data.xDetail, data.xBookkeeping, data.xLengths);
-    decomposeAxis(data.accYData, wavelet, levels, data.yCoeff, data.yApprox, data.yDetail, data.yBookkeeping, data.yLengths);
-    decomposeAxis(data.accZData, wavelet, levels, data.zCoeff, data.zApprox, data.zDetail, data.zBookkeeping, data.zLengths);
+    decomposeAxis(data.accelXData, wavelet, levels, data.accelXCoeff, data.accelXApprox, data.accelXDetail, data.accelXBookkeeping, data.accelXLengths);
+    decomposeAxis(data.accelYData, wavelet, levels, data.accelYCoeff, data.accelYApprox, data.accelYDetail, data.accelYBookkeeping, data.accelYLengths);
+    decomposeAxis(data.accelZData, wavelet, levels, data.accelZCoeff, data.accelZApprox, data.accelZDetail, data.accelZBookkeeping, data.accelZLengths);
     
-    modifyWaveletDomain(data.xApprox, data.xDetail, data.yApprox, data.yDetail, data.zApprox, data.zDetail);
+    modifyWaveletDomain(data.accelXApprox, data.accelXDetail, data.accelYApprox, data.accelYDetail, data.accelZApprox, data.accelZDetail);
     
-    gesture = identifyGesture(data.xApprox, data.xDetail, data.yApprox, data.yDetail, data.zApprox, data.zDetail);
+    gesture = identifyGesture(data.accelXApprox, data.accelXDetail, data.accelYApprox, data.accelYDetail, data.accelZApprox, data.accelZDetail);
     
-    reconstructAxis(data.xCoeff, data.xApprox, data.xDetail, data.xBookkeeping, data.xLengths, wavelet, data.accXData);
-    reconstructAxis(data.yCoeff, data.yApprox, data.yDetail, data.yBookkeeping, data.yLengths, wavelet, data.accYData);
-    reconstructAxis(data.zCoeff, data.zApprox, data.zDetail, data.zBookkeeping, data.zLengths, wavelet, data.accZData);
+    reconstructAxis(data.accelXCoeff, data.accelXApprox, data.accelXDetail, data.accelXBookkeeping, data.accelXLengths, wavelet, data.accelXData);
+    reconstructAxis(data.accelYCoeff, data.accelYApprox, data.accelYDetail, data.accelYBookkeeping, data.accelYLengths, wavelet, data.accelYData);
+    reconstructAxis(data.accelZCoeff, data.accelZApprox, data.accelZDetail, data.accelZBookkeeping, data.accelZLengths, wavelet, data.accelZData);
+}
+
+// Updated `scaleAndCopy` to be more generic, accepting any input and output vectors.
+void GestureManager::scaleAndCopy(const std::vector<double>& input, std::vector<double>& output)
+{
+    if (input.empty()) {
+        DBG("Input data vector empty!");
+        return;
+    }
+    
+    auto [minT, maxT] = std::minmax_element(input.begin(), input.end());
+    double minVal = *minT;
+    double maxVal = *maxT;
+    
+    output = normaliseData(minVal, maxVal, input);
 }
 
 std::vector<double> GestureManager::normaliseData(double min, double max, const std::vector<double>& input)
@@ -274,50 +304,53 @@ std::vector<double> GestureManager::normaliseData(double min, double max, const 
     return rescaled;
 }
 
-void GestureManager::scaleAndCopy(std::vector<double>& xaccdata, std::vector<double>& yaccdata, std::vector<double>& zaccdata,
-                                  std::vector<double>& xscale, std::vector<double>& yscale, std::vector<double>& zscale)
-{
-    if (xaccdata.empty() || yaccdata.empty() || zaccdata.empty()) {
-        DBG("Data vectors empty!");
-        return;
-    }
-    
-    auto [minxT, maxxT] = std::minmax_element(xaccdata.begin(), xaccdata.end());
-    auto [minyT, maxyT] = std::minmax_element(yaccdata.begin(), yaccdata.end());
-    auto [minzT, maxzT] = std::minmax_element(zaccdata.begin(), zaccdata.end());
-    
-    double minxVal = *minxT, maxxVal = *maxxT;
-    double minyVal = *minyT, maxyVal = *maxyT;
-    double minzVal = *minzT, maxzVal = *maxzT;
-    
-    xscale = normaliseData(minxVal, maxxVal, xaccdata);
-    yscale = normaliseData(minyVal, maxyVal, yaccdata);
-    zscale = normaliseData(minzVal, maxzVal, zaccdata);
-}
-
+// Updated function to send both accelerometer and gyroscope data
 void GestureManager::sendProcessedDataAsBundle(const std::vector<double>& accelXData,
                                                const std::vector<double>& accelYData,
-                                               const std::vector<double>& accelZData)
+                                               const std::vector<double>& accelZData,
+                                               const std::vector<double>& gyroXData,
+                                               const std::vector<double>& gyroYData,
+                                               const std::vector<double>& gyroZData)
 {
     juce::OSCBundle bundle;
 
-    juce::OSCMessage accelXMessage("/imu/clean/accelX");
+    // Add accelerometer data with clearer OSC addresses
+    juce::OSCMessage accelXMessage("/imu/scaled/accelX");
     for (double value : accelXData) {
         accelXMessage.addFloat32(static_cast<float>(value));
     }
     bundle.addElement(accelXMessage);
 
-    juce::OSCMessage accelYMessage("/imu/clean/accelY");
+    juce::OSCMessage accelYMessage("/imu/scaled/accelY");
     for (double value : accelYData) {
         accelYMessage.addFloat32(static_cast<float>(value));
     }
     bundle.addElement(accelYMessage);
 
-    juce::OSCMessage accelZMessage("/imu/clean/accelZ");
+    juce::OSCMessage accelZMessage("/imu/scaled/accelZ");
     for (double value : accelZData) {
         accelZMessage.addFloat32(static_cast<float>(value));
     }
     bundle.addElement(accelZMessage);
+    
+    // Add gyroscope data with clearer OSC addresses
+    juce::OSCMessage gyroXMessage("/imu/scaled/gyroX");
+    for (double value : gyroXData) {
+        gyroXMessage.addFloat32(static_cast<float>(value));
+    }
+    bundle.addElement(gyroXMessage);
+
+    juce::OSCMessage gyroYMessage("/imu/scaled/gyroY");
+    for (double value : gyroYData) {
+        gyroYMessage.addFloat32(static_cast<float>(value));
+    }
+    bundle.addElement(gyroYMessage);
+
+    juce::OSCMessage gyroZMessage("/imu/scaled/gyroZ");
+    for (double value : gyroZData) {
+        gyroZMessage.addFloat32(static_cast<float>(value));
+    }
+    bundle.addElement(gyroZMessage);
 
     oscSender.send(bundle);
 }

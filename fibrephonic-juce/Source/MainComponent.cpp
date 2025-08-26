@@ -31,7 +31,7 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
-    // Stop the timer to prevent crashes during shutdown
+    connectButton.removeListener(this);
     stopTimer();
 }
 
