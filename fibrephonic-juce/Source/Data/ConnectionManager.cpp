@@ -25,6 +25,7 @@ ConnectionManager::ConnectionManager(std::shared_ptr<GestureManager> gestureMana
 
 ConnectionManager::~ConnectionManager()
 {
+    // The destructor needs to signal the thread to exit and wait for it.
     signalThreadShouldExit();
     stopThread(500);
 }
@@ -45,19 +46,14 @@ void ConnectionManager::stopConnection()
 
 void ConnectionManager::run()
 {
-    if (threadShouldExit())
-    {
-        isConnected = false;
-        return;
-    }
-    
-    // This callback will be called by the Connection class when the connection is open.
+    DBG("Connection thread started.");
+
     auto onConnectionSuccess = [this]() {
         isConnected = true;
         DBG("Connection established with device.");
         gestureManager->startPolling();
     };
-    
+
     ximu3::NetworkAnnouncement networkAnnouncement;
     if (networkAnnouncement.getResult() != ximu3::XIMU3_ResultOk)
     {
@@ -65,26 +61,39 @@ void ConnectionManager::run()
         std::cout << "Unable to open network announcement socket" << std::endl;
         return;
     }
-    
-    const auto messages = networkAnnouncement.getMessagesAfterShortDelay();
-    
-    if (messages.size() == 0)
-    {
-        isConnected = false;
-        std::cout << "No devices found" << std::endl;
-        return;
-    }
-    
-    const auto& udpInfo = ximu3::XIMU3_network_announcement_message_to_udp_connection_info(messages[0]);
-    const auto& connectionInfo = ximu3::UdpConnectionInfo (ximu3::UdpConnectionInfo (udpInfo));
-    
-    connectionHandler->runConnection(connectionInfo, [this]() { return threadShouldExit(); }, onConnectionSuccess);
-    
-    // Keep the thread alive while the connection is active.
+
     while (!threadShouldExit())
     {
-        wait(pollRate);
+        const auto messages = networkAnnouncement.getMessagesAfterShortDelay();
+
+        if (messages.empty())
+        {
+            isConnected = false;
+            DBG("No devices found. Retrying in 2 seconds...");
+            juce::Thread::sleep(2000);
+            continue;
+        }
+
+        const auto& udpInfo = ximu3::XIMU3_network_announcement_message_to_udp_connection_info(messages[0]);
+        const auto& connectionInfo = ximu3::UdpConnectionInfo(udpInfo);
+
+        DBG("Attempting to connect to device...");
+
+        // This will block until threadShouldExit() is true OR the device disconnects
+        connectionHandler->runConnection(connectionInfo,
+                                         [this]() { return threadShouldExit(); },
+                                         onConnectionSuccess);
+
+        // If we get here, runConnection has ended (disconnected)
+        if (!threadShouldExit())
+        {
+            isConnected = false;
+            DBG("Connection lost. Retrying in 2 seconds...");
+            gestureManager->stopPolling(); // stop polling until reconnected
+            juce::Thread::sleep(2000);
+        }
     }
-    
-    DBG("Thread exiting gracefully.");
+
+    isConnected = false;
+    DBG("Connection thread exiting.");
 }

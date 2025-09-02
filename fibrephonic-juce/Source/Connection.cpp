@@ -46,7 +46,9 @@ void Connection::setupCallbacks()
     endOfFileCallback = []{ std::cout << "End of file" << std::endl; };
 }
 
-void Connection::runConnection(const ximu3::ConnectionInfo& connectionInfo, std::function<bool()> shouldExit, std::function<void()> onConnectionSuccess)
+void Connection::runConnection(const ximu3::ConnectionInfo& connectionInfo,
+                               std::function<bool()> shouldExit,
+                               std::function<void()> onConnectionSuccess)
 {
     ximu3::Connection connection(connectionInfo);
     
@@ -63,13 +65,18 @@ void Connection::runConnection(const ximu3::ConnectionInfo& connectionInfo, std:
     
     // After a successful connection, we must call the callback
     onConnectionSuccess();
-    
-    const std::vector<std::string> commands{ "{\"strobe\":null}" };
+
+    // Tell the device to start streaming inertial data at 100 Hz
+    const std::vector<std::string> commands{
+        "{\"inertial\":{\"rate\":100}}"
+    };
     connection.sendCommands(commands, 2, 500);
     
-    // Interruptible sleep
-    for (int i = 0; i < 600 && !shouldExit(); ++i)
+    // Keep the connection alive until told to exit
+    while (!shouldExit())
+    {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
     
     connection.close();
 }

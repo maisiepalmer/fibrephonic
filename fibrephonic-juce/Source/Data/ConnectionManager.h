@@ -1,23 +1,23 @@
 /*
- ==============================================================================
- 
- ConnectionManager.h
- Created: 11 Jun 2025 10:32:59am
- Author:  Joseph B
- 
- Establishes bluetooth connection using IMU connection example and separates
- and sends sensor data values.
- 
- Use for immediate input scaling and poll rate adjustment, also manage port
- connections.
- 
- ==============================================================================
- */
+ ==============================================================================
+ 
+ ConnectionManager.h
+ Created: 11 Jun 2025 10:32:59am
+ Author:  Joseph B
+ 
+ Establishes bluetooth connection using IMU connection example and separates
+ and sends sensor data values.
+ 
+ Use for immediate input scaling and poll rate adjustment, also manage port
+ connections.
+ 
+ ==============================================================================
+ */
 
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Connection.h" 
+#include "../Connection.h"
 #include "x-IMU3/Cpp/ConnectionInfo.hpp"
 #include <vector>
 

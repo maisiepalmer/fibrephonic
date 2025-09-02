@@ -1,0 +1,22 @@
+{
+	"pattrstorage" : 	{
+		"name" : "presets",
+		"slots" : 		{
+			"1" : 			{
+				"id" : 1,
+				"data" : 				{
+					"gestures" : [ 0, 0, 1, 0, 0, 0, 0, 0 ],
+					"midi_ccs" : [ 0, -6, 0, 39, 0, -17, 0, 0 ],
+					"nfc_ids" : [ "sym", "sym", "sym", "4 21 167 162 18 18 144", "sym", "4 21 167 162 18 18 144", "sym", "4 21 167 162 18 18 144" ],
+					"midi_channels" : [ 16, 0, 0, 16, 0, 0, 0, 16 ],
+					"pressure_threshold" : [ 718 ],
+					"number" : [ 16 ]
+				}
+
+			}
+
+		}
+
+	}
+
+}
