@@ -45,7 +45,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "bang" ],
-					"patching_rect" : [ 367.0, 80.0, 58.0, 22.0 ],
+					"patching_rect" : [ 200.0, 44.0, 58.0, 22.0 ],
 					"text" : "loadbang"
 				}
 
@@ -57,7 +57,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 367.0, 119.0, 113.0, 22.0 ],
+					"patching_rect" : [ 200.0, 79.0, 113.0, 22.0 ],
 					"text" : "0 0 0 0 0 0 0"
 				}
 
@@ -69,7 +69,7 @@
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 315.0, 184.0, 133.0, 22.0 ],
+					"patching_rect" : [ 86.0, 141.0, 133.0, 22.0 ],
 					"text" : "if $i1 == 0 then 1 else 0"
 				}
 
@@ -81,7 +81,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 191.0, 195.0, 32.0, 22.0 ],
+					"patching_rect" : [ 86.0, 184.0, 32.0, 22.0 ],
 					"text" : "gate"
 				}
 
@@ -93,7 +93,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 2,
 					"outlettype" : [ "", "" ],
-					"patching_rect" : [ 315.0, 158.0, 67.0, 22.0 ],
+					"patching_rect" : [ 86.0, 115.0, 133.0, 22.0 ],
 					"text" : "zl.compare"
 				}
 
@@ -140,7 +140,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 73.0, 184.0, 32.0, 22.0 ],
+					"patching_rect" : [ 73.0, 220.0, 32.0, 22.0 ],
 					"text" : "gate"
 				}
 
@@ -174,7 +174,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 105.0, 45.0, 150.0, 20.0 ],
+					"patching_rect" : [ 105.0, 45.0, 43.0, 20.0 ],
 					"text" : "trigger"
 				}
 
@@ -188,7 +188,7 @@
 					"numinlets" : 0,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 284.0, 40.0, 30.0, 30.0 ]
+					"patching_rect" : [ 337.0, 40.0, 30.0, 30.0 ]
 				}
 
 			}
@@ -198,7 +198,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 319.0, 45.0, 150.0, 20.0 ],
+					"patching_rect" : [ 369.0, 45.0, 69.0, 20.0 ],
 					"text" : "nfc stream"
 				}
 
@@ -227,6 +227,7 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-19", 0 ],
+					"midpoints" : [ 82.5, 253.5, 293.5, 253.5 ],
 					"order" : 0,
 					"source" : [ "obj-18", 0 ]
 				}
@@ -285,7 +286,8 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-23", 0 ],
-					"order" : 0,
+					"midpoints" : [ 346.5, 109.0, 95.5, 109.0 ],
+					"order" : 1,
 					"source" : [ "obj-4", 0 ]
 				}
 
@@ -293,7 +295,8 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-24", 1 ],
-					"order" : 1,
+					"midpoints" : [ 346.5, 175.5, 108.5, 175.5 ],
+					"order" : 0,
 					"source" : [ "obj-4", 0 ]
 				}
 
