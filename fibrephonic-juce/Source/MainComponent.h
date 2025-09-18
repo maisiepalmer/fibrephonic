@@ -1,39 +1,37 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Data/ConnectionManager.h"
 #include "Data/GestureManager.h"
+#include "Data/ConnectionManager.h"
+#include <memory>
 
-//==============================================================================
-/*
-    This component manages the main application window and its GUI elements.
-    It inherits from juce::Component for GUI functionality and juce::Timer
-    to handle periodic updates.
-*/
-class MainComponent  : public juce::Component,
-                       public juce::Button::Listener,
-                       public juce::Timer
+class MainComponent : public juce::Component, private juce::Timer
 {
 public:
     MainComponent();
-    ~MainComponent() override;
+    ~MainComponent();
 
-    //==============================================================================
-    void paint (juce::Graphics& g) override;
+    void paint(juce::Graphics&) override;
     void resized() override;
 
 private:
-    //==============================================================================
-    void buttonClicked(juce::Button* button) override;
-    void timerCallback() override;
-
-    // Class instances, shared pointer for managing lifetimes
-    std::shared_ptr<ConnectionManager> connectionManager;
+    // Core gesture detection system
     std::shared_ptr<GestureManager> gestureManager;
+    std::shared_ptr<ConnectionManager> connectionManager;
     
-    // GUI components
-    juce::TextButton connectButton;
+    // UI Components for debugging/display
     juce::Label statusLabel;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
+    juce::Label gestureLabel;
+    juce::Label connectionLabel;
+    juce::Label sensorDataLabel;
+    
+    juce::TextButton startButton;
+    juce::TextButton stopButton;
+    
+    void timerCallback() override;
+    void updateUI();
+    void startButtonClicked();
+    void stopButtonClicked();
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainComponent)
 };

@@ -4,34 +4,6 @@
               jucerFormatVersion="1" projectType="guiapp" pluginFormats="buildAU,buildVST3">
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
-      <GROUP id="{6CB60E84-BEC3-CC93-7B9F-2D01531FE80A}" name="Glover">
-        <FILE id="ThBoUK" name="Definitions.cpp" compile="1" resource="0" file="Source/Glover/Definitions.cpp"/>
-        <FILE id="EPJyyA" name="Definitions.h" compile="0" resource="0" file="Source/Glover/Definitions.h"/>
-        <FILE id="kJ6Es2" name="GlobalFunctions.cpp" compile="1" resource="0"
-              file="Source/Glover/GlobalFunctions.cpp"/>
-        <FILE id="aMuepv" name="GlobalFunctions.h" compile="0" resource="0"
-              file="Source/Glover/GlobalFunctions.h"/>
-        <FILE id="e5DLfV" name="CircularBuffer.cpp" compile="1" resource="0"
-              file="Source/Glover/CircularBuffer.cpp"/>
-        <FILE id="dMd8Bn" name="CircularBuffer.h" compile="0" resource="0"
-              file="Source/Glover/CircularBuffer.h"/>
-        <FILE id="fRnR0l" name="DirectionProcessor.cpp" compile="1" resource="0"
-              file="Source/Glover/DirectionProcessor.cpp"/>
-        <FILE id="qp0IQt" name="DirectionProcessor.h" compile="0" resource="0"
-              file="Source/Glover/DirectionProcessor.h"/>
-        <FILE id="WcihVu" name="DrumDetector.h" compile="0" resource="0" file="Source/Glover/DrumDetector.h"/>
-        <FILE id="nXEY3E" name="InertialMagneticData.h" compile="0" resource="0"
-              file="Source/Glover/InertialMagneticData.h"/>
-        <FILE id="g8aN3a" name="Orientation.cpp" compile="1" resource="0" file="Source/Glover/Orientation.cpp"/>
-        <FILE id="CpQU6t" name="Orientation.h" compile="0" resource="0" file="Source/Glover/Orientation.h"/>
-        <FILE id="WS3Ug0" name="OrientationProcessor.cpp" compile="1" resource="0"
-              file="Source/Glover/OrientationProcessor.cpp"/>
-        <FILE id="g4XgSE" name="OrientationProcessor.h" compile="0" resource="0"
-              file="Source/Glover/OrientationProcessor.h"/>
-        <FILE id="DmaThU" name="PeakDetector.h" compile="0" resource="0" file="Source/Glover/PeakDetector.h"/>
-        <FILE id="dbk4aR" name="Vector.cpp" compile="1" resource="0" file="Source/Glover/Vector.cpp"/>
-        <FILE id="GbJcil" name="Vector.h" compile="0" resource="0" file="Source/Glover/Vector.h"/>
-      </GROUP>
       <GROUP id="{10A6A6E9-BAAD-CFB0-07C7-1EFB0943290B}" name="Data">
         <FILE id="eFOeZQ" name="ConnectionManager.cpp" compile="1" resource="0"
               file="Source/Data/ConnectionManager.cpp"/>
@@ -41,6 +13,10 @@
               file="Source/Data/GestureManager.cpp"/>
         <FILE id="A5aqmN" name="GestureManager.h" compile="0" resource="0"
               file="Source/Data/GestureManager.h"/>
+        <FILE id="nguD1C" name="SimpleGestureDetector.cpp" compile="1" resource="0"
+              file="Source/Data/SimpleGestureDetector.cpp"/>
+        <FILE id="HksyX6" name="SimpleGestureDetector.h" compile="0" resource="0"
+              file="Source/Data/SimpleGestureDetector.h"/>
         <FILE id="NXG67P" name="Ximu3DeviceManager.h" compile="0" resource="0"
               file="Source/Data/Ximu3DeviceManager.h"/>
       </GROUP>

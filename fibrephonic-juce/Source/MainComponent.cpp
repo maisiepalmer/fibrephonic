@@ -1,95 +1,174 @@
 #include "MainComponent.h"
 
-//==============================================================================
 MainComponent::MainComponent()
 {
-    // Create the gesture manager first.
-    gestureManager = std::make_shared<GestureManager>();
+    // Create the gesture detection system
+    DBG("Initializing gesture detection system...");
     
-    // Now, create the Bluetooth connection manager and pass the gesture manager to it.
+    // Create both managers
+    gestureManager = std::make_shared<GestureManager>();
     connectionManager = std::make_shared<ConnectionManager>(gestureManager);
     
-    // Finally, set the connection manager back on the gesture manager to complete the circular dependency.
+    // Set up the circular reference (this resolves the dependency issue)
     gestureManager->setConnectionManager(connectionManager);
     
-    // Configure and add the "Connect" button
-    addAndMakeVisible(connectButton);
-    connectButton.setButtonText("Connect");
-    connectButton.addListener(this);
-
-    // Configure and add the status label
+    DBG("Gesture detection system initialized");
+    
+    // Set up UI components
     addAndMakeVisible(statusLabel);
-    statusLabel.setFont(juce::FontOptions(20.0f, juce::Font::bold));
+    statusLabel.setText("Gesture Detection System", juce::dontSendNotification);
+    statusLabel.setFont(juce::Font(20.0f, juce::Font::bold));
     statusLabel.setJustificationType(juce::Justification::centred);
-
-    // Resize Main Window
-    setSize(1200, 700);
-
-    // Start the timer to update the UI
-    startTimerHz(10); // Update at 10 Hz
+    
+    addAndMakeVisible(connectionLabel);
+    connectionLabel.setText("Connection: Disconnected", juce::dontSendNotification);
+    connectionLabel.setFont(juce::Font(16.0f));
+    
+    addAndMakeVisible(gestureLabel);
+    gestureLabel.setText("Last Gesture: None", juce::dontSendNotification);
+    gestureLabel.setFont(juce::Font(16.0f));
+    
+    addAndMakeVisible(sensorDataLabel);
+    sensorDataLabel.setText("Sensor Data: Waiting...", juce::dontSendNotification);
+    sensorDataLabel.setFont(juce::Font(14.0f));
+    sensorDataLabel.setJustificationType(juce::Justification::topLeft);
+    
+    addAndMakeVisible(startButton);
+    startButton.setButtonText("Start Detection");
+    startButton.onClick = [this] { startButtonClicked(); };
+    
+    addAndMakeVisible(stopButton);
+    stopButton.setButtonText("Stop Detection");
+    stopButton.onClick = [this] { stopButtonClicked(); };
+    stopButton.setEnabled(false);
+    
+    // Start UI update timer
+    startTimerHz(10); // Update UI 10 times per second
+    
+    setSize(500, 400);
 }
 
 MainComponent::~MainComponent()
 {
-    connectButton.removeListener(this);
+    DBG("MainComponent shutting down...");
+    
+    // Stop everything cleanly
     stopTimer();
+    
+    if (connectionManager)
+    {
+        connectionManager->stopConnection();
+    }
+    
+    // Clear references in proper order
+    if (gestureManager)
+    {
+        gestureManager->setConnectionManager(nullptr);
+    }
+    
+    gestureManager.reset();
+    connectionManager.reset();
+    
+    DBG("MainComponent shutdown complete");
 }
 
-//==============================================================================
 void MainComponent::paint(juce::Graphics& g)
 {
-    // Fill the background with a gradient
-    juce::Colour colour1 = juce::Colour(0xff2a2a2a);
-    juce::Colour colour2 = juce::Colour(0xff000000);
-    g.setGradientFill(juce::ColourGradient(colour1, 0, 0, colour2, getWidth(), getHeight(), true));
-    g.fillAll();
+    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    
+    // Draw a border
+    g.setColour(juce::Colours::grey);
+    g.drawRect(getLocalBounds(), 2);
 }
 
 void MainComponent::resized()
 {
-    // Lay out the components in the window
-    auto bounds = getLocalBounds();
-    auto buttonHeight = 50;
-    auto buttonWidth = 200;
+    auto bounds = getLocalBounds().reduced(20);
     
-    // Center the button at the top
-    connectButton.setBounds(bounds.getCentreX() - buttonWidth / 2, 50, buttonWidth, buttonHeight);
-
-    // Position the label below the button
-    statusLabel.setBounds(bounds.getCentreX() - 300, 150, 600, 100);
-}
-
-//==============================================================================
-void MainComponent::buttonClicked(juce::Button* button)
-{
-    if (button == &connectButton)
-    {
-        if (!connectionManager->getIsConnected())
-        {
-            DBG("Attempting to start connection...");
-            connectionManager->startConnection();
-        }
-        else
-        {
-            DBG("Attempting to stop connection...");
-            connectionManager->stopConnection();
-        }
-    }
+    statusLabel.setBounds(bounds.removeFromTop(40));
+    bounds.removeFromTop(10);
+    
+    connectionLabel.setBounds(bounds.removeFromTop(30));
+    bounds.removeFromTop(5);
+    
+    gestureLabel.setBounds(bounds.removeFromTop(30));
+    bounds.removeFromTop(10);
+    
+    sensorDataLabel.setBounds(bounds.removeFromTop(120));
+    bounds.removeFromTop(20);
+    
+    auto buttonArea = bounds.removeFromTop(40);
+    startButton.setBounds(buttonArea.removeFromLeft(120));
+    buttonArea.removeFromLeft(10);
+    stopButton.setBounds(buttonArea.removeFromLeft(120));
 }
 
 void MainComponent::timerCallback()
 {
-    // Update the UI with the connection status and data
-    if (connectionManager->getIsConnected())
+    updateUI();
+}
+
+void MainComponent::updateUI()
+{
+    if (!connectionManager || !gestureManager)
+        return;
+    
+    // Update connection status
+    bool connected = connectionManager->getIsConnected();
+    connectionLabel.setText("Connection: " + juce::String(connected ? "Connected" : "Disconnected"),
+                           juce::dontSendNotification);
+    connectionLabel.setColour(juce::Label::textColourId,
+                             connected ? juce::Colours::green : juce::Colours::red);
+    
+    // Update gesture info
+    auto lastGesture = gestureManager->getLastGestureName();
+    gestureLabel.setText("Last Gesture: " + juce::String(lastGesture), juce::dontSendNotification);
+    
+    // Update sensor data display
+    if (connected)
     {
-        statusLabel.setColour(juce::Label::textColourId, juce::Colours::green);
-        statusLabel.setText("Connected!", juce::dontSendNotification);
-        connectButton.setButtonText("Disconnect");
+        juce::String sensorInfo;
+        sensorInfo << "Accelerometer: "
+                   << juce::String(connectionManager->getAccelerationX(), 2) << ", "
+                   << juce::String(connectionManager->getAccelerationY(), 2) << ", "
+                   << juce::String(connectionManager->getAccelerationZ(), 2) << "\n";
+        sensorInfo << "Gyroscope: "
+                   << juce::String(connectionManager->getGyroscopeX(), 2) << ", "
+                   << juce::String(connectionManager->getGyroscopeY(), 2) << ", "
+                   << juce::String(connectionManager->getGyroscopeZ(), 2) << "\n";
+        sensorInfo << "Magnetometer: "
+                   << juce::String(connectionManager->getMagnetometerX(), 2) << ", "
+                   << juce::String(connectionManager->getMagnetometerY(), 2) << ", "
+                   << juce::String(connectionManager->getMagnetometerZ(), 2);
+        
+        sensorDataLabel.setText(sensorInfo, juce::dontSendNotification);
     }
     else
     {
-        statusLabel.setColour(juce::Label::textColourId, juce::Colours::red);
-        statusLabel.setText("Disconnected. Waiting for a device...", juce::dontSendNotification);
-        connectButton.setButtonText("Connect");
+        sensorDataLabel.setText("Sensor Data: No connection", juce::dontSendNotification);
+    }
+}
+
+void MainComponent::startButtonClicked()
+{
+    DBG("Starting gesture detection...");
+    
+    if (connectionManager)
+    {
+        connectionManager->startConnection();
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
+    }
+}
+
+void MainComponent::stopButtonClicked()
+{
+    DBG("Stopping gesture detection...");
+    
+    if (connectionManager)
+    {
+        connectionManager->stopConnection();
+        startButton.setEnabled(true);
+        stopButton.setEnabled(false);
     }
 }

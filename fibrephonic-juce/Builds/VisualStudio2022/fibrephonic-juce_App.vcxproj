@@ -158,15 +158,9 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Glover\Definitions.cpp"/>
-    <ClCompile Include="..\..\Source\Glover\GlobalFunctions.cpp"/>
-    <ClCompile Include="..\..\Source\Glover\CircularBuffer.cpp"/>
-    <ClCompile Include="..\..\Source\Glover\DirectionProcessor.cpp"/>
-    <ClCompile Include="..\..\Source\Glover\Orientation.cpp"/>
-    <ClCompile Include="..\..\Source\Glover\OrientationProcessor.cpp"/>
-    <ClCompile Include="..\..\Source\Glover\Vector.cpp"/>
     <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp"/>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
+    <ClCompile Include="..\..\Source\Data\SimpleGestureDetector.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\Source\Connection.cpp"/>
@@ -3243,18 +3237,9 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Glover\Definitions.h"/>
-    <ClInclude Include="..\..\Source\Glover\GlobalFunctions.h"/>
-    <ClInclude Include="..\..\Source\Glover\CircularBuffer.h"/>
-    <ClInclude Include="..\..\Source\Glover\DirectionProcessor.h"/>
-    <ClInclude Include="..\..\Source\Glover\DrumDetector.h"/>
-    <ClInclude Include="..\..\Source\Glover\InertialMagneticData.h"/>
-    <ClInclude Include="..\..\Source\Glover\Orientation.h"/>
-    <ClInclude Include="..\..\Source\Glover\OrientationProcessor.h"/>
-    <ClInclude Include="..\..\Source\Glover\PeakDetector.h"/>
-    <ClInclude Include="..\..\Source\Glover\Vector.h"/>
     <ClInclude Include="..\..\Source\Data\ConnectionManager.h"/>
     <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
+    <ClInclude Include="..\..\Source\Data\SimpleGestureDetector.h"/>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
     <ClInclude Include="..\..\Source\Connection.h"/>

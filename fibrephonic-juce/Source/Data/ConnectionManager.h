@@ -18,60 +18,52 @@
 
 #include <JuceHeader.h>
 #include "../Connection.h"
-#include "x-IMU3/Cpp/ConnectionInfo.hpp"
-#include <vector>
+#include <memory>
 
-class GestureManager; // Forward declare GestureManager to resolve circular dependency
+class GestureManager;
 
 class ConnectionManager : public juce::Thread
 {
 public:
-    //==============================================================================
-    ConnectionManager(std::shared_ptr<GestureManager> gestureManagerInstance);
+    explicit ConnectionManager(std::shared_ptr<GestureManager> gestureManagerInstance);
     ~ConnectionManager();
     
-    //==============================================================================
+    // Connection control
     void startConnection();
     void stopConnection();
     bool getIsConnected() const { return isConnected; }
     
-    //==============================================================================
-    inline void setMagnetometerValues(double x, double y, double z) { magnetometerX = x; magnetometerY = y; magnetometerZ = z; }
-    inline void setGyroscopeValues(double x, double y, double z) { gyroscopeX = x; gyroscopeY = y; gyroscopeZ = z; }
-    inline void setAccelerometerValues(double x, double y, double z) { accelerationX = x; accelerationY = y; accelerationZ = z; }
+    // Sensor data accessors - thread-safe
+    double getAccelerationX() const { return accelerationX.load(); }
+    double getAccelerationY() const { return accelerationY.load(); }
+    double getAccelerationZ() const { return accelerationZ.load(); }
     
-    inline void setConnectionBool(bool b) { isConnected = b; }
+    double getGyroscopeX() const { return gyroscopeX.load(); }
+    double getGyroscopeY() const { return gyroscopeY.load(); }
+    double getGyroscopeZ() const { return gyroscopeZ.load(); }
     
-    inline double getMagnetometerX() const { return magnetometerX; }
-    inline double getMagnetometerY() const { return magnetometerY; }
-    inline double getMagnetometerZ() const { return magnetometerZ; }
+    double getMagnetometerX() const { return magnetometerX.load(); }
+    double getMagnetometerY() const { return magnetometerY.load(); }
+    double getMagnetometerZ() const { return magnetometerZ.load(); }
     
-    inline double getGyroscopeX() const { return gyroscopeX; }
-    inline double getGyroscopeY() const { return gyroscopeY; }
-    inline double getGyroscopeZ() const { return gyroscopeZ; }
-    
-    inline double getAccelerationX() const { return accelerationX; }
-    inline double getAccelerationY() const { return accelerationY; }
-    inline double getAccelerationZ() const { return accelerationZ; }
-    
-    //==============================================================================
+    // Called by Connection class to update sensor values
+    void setAccelerometerValues(double x, double y, double z);
+    void setGyroscopeValues(double x, double y, double z);
+    void setMagnetometerValues(double x, double y, double z);
+
+protected:
     void run() override;
 
 private:
-    //==============================================================================
     std::unique_ptr<Connection> connectionHandler;
-    juce::WaitableEvent connectionEstablishedEvent;
-    
     std::shared_ptr<GestureManager> gestureManager;
     
-    float magnetometerX, magnetometerY, magnetometerZ;
-    float gyroscopeX, gyroscopeY, gyroscopeZ;
-    float accelerationX, accelerationY, accelerationZ;
+    // Thread-safe atomic sensor data storage
+    std::atomic<double> accelerationX{0.0}, accelerationY{0.0}, accelerationZ{0.0};
+    std::atomic<double> gyroscopeX{0.0}, gyroscopeY{0.0}, gyroscopeZ{0.0};
+    std::atomic<double> magnetometerX{0.0}, magnetometerY{0.0}, magnetometerZ{0.0};
     
-    bool isConnected = false;
+    std::atomic<bool> isConnected{false};
     
-    std::vector<ximu3::XIMU3_Device> deviceList;
-    ximu3::XIMU3_Device selectedDevice;
-    
-    const int pollRate = 125;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ConnectionManager)
 };

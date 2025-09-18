@@ -2,9 +2,6 @@
 
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="fibrephonic-juce\Source\Glover">
-      <UniqueIdentifier>{F2CEE2DF-A5D1-72E3-81ED-A984E2BA82E0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="fibrephonic-juce\Source\Data">
       <UniqueIdentifier>{ABAC7ACC-B3F3-2ECD-91D5-1541811C2534}</UniqueIdentifier>
     </Filter>
@@ -775,31 +772,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Glover\Definitions.cpp">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Glover\GlobalFunctions.cpp">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Glover\CircularBuffer.cpp">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Glover\DirectionProcessor.cpp">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Glover\Orientation.cpp">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Glover\OrientationProcessor.cpp">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Glover\Vector.cpp">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Data\SimpleGestureDetector.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Main.cpp">
@@ -4077,40 +4056,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Source\Glover\Definitions.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\GlobalFunctions.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\CircularBuffer.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\DirectionProcessor.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\DrumDetector.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\InertialMagneticData.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\Orientation.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\OrientationProcessor.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\PeakDetector.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Glover\Vector.h">
-      <Filter>fibrephonic-juce\Source\Glover</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Data\ConnectionManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\GestureManager.h">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Data\SimpleGestureDetector.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h">
