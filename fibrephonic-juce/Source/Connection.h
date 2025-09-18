@@ -22,9 +22,14 @@ public:
                        std::function<bool()> shouldExit,
                        std::function<void()> onConnectionSuccess);
 
+    float mx, my, mz;
     float gx, gy, gz;
     float accx, accy, accz;
-
+    
+    inline double getMagX() const { return mx; }
+    inline double getMagY() const { return my; }
+    inline double getMagZ() const { return mz; }
+    
     inline double getX() const { return gx; }
     inline double getY() const { return gy; }
     inline double getZ() const { return gz; }
@@ -39,6 +44,7 @@ private:
     std::function<void(ximu3::XIMU3_DecodeError error)> decodeErrorCallback;
     std::function<void(ximu3::XIMU3_Statistics statistics)> statisticsCallback;
     std::function<void(ximu3::XIMU3_InertialMessage message)> inertialCallback;
+    std::function<void(ximu3::XIMU3_MagnetometerMessage message)> magnetometerCallback;
     std::function<void()> endOfFileCallback;
 
     void setupCallbacks();

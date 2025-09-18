@@ -36,10 +36,15 @@ public:
     bool getIsConnected() const { return isConnected; }
     
     //==============================================================================
+    inline void setMagnetometerValues(double x, double y, double z) { magnetometerX = x; magnetometerY = y; magnetometerZ = z; }
     inline void setGyroscopeValues(double x, double y, double z) { gyroscopeX = x; gyroscopeY = y; gyroscopeZ = z; }
     inline void setAccelerometerValues(double x, double y, double z) { accelerationX = x; accelerationY = y; accelerationZ = z; }
     
     inline void setConnectionBool(bool b) { isConnected = b; }
+    
+    inline double getMagnetometerX() const { return magnetometerX; }
+    inline double getMagnetometerY() const { return magnetometerY; }
+    inline double getMagnetometerZ() const { return magnetometerZ; }
     
     inline double getGyroscopeX() const { return gyroscopeX; }
     inline double getGyroscopeY() const { return gyroscopeY; }
@@ -59,6 +64,7 @@ private:
     
     std::shared_ptr<GestureManager> gestureManager;
     
+    float magnetometerX, magnetometerY, magnetometerZ;
     float gyroscopeX, gyroscopeY, gyroscopeZ;
     float accelerationX, accelerationY, accelerationZ;
     

@@ -15,6 +15,7 @@
 GestureManager::GestureManager()
 {
     // Initialize data streams to zero
+    data.magX_raw = data.magY_raw = data.magZ_raw =
     data.gx_raw = data.gy_raw = data.gz_raw =
     data.accX_raw = data.accY_raw = data.accZ_raw =
     data.jerkX = data.jerkY = data.jerkZ = 0;
@@ -28,10 +29,23 @@ GestureManager::GestureManager()
     data.gyroYScaled.resize(DATAWINDOW);
     data.gyroZScaled.resize(DATAWINDOW);
     
+    data.magXScaled.resize(DATAWINDOW);
+    data.magYScaled.resize(DATAWINDOW);
+    data.magZScaled.resize(DATAWINDOW);
+    
+    
     gesture = NO_GESTURE;
     
     // Initialize OSC connection
     ensureOSCConnection();
+    
+    orientationProcessor = std::make_unique<OrientationProcessor>(
+        500.f,   // tap threshold
+        700.f,   // stroke threshold
+        600.f    // peak detector threshold
+    );
+    orientationProcessor->addListener(this);
+
 }
 
 GestureManager::~GestureManager()
@@ -86,15 +100,14 @@ void GestureManager::pollGestures()
     // Get raw data from the Connection manager
     getConnectionManagerValues();
     
-    
     // Fill the circular buffers
-    fillDataBuffers(data.gx_raw, data.gy_raw, data.gz_raw,
-                   data.accX_raw, data.accY_raw, data.accZ_raw);
+    fillDataBuffers(data.magX_raw, data.magY_raw, data.magZ_raw,
+                    data.gx_raw, data.gy_raw, data.gz_raw,
+                    data.accX_raw, data.accY_raw, data.accZ_raw);
     
     // Only process if we have enough data
-    if (data.accelXBuffer.size() < DATAWINDOW) {
+    if (data.accelXBuffer.size() < DATAWINDOW)
         return; // Not enough data yet
-    }
     
     // Get data from circular buffers
     data.accelXData = data.accelXBuffer.getData();
@@ -109,6 +122,11 @@ void GestureManager::pollGestures()
     scaleAndCopy(data.gyroYData, data.gyroYScaled);
     scaleAndCopy(data.gyroZData, data.gyroZScaled);
     
+    // Scale the raw magnetometer data
+    scaleAndCopy(data.magXData, data.magXScaled);
+    scaleAndCopy(data.magYData, data.magYScaled);
+    scaleAndCopy(data.magZData, data.magZScaled);
+    
     // Perform the wavelet transform and filtering on accelerometer data
     perform1DWaveletTransform();
     
@@ -119,7 +137,8 @@ void GestureManager::pollGestures()
     
     // Send all the scaled data as an OSC bundle
     sendProcessedDataAsBundle(data.accelXScaled, data.accelYScaled, data.accelZScaled,
-                              data.gyroXScaled, data.gyroYScaled, data.gyroZScaled);
+                              data.gyroXScaled, data.gyroYScaled, data.gyroZScaled,
+                              data.magXScaled, data.magYScaled, data.magZScaled);
 }
 
 void GestureManager::getConnectionManagerValues()
@@ -134,6 +153,10 @@ void GestureManager::getConnectionManagerValues()
     }
     
     try {
+        data.magX_raw = lockedManager->getMagnetometerX();
+        data.magY_raw = lockedManager->getMagnetometerY();
+        data.magZ_raw = lockedManager->getMagnetometerZ();
+        
         data.gx_raw = lockedManager->getGyroscopeX();
         data.gy_raw = lockedManager->getGyroscopeY();
         data.gz_raw = lockedManager->getGyroscopeZ();
@@ -147,8 +170,9 @@ void GestureManager::getConnectionManagerValues()
     }
 }
 
-void GestureManager::fillDataBuffers(double gyroX_in, double gyroY_in, double gyroZ_in,
-                                    double accelX_in, double accelY_in, double accelZ_in)
+void GestureManager::fillDataBuffers(double magX_in, double magY_in, double magZ_in,
+                                     double gyroX_in, double gyroY_in, double gyroZ_in,
+                                     double accelX_in, double accelY_in, double accelZ_in)
 {
     const double scaleVal = 1.0;
     
@@ -160,6 +184,10 @@ void GestureManager::fillDataBuffers(double gyroX_in, double gyroY_in, double gy
     data.gyroXBuffer.push(gyroX_in);
     data.gyroYBuffer.push(gyroY_in);
     data.gyroZBuffer.push(gyroZ_in);
+    
+    data.magXBuffer.push(magX_in);
+    data.magYBuffer.push(magY_in);
+    data.magZBuffer.push(magZ_in);
 }
 
 void GestureManager::decomposeAxis(std::vector<double>& input,
@@ -273,24 +301,13 @@ void GestureManager::modifyWaveletDomain(std::vector<double>& accelXApprox, cons
 }
 
 GestureManager::Gesture GestureManager::identifyGesture(const std::vector<double>& accelXApprox, const std::vector<double>& accelXDetail,
-                                                       const std::vector<double>& accelYApprox, const std::vector<double>& accelYDetail,
-                                                       const std::vector<double>& accelZApprox, const std::vector<double>& accelZDetail)
+                                                        const std::vector<double>& accelYApprox, const std::vector<double>& accelYDetail,
+                                                        const std::vector<double>& accelZApprox, const std::vector<double>& accelZDetail)
 {
-    const double EPSILON = 1e-9;
-    
-    for (size_t i = 0; i < accelXApprox.size(); ++i)
-    {
-        if (std::abs(accelXApprox[i]) > EPSILON ||
-            std::abs(accelXDetail[i]) > EPSILON ||
-            std::abs(accelYApprox[i]) > EPSILON ||
-            std::abs(accelYDetail[i]) > EPSILON ||
-            std::abs(accelZApprox[i]) > EPSILON ||
-            std::abs(accelZDetail[i]) > EPSILON)
-        {
-            return NO_GESTURE;
-        }
-    }
-    
+    if (accelXApprox.empty() || accelYApprox.empty() || accelZApprox.empty())
+        return NO_GESTURE;
+
+
     return NO_GESTURE;
 }
 
@@ -358,7 +375,10 @@ void GestureManager::sendProcessedDataAsBundle(const std::vector<double>& accelX
                                                const std::vector<double>& accelZData,
                                                const std::vector<double>& gyroXData,
                                                const std::vector<double>& gyroYData,
-                                               const std::vector<double>& gyroZData)
+                                               const std::vector<double>& gyroZData,
+                                               const std::vector<double>& magXData,
+                                               const std::vector<double>& magYData,
+                                               const std::vector<double>& magZData)
 {
     // Ensure OSC connection is active
     if (!ensureOSCConnection()) {
@@ -373,43 +393,63 @@ void GestureManager::sendProcessedDataAsBundle(const std::vector<double>& accelX
     try {
         juce::OSCBundle bundle;
 
-        // Add accelerometer data with clearer OSC addresses
-        juce::OSCMessage accelXMessage("/imu/scaled/accelX");
+        juce::OSCMessage accelXMessage("/imu/accelX");
         for (double value : accelXData) {
             accelXMessage.addFloat32(static_cast<float>(value));
         }
         bundle.addElement(accelXMessage);
 
-        juce::OSCMessage accelYMessage("/imu/scaled/accelY");
+        juce::OSCMessage accelYMessage("/imu/accelY");
         for (double value : accelYData) {
             accelYMessage.addFloat32(static_cast<float>(value));
         }
         bundle.addElement(accelYMessage);
 
-        juce::OSCMessage accelZMessage("/imu/scaled/accelZ");
+        juce::OSCMessage accelZMessage("/imu/accelZ");
         for (double value : accelZData) {
             accelZMessage.addFloat32(static_cast<float>(value));
         }
         bundle.addElement(accelZMessage);
         
-        // Add gyroscope data with clearer OSC addresses
-        juce::OSCMessage gyroXMessage("/imu/scaled/gyroX");
+        juce::OSCMessage gyroXMessage("/imu/gyroX");
         for (double value : gyroXData) {
             gyroXMessage.addFloat32(static_cast<float>(value));
         }
         bundle.addElement(gyroXMessage);
 
-        juce::OSCMessage gyroYMessage("/imu/scaled/gyroY");
+        juce::OSCMessage gyroYMessage("/imu/gyroY");
         for (double value : gyroYData) {
             gyroYMessage.addFloat32(static_cast<float>(value));
         }
         bundle.addElement(gyroYMessage);
 
-        juce::OSCMessage gyroZMessage("/imu/scaled/gyroZ");
+        juce::OSCMessage gyroZMessage("/imu/gyroZ");
         for (double value : gyroZData) {
             gyroZMessage.addFloat32(static_cast<float>(value));
         }
         bundle.addElement(gyroZMessage);
+        
+        juce::OSCMessage magXMessage("/imu/magX");
+        for (double value : magXData) {
+            magXMessage.addFloat32(static_cast<float>(value));
+        }
+        bundle.addElement(magXMessage);
+
+        juce::OSCMessage magYMessage("/imu/magY");
+        for (double value : magYData) {
+            magYMessage.addFloat32(static_cast<float>(value));
+        }
+        bundle.addElement(magYMessage);
+        
+        juce::OSCMessage magZMessage("/imu/magZ");
+        for (double value : magZData) {
+            magZMessage.addFloat32(static_cast<float>(value));
+        }
+        bundle.addElement(magZMessage);
+        
+        juce::OSCMessage gestureMessage("/imu/gesture");
+        gestureMessage.addInt32((int)gesture);
+        bundle.addElement(gestureMessage);
 
         if (!oscSender.send(bundle)) {
             DBG("Failed to send OSC bundle!");
@@ -422,4 +462,22 @@ void GestureManager::sendProcessedDataAsBundle(const std::vector<double>& accelX
         DBG("Exception sending OSC data: " << e.what());
         oscConnected = false;
     }
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------
+void GestureManager::newDirection (const OrientationProcessor* source, const Direction direction)
+{
+    
+}
+void GestureManager::newSegment (const OrientationProcessor* source, const Segment segment)
+{
+    
+}
+void GestureManager::orientationEvent (const OrientationProcessor* source, OrientationProcessor::Axis axis, float magnitude)
+{
+    
+}
+void GestureManager::gyroscopeDisplacement(const OrientationProcessor* source, const float gyroDelta[OrientationProcessor::NumAxes])
+{
+    
 }

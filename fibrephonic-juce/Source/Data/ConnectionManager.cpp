@@ -16,10 +16,10 @@ ConnectionManager::ConnectionManager(std::shared_ptr<GestureManager> gestureMana
 : juce::Thread("Bluetooth Connection Thread")
 , gestureManager(gestureManagerInstance)
 {
+    magnetometerX = magnetometerY = magnetometerZ = 0;
     gyroscopeX = gyroscopeY = gyroscopeZ = 0;
     accelerationX = accelerationY = accelerationZ = 0;
     
-    // The connection handler is created here with a pointer to this manager.
     connectionHandler = std::make_unique<Connection>(this);
 }
 

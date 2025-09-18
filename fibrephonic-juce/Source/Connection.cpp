@@ -31,15 +31,23 @@ void Connection::setupCallbacks()
     {
         if (parentManager)
         {
-            parentManager->setGyroscopeValues(
-                                              message.gyroscope_x,
+            parentManager->setGyroscopeValues(message.gyroscope_x,
                                               message.gyroscope_y,
                                               message.gyroscope_z);
             
-            parentManager->setAccelerometerValues(
-                                                  message.accelerometer_x,
+            parentManager->setAccelerometerValues(message.accelerometer_x,
                                                   message.accelerometer_y,
                                                   message.accelerometer_z);
+        }
+    };
+    
+    magnetometerCallback = [this](auto message)
+    {
+        if (parentManager)
+        {
+            parentManager->setMagnetometerValues(message.x,
+                                                 message.y,
+                                                 message.z);
         }
     };
     
@@ -53,7 +61,7 @@ void Connection::runConnection(const ximu3::ConnectionInfo& connectionInfo,
     ximu3::Connection connection(connectionInfo);
     
     connection.addDecodeErrorCallback(decodeErrorCallback);
-    //connection.addStatisticsCallback(statisticsCallback);
+    connection.addMagnetometerCallback(magnetometerCallback);
     connection.addInertialCallback(inertialCallback);
     connection.addEndOfFileCallback(endOfFileCallback);
     
