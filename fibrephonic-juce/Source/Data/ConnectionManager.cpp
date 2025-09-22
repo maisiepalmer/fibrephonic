@@ -11,135 +11,89 @@
 #include "ConnectionManager.h"
 #include "GestureManager.h"
 
+//==============================================================================
 ConnectionManager::ConnectionManager(std::shared_ptr<GestureManager> gestureManagerInstance)
-    : juce::Thread("IMU Connection Thread")
-    , gestureManager(gestureManagerInstance)
+: juce::Thread("IMU Connection Thread")
+, gestureManager(gestureManagerInstance)
 {
+    gyroscopeX = gyroscopeY = gyroscopeZ = 0;
+    accelerationX = accelerationY = accelerationZ = 0;
+    
+    // The connection handler is created here with a pointer to this manager.
     connectionHandler = std::make_unique<Connection>(this);
-    DBG("ConnectionManager created");
 }
 
 ConnectionManager::~ConnectionManager()
 {
-    DBG("ConnectionManager shutting down...");
+    // The destructor needs to signal the thread to exit and wait for it.
     signalThreadShouldExit();
-    stopThread(2000); // Wait up to 2 seconds for clean shutdown
+    stopThread(500);
 }
 
+//==============================================================================
 void ConnectionManager::startConnection()
 {
-    DBG("Starting connection thread...");
     startThread();
 }
 
 void ConnectionManager::stopConnection()
 {
-    DBG("Stopping connection...");
     signalThreadShouldExit();
-    stopThread(1000);
+    stopThread(500);
     isConnected = false;
-}
-
-void ConnectionManager::setAccelerometerValues(double x, double y, double z)
-{
-    accelerationX = x;
-    accelerationY = y;
-    accelerationZ = z;
-}
-
-void ConnectionManager::setGyroscopeValues(double x, double y, double z)
-{
-    gyroscopeX = x;
-    gyroscopeY = y;
-    gyroscopeZ = z;
-}
-
-void ConnectionManager::setMagnetometerValues(double x, double y, double z)
-{
-    magnetometerX = x;
-    magnetometerY = y;
-    magnetometerZ = z;
+    DBG("Connection stopped.");
 }
 
 void ConnectionManager::run()
 {
-    DBG("Connection thread started - searching for IMU devices...");
+    DBG("Connection thread started.");
 
-    // Callback for when connection is successfully established
     auto onConnectionSuccess = [this]() {
         isConnected = true;
-        DBG("IMU device connection established!");
-        
-        // Start gesture processing once we have a connection
-        if (gestureManager)
-        {
-            gestureManager->startPolling();
-        }
+        DBG("Connection established with device.");
+        gestureManager->startPolling();
     };
 
-    // Main connection loop
+    ximu3::NetworkAnnouncement networkAnnouncement;
+    if (networkAnnouncement.getResult() != ximu3::XIMU3_ResultOk)
+    {
+        isConnected = false;
+        std::cout << "Unable to open network announcement socket" << std::endl;
+        return;
+    }
+
     while (!threadShouldExit())
     {
-        try
+        const auto messages = networkAnnouncement.getMessagesAfterShortDelay();
+
+        if (messages.empty())
         {
-            ximu3::NetworkAnnouncement networkAnnouncement;
-            
-            if (networkAnnouncement.getResult() != ximu3::XIMU3_ResultOk)
-            {
-                DBG("Unable to open network announcement socket - retrying in 5 seconds...");
-                isConnected = false;
-                juce::Thread::sleep(5000);
-                continue;
-            }
-
-            // Look for available devices
-            DBG("Scanning for IMU devices...");
-            const auto messages = networkAnnouncement.getMessagesAfterShortDelay();
-
-            if (messages.empty())
-            {
-                isConnected = false;
-                DBG("No IMU devices found - retrying in 3 seconds...");
-                juce::Thread::sleep(3000);
-                continue;
-            }
-
-            // Use the first available device
-            const auto& udpInfo = ximu3::XIMU3_network_announcement_message_to_udp_connection_info(messages[0]);
-            const auto& connectionInfo = ximu3::UdpConnectionInfo(udpInfo);
-
-            DBG("Found IMU device, attempting to connect: " << connectionInfo.toString());
-
-            // This will block until connection is lost or thread should exit
-            connectionHandler->runConnection(
-                connectionInfo,
-                [this]() { return threadShouldExit(); },
-                onConnectionSuccess
-            );
-
-            // If we reach here, the connection was lost (unless we're exiting)
-            if (!threadShouldExit())
-            {
-                isConnected = false;
-                DBG("Connection lost - will retry in 3 seconds...");
-                
-                // Stop gesture processing until reconnected
-                if (gestureManager)
-                {
-                    gestureManager->stopPolling();
-                }
-                
-                juce::Thread::sleep(3000);
-            }
-        }
-        catch (const std::exception& e)
-        {
-            DBG("Exception in connection thread: " << e.what());
             isConnected = false;
-            juce::Thread::sleep(5000);
+            DBG("No devices found. Retrying in 2 seconds...");
+            juce::Thread::sleep(2000);
+            continue;
+        }
+
+        const auto& udpInfo = ximu3::XIMU3_network_announcement_message_to_udp_connection_info(messages[0]);
+        const auto& connectionInfo = ximu3::UdpConnectionInfo(udpInfo);
+
+        DBG("Attempting to connect to device...");
+
+        // This will block until threadShouldExit() is true OR the device disconnects
+        connectionHandler->runConnection(connectionInfo,
+                                         [this]() { return threadShouldExit(); },
+                                         onConnectionSuccess);
+
+        // If we get here, runConnection has ended (disconnected)
+        if (!threadShouldExit())
+        {
+            isConnected = false;
+            DBG("Connection lost. Retrying in 2 seconds...");
+            gestureManager->stopPolling(); // stop polling until reconnected
+            juce::Thread::sleep(2000);
         }
     }
 
     isConnected = false;
-    DBG("Connection thread exiting");
+    DBG("Connection thread exiting.");
 }

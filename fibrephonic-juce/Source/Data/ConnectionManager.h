@@ -47,9 +47,9 @@ public:
     double getMagnetometerZ() const { return magnetometerZ.load(); }
     
     // Called by Connection class to update sensor values
-    void setAccelerometerValues(double x, double y, double z);
-    void setGyroscopeValues(double x, double y, double z);
-    void setMagnetometerValues(double x, double y, double z);
+    void setAccelerometerValues(double x, double y, double z){ accelerationX.store(x); accelerationY.store(y); accelerationZ.store(z);};
+    void setGyroscopeValues(double x, double y, double z){ gyroscopeX.store(x); gyroscopeY.store(y); gyroscopeZ.store(z);};
+    void setMagnetometerValues(double x, double y, double z){ magnetometerX.store(x); magnetometerY.store(y); magnetometerZ.store(z);};
 
 protected:
     void run() override;

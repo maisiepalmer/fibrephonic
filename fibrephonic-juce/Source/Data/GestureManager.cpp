@@ -73,13 +73,6 @@ void GestureManager::pollGestures()
     {
         lastDetectedGesture = SimpleGestureDetector::NO_GESTURE;
     }
-    
-    // Debug output every second
-    if (pollCount % POLLING_RATE_HZ == 0)
-    {
-        DBG("Sensor data - Accel: " << sensorData.accelX << ", " << sensorData.accelY << ", " << sensorData.accelZ);
-        DBG("OSC Connected: " << oscConnected << " | Last Gesture: " << getLastGestureName());
-    }
 }
 
 bool GestureManager::getSensorDataFromConnection()
@@ -171,25 +164,27 @@ void GestureManager::sendGestureDataViaOSC()
     
     try
     {
-        // Send gesture information
-        juce::OSCMessage gestureMessage("/gesture/detected");
+        juce::OSCMessage gestureMessage("/gesture");
         gestureMessage.addInt32(static_cast<int>(lastDetectedGesture));
         gestureMessage.addString(getLastGestureName());
         
-        // Send raw sensor data for external processing if needed
-        juce::OSCMessage sensorMessage("/sensor/raw");
-        sensorMessage.addFloat32(sensorData.accelX);
-        sensorMessage.addFloat32(sensorData.accelY);
-        sensorMessage.addFloat32(sensorData.accelZ);
-        sensorMessage.addFloat32(sensorData.gyroX);
-        sensorMessage.addFloat32(sensorData.gyroY);
-        sensorMessage.addFloat32(sensorData.gyroZ);
-        sensorMessage.addFloat32(sensorData.magX);
-        sensorMessage.addFloat32(sensorData.magY);
-        sensorMessage.addFloat32(sensorData.magZ);
+        juce::OSCMessage accMessage("/sensor/acc");
+        accMessage.addFloat32(sensorData.accelX);
+        accMessage.addFloat32(sensorData.accelY);
+        accMessage.addFloat32(sensorData.accelZ);
         
-        // Send both messages
-        if (!oscSender.send(gestureMessage) || !oscSender.send(sensorMessage))
+        juce::OSCMessage gyroMessage("/sensor/gyro");
+        gyroMessage.addFloat32(sensorData.gyroX);
+        gyroMessage.addFloat32(sensorData.gyroY);
+        gyroMessage.addFloat32(sensorData.gyroZ);
+        
+        juce::OSCMessage magMessage("/sensor/mag");
+        magMessage.addFloat32(sensorData.magX);
+        magMessage.addFloat32(sensorData.magY);
+        magMessage.addFloat32(sensorData.magZ);
+        
+        // Send messages
+        if (!oscSender.send(gestureMessage) || !oscSender.send(accMessage) || !oscSender.send(gyroMessage) || !oscSender.send(magMessage))
         {
             DBG("Failed to send OSC messages!");
             oscConnected = false;

@@ -49,7 +49,7 @@ private:
     
     // OSC communication
     juce::OSCSender oscSender;
-    juce::String oscHost = "127.0.0.1";  // Fixed IP address
+    juce::String oscHost = "192.169.1.2";
     int oscPort = 5006;
     bool oscConnected = false;
     int oscReconnectAttempts = 0;
