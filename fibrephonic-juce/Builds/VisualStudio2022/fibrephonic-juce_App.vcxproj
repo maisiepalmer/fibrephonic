@@ -160,7 +160,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp"/>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
-    <ClCompile Include="..\..\Source\Data\SimpleGestureDetector.cpp"/>
+    <ClCompile Include="..\..\Source\Data\TextileGestureDetector.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>
     <ClCompile Include="..\..\Source\Connection.cpp"/>
@@ -3239,7 +3239,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Source\Data\ConnectionManager.h"/>
     <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
-    <ClInclude Include="..\..\Source\Data\SimpleGestureDetector.h"/>
+    <ClInclude Include="..\..\Source\Data\TextileGestureDetector.h"/>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
     <ClInclude Include="..\..\Source\Connection.h"/>

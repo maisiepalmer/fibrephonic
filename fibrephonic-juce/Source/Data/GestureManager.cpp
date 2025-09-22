@@ -10,8 +10,16 @@
 #include "ConnectionManager.h"
 
 GestureManager::GestureManager()
+: gestureDetector(gestureThresholds)
 {
-    // Initialize OSC connection
+    gestureThresholds.tapThreshold = 1.f;
+    gestureThresholds.strokeThreshold = 1.5f;
+    gestureThresholds.stretchThreshold = 1.f;
+    gestureThresholds.waveThreshold = 100.f;
+    gestureThresholds.flutterVariance = 1.f;
+    
+    gestureDetector.setThresholds(gestureThresholds);
+    
     ensureOSCConnection();
 }
 
@@ -50,7 +58,7 @@ void GestureManager::pollGestures()
         return; // No valid data available
     
     // Create IMU data structure for gesture detector
-    SimpleGestureDetector::IMUData imuData(
+    TextileGestureDetector::IMUData imuData(
         sensorData.accelX, sensorData.accelY, sensorData.accelZ,
         sensorData.gyroX, sensorData.gyroY, sensorData.gyroZ,
         sensorData.magX, sensorData.magY, sensorData.magZ
@@ -60,7 +68,7 @@ void GestureManager::pollGestures()
     auto detectedGesture = gestureDetector.processIMUData(imuData);
     
     // Update last detected gesture
-    if (detectedGesture != SimpleGestureDetector::NO_GESTURE)
+    if (detectedGesture != TextileGestureDetector::NO_GESTURE)
     {
         lastDetectedGesture = detectedGesture;
     }

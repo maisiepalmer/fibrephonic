@@ -13,10 +13,10 @@
               file="Source/Data/GestureManager.cpp"/>
         <FILE id="A5aqmN" name="GestureManager.h" compile="0" resource="0"
               file="Source/Data/GestureManager.h"/>
-        <FILE id="nguD1C" name="SimpleGestureDetector.cpp" compile="1" resource="0"
-              file="Source/Data/SimpleGestureDetector.cpp"/>
-        <FILE id="HksyX6" name="SimpleGestureDetector.h" compile="0" resource="0"
-              file="Source/Data/SimpleGestureDetector.h"/>
+        <FILE id="nguD1C" name="TextileGestureDetector.cpp" compile="1" resource="0"
+              file="Source/Data/TextileGestureDetector.cpp"/>
+        <FILE id="HksyX6" name="TextileGestureDetector.h" compile="0" resource="0"
+              file="Source/Data/TextileGestureDetector.h"/>
         <FILE id="NXG67P" name="Ximu3DeviceManager.h" compile="0" resource="0"
               file="Source/Data/Ximu3DeviceManager.h"/>
       </GROUP>

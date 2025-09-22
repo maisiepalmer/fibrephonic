@@ -12,7 +12,7 @@
 #include <memory>
 #include <deque>
 #include <atomic>
-#include "SimpleGestureDetector.h"
+#include "TextileGestureDetector.h"
 
 class ConnectionManager;
 
@@ -46,7 +46,7 @@ public:
     void stopPolling();
     
     /** @brief Get the last detected gesture type */
-    SimpleGestureDetector::GestureType getLastGesture() const { return lastDetectedGesture; }
+    TextileGestureDetector::GestureType getLastGesture() const { return lastDetectedGesture; }
     
     /** @brief Get human-readable name of last gesture */
     std::string getLastGestureName() const { return gestureDetector.getGestureName(lastDetectedGesture); }
@@ -55,7 +55,8 @@ private:
     static constexpr int POLLING_RATE_HZ = 100;  ///< Sensor polling rate
     static constexpr int MAX_RECONNECT_ATTEMPTS = 5; ///< Max OSC reconnection attempts
     
-    SimpleGestureDetector gestureDetector; ///< Gesture detection algorithm
+    TextileGestureDetector gestureDetector; ///< Gesture detection algorithm
+    TextileGestureDetector::GestureThresholds gestureThresholds;
     std::weak_ptr<ConnectionManager> connectionManager; ///< Weak ref to connection manager
     
     /** @name OSC Communication
@@ -71,7 +72,7 @@ private:
     /** @name State Tracking
      *  @{
      */
-    SimpleGestureDetector::GestureType lastDetectedGesture = SimpleGestureDetector::NO_GESTURE;
+    TextileGestureDetector::GestureType lastDetectedGesture = TextileGestureDetector::NO_GESTURE;
     std::atomic<int> pollCount{0};
     std::atomic<bool> isPolling{false};
     /** @} */
