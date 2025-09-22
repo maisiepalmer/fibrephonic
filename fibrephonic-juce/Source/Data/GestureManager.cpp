@@ -1,20 +1,16 @@
 /*
- ==============================================================================
- 
- GestureManager.cpp
- Created: 24 Jun 2025 2:18:38pm
- Author:  Joseph B
- 
- ==============================================================================
- */
+  ==============================================================================
+    GestureManager.cpp
+    Created: 24 Jun 2025 2:18:38pm
+    Author:  Joseph B
+  ==============================================================================
+*/
 
 #include "GestureManager.h"
 #include "ConnectionManager.h"
 
 GestureManager::GestureManager()
 {
-    DBG("GestureManager initialized");
-    
     // Initialize OSC connection
     ensureOSCConnection();
 }
@@ -26,20 +22,23 @@ GestureManager::~GestureManager()
 
 void GestureManager::startPolling()
 {
-    DBG("Starting gesture polling at " << POLLING_RATE_HZ << "Hz");
     pollCount = 0;
+    isPolling = true;
     startTimerHz(POLLING_RATE_HZ);
 }
 
 void GestureManager::stopPolling()
 {
-    DBG("Stopping gesture polling");
+    isPolling = false;
     stopTimer();
 }
 
 void GestureManager::timerCallback()
 {
-    pollGestures();
+    if (isPolling)
+    {
+        pollGestures();
+    }
 }
 
 void GestureManager::pollGestures()
@@ -60,19 +59,14 @@ void GestureManager::pollGestures()
     // Process gesture detection
     auto detectedGesture = gestureDetector.processIMUData(imuData);
     
-    // Check if a new gesture was detected
-    if (detectedGesture != SimpleGestureDetector::NO_GESTURE && detectedGesture != lastDetectedGesture)
+    // Update last detected gesture
+    if (detectedGesture != SimpleGestureDetector::NO_GESTURE)
     {
         lastDetectedGesture = detectedGesture;
-        DBG("New gesture detected: " << gestureDetector.getGestureName(detectedGesture));
-        
-        // Send gesture data via OSC
-        sendGestureDataViaOSC();
     }
-    else if (detectedGesture == SimpleGestureDetector::NO_GESTURE)
-    {
-        lastDetectedGesture = SimpleGestureDetector::NO_GESTURE;
-    }
+    
+    // Send ALL data via OSC at refresh rate (not just when gesture detected)
+    sendDataViaOSC();
 }
 
 bool GestureManager::getSensorDataFromConnection()
@@ -81,25 +75,22 @@ bool GestureManager::getSensorDataFromConnection()
     auto lockedManager = connectionManager.lock();
     if (!lockedManager)
     {
-        DBG("ConnectionManager no longer available!");
-        stopPolling();
+        if (isPolling)
+        {
+            stopPolling();
+        }
         return false;
     }
     
     // Check if we have a valid connection
     if (!lockedManager->getIsConnected())
     {
-        // Only log occasionally to avoid spam
-        if (pollCount % (POLLING_RATE_HZ * 5) == 0) // Every 5 seconds
-        {
-            DBG("IMU device not connected");
-        }
         return false;
     }
     
     try
     {
-        // Get latest sensor readings
+        // Get latest sensor readings - these are atomic operations so thread-safe
         sensorData.accelX = static_cast<float>(lockedManager->getAccelerationX());
         sensorData.accelY = static_cast<float>(lockedManager->getAccelerationY());
         sensorData.accelZ = static_cast<float>(lockedManager->getAccelerationZ());
@@ -114,60 +105,48 @@ bool GestureManager::getSensorDataFromConnection()
         
         return true;
     }
-    catch (const std::exception& e)
+    catch (...)
     {
-        DBG("Exception getting sensor data: " << e.what());
         return false;
     }
 }
 
 bool GestureManager::ensureOSCConnection()
 {
-    if (oscConnected && oscSender.connect(oscHost, oscPort))
+    if (oscConnected)
     {
-        return true; // Already connected and working
+        return true;
     }
     
     if (oscSender.connect(oscHost, oscPort))
     {
         oscConnected = true;
         oscReconnectAttempts = 0;
-        DBG("OSC connected successfully to " << oscHost << ":" << oscPort);
         return true;
     }
     else
     {
         oscConnected = false;
         oscReconnectAttempts++;
-        
-        if (oscReconnectAttempts <= MAX_RECONNECT_ATTEMPTS)
-        {
-            DBG("OSC connection failed, attempt " << oscReconnectAttempts << "/" << MAX_RECONNECT_ATTEMPTS);
-        }
         return false;
     }
 }
 
-void GestureManager::sendGestureDataViaOSC()
+void GestureManager::sendDataViaOSC()
 {
     if (!ensureOSCConnection())
     {
-        if (oscReconnectAttempts > MAX_RECONNECT_ATTEMPTS)
-        {
-            if (pollCount % (POLLING_RATE_HZ * 10) == 0) // Log every 10 seconds
-            {
-                DBG("OSC connection failed after " << MAX_RECONNECT_ATTEMPTS << " attempts");
-            }
-        }
         return;
     }
     
     try
     {
+        // Always send current gesture state
         juce::OSCMessage gestureMessage("/gesture");
         gestureMessage.addInt32(static_cast<int>(lastDetectedGesture));
         gestureMessage.addString(getLastGestureName());
         
+        // Always send sensor data
         juce::OSCMessage accMessage("/sensor/acc");
         accMessage.addFloat32(sensorData.accelX);
         accMessage.addFloat32(sensorData.accelY);
@@ -183,20 +162,19 @@ void GestureManager::sendGestureDataViaOSC()
         magMessage.addFloat32(sensorData.magY);
         magMessage.addFloat32(sensorData.magZ);
         
-        // Send messages
-        if (!oscSender.send(gestureMessage) || !oscSender.send(accMessage) || !oscSender.send(gyroMessage) || !oscSender.send(magMessage))
+        // Send all messages
+        if (!oscSender.send(gestureMessage) || !oscSender.send(accMessage) ||
+            !oscSender.send(gyroMessage) || !oscSender.send(magMessage))
         {
-            DBG("Failed to send OSC messages!");
             oscConnected = false;
         }
         else
         {
-            oscReconnectAttempts = 0; // Reset on success
+            oscReconnectAttempts = 0;
         }
     }
-    catch (const std::exception& e)
+    catch (...)
     {
-        DBG("Exception sending OSC data: " << e.what());
         oscConnected = false;
     }
 }

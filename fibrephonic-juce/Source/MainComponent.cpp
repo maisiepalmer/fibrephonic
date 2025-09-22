@@ -1,46 +1,43 @@
+/**
+ * @file MainComponent.cpp
+ * @brief Main UI component implementation for gesture detection system
+ * @author Joseph B, Maisie Palmer
+ * @date Created: 2025
+ */
+
 #include "MainComponent.h"
 
 MainComponent::MainComponent()
 {
     // Create the gesture detection system
-    DBG("Initializing gesture detection system...");
-    
-    // Create both managers
     gestureManager = std::make_shared<GestureManager>();
     connectionManager = std::make_shared<ConnectionManager>(gestureManager);
     
-    // Set up the circular reference (this resolves the dependency issue)
+    // Set up the circular reference
     gestureManager->setConnectionManager(connectionManager);
     
-    DBG("Gesture detection system initialized");
-    
-    // Set up UI components
+    // Set up UI components with new FontOptions
     addAndMakeVisible(statusLabel);
     statusLabel.setText("Gesture Detection System", juce::dontSendNotification);
-    statusLabel.setFont(juce::Font(20.0f, juce::Font::bold));
+    statusLabel.setFont(juce::FontOptions(20.0f));
     statusLabel.setJustificationType(juce::Justification::centred);
     
     addAndMakeVisible(connectionLabel);
     connectionLabel.setText("Connection: Disconnected", juce::dontSendNotification);
-    connectionLabel.setFont(juce::Font(16.0f));
+    connectionLabel.setFont(juce::FontOptions(16.0f));
     
     addAndMakeVisible(gestureLabel);
     gestureLabel.setText("Last Gesture: None", juce::dontSendNotification);
-    gestureLabel.setFont(juce::Font(16.0f));
+    gestureLabel.setFont(juce::FontOptions(16.0f));
     
     addAndMakeVisible(sensorDataLabel);
     sensorDataLabel.setText("Sensor Data: Waiting...", juce::dontSendNotification);
-    sensorDataLabel.setFont(juce::Font(14.0f));
+    sensorDataLabel.setFont(juce::FontOptions(14.0f));
     sensorDataLabel.setJustificationType(juce::Justification::topLeft);
     
-    addAndMakeVisible(startButton);
-    startButton.setButtonText("Start Detection");
-    startButton.onClick = [this] { startButtonClicked(); };
-    
-    addAndMakeVisible(stopButton);
-    stopButton.setButtonText("Stop Detection");
-    stopButton.onClick = [this] { stopButtonClicked(); };
-    stopButton.setEnabled(false);
+    addAndMakeVisible(toggleButton);
+    toggleButton.setButtonText("Start");
+    toggleButton.onClick = [this] { toggleConnection(); };
     
     // Start UI update timer
     startTimerHz(10); // Update UI 10 times per second
@@ -50,17 +47,13 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
-    DBG("MainComponent shutting down...");
-    
-    // Stop everything cleanly
     stopTimer();
     
-    if (connectionManager)
+    if (connectionManager && connectionManager->getIsConnected())
     {
         connectionManager->stopConnection();
     }
     
-    // Clear references in proper order
     if (gestureManager)
     {
         gestureManager->setConnectionManager(nullptr);
@@ -68,10 +61,12 @@ MainComponent::~MainComponent()
     
     gestureManager.reset();
     connectionManager.reset();
-    
-    DBG("MainComponent shutdown complete");
 }
 
+/**
+ * @brief Paint callback for custom drawing
+ * @param g Graphics context for drawing
+ */
 void MainComponent::paint(juce::Graphics& g)
 {
     g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
@@ -81,6 +76,9 @@ void MainComponent::paint(juce::Graphics& g)
     g.drawRect(getLocalBounds(), 2);
 }
 
+/**
+ * @brief Layout components when window is resized
+ */
 void MainComponent::resized()
 {
     auto bounds = getLocalBounds().reduced(20);
@@ -98,16 +96,20 @@ void MainComponent::resized()
     bounds.removeFromTop(20);
     
     auto buttonArea = bounds.removeFromTop(40);
-    startButton.setBounds(buttonArea.removeFromLeft(120));
-    buttonArea.removeFromLeft(10);
-    stopButton.setBounds(buttonArea.removeFromLeft(120));
+    toggleButton.setBounds(buttonArea.removeFromLeft(120));
 }
 
+/**
+ * @brief Timer callback for UI updates
+ */
 void MainComponent::timerCallback()
 {
     updateUI();
 }
 
+/**
+ * @brief Update UI elements with current system state
+ */
 void MainComponent::updateUI()
 {
     if (!connectionManager || !gestureManager)
@@ -119,6 +121,11 @@ void MainComponent::updateUI()
                            juce::dontSendNotification);
     connectionLabel.setColour(juce::Label::textColourId,
                              connected ? juce::Colours::green : juce::Colours::red);
+    
+    // Update toggle button state
+    toggleButton.setButtonText(isRunning ? "Stop" : "Start");
+    toggleButton.setColour(juce::TextButton::buttonColourId,
+                          isRunning ? juce::Colours::indianred : juce::Colours::forestgreen);
     
     // Update gesture info
     auto lastGesture = gestureManager->getLastGestureName();
@@ -149,26 +156,25 @@ void MainComponent::updateUI()
     }
 }
 
-void MainComponent::startButtonClicked()
+/**
+ * @brief Toggle connection state between running and stopped
+ */
+void MainComponent::toggleConnection()
 {
-    DBG("Starting gesture detection...");
-    
-    if (connectionManager)
+    if (!isRunning)
     {
-        connectionManager->startConnection();
-        startButton.setEnabled(false);
-        stopButton.setEnabled(true);
+        if (connectionManager)
+        {
+            connectionManager->startConnection();
+            isRunning = true;
+        }
     }
-}
-
-void MainComponent::stopButtonClicked()
-{
-    DBG("Stopping gesture detection...");
-    
-    if (connectionManager)
+    else
     {
-        connectionManager->stopConnection();
-        startButton.setEnabled(true);
-        stopButton.setEnabled(false);
+        if (connectionManager)
+        {
+            connectionManager->stopConnection();
+            isRunning = false;
+        }
     }
 }

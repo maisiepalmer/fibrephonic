@@ -74,9 +74,10 @@ void Connection::runConnection(const ximu3::ConnectionInfo& connectionInfo,
     // After a successful connection, we must call the callback
     onConnectionSuccess();
 
-    // Tell the device to start streaming inertial data at 100 Hz
+    // Tell the device to start streaming both inertial AND magnetometer data at 100 Hz
     const std::vector<std::string> commands{
-        "{\"inertial\":{\"rate\":100}}"
+        "{\"inertial\":{\"rate\":100}}",
+        "{\"magnetometer\":{\"rate\":100}}"  // Add magnetometer streaming!
     };
     connection.sendCommands(commands, 2, 500);
     

@@ -1,21 +1,33 @@
-/*
-  ==============================================================================
-
-    SimpleGestureDetector.cpp
-    Created: 18 Sep 2025 3:13:59pm
-    Author:  Maisie Palmer
-
-  ==============================================================================
-*/
+/**
+ * @file SimpleGestureDetector.cpp
+ * @brief Choreographic gesture detection for textile-based IMU sensors
+ * @author Maisie Palmer
+ * @date Created: 18 Sep 2025
+ *
+ * Designed for detecting expressive movements in performance contexts
+ * where the IMU is embedded in fabric/costume.
+ */
 
 #include "SimpleGestureDetector.h"
 #include <chrono>
 
+/**
+ * @brief Calculate 3D vector magnitude
+ * @param x X component
+ * @param y Y component
+ * @param z Z component
+ * @return Magnitude of the vector
+ */
 float SimpleGestureDetector::calculateMagnitude(float x, float y, float z) const
 {
     return std::sqrt(x*x + y*y + z*z);
 }
 
+/**
+ * @brief Calculate variance of a data series
+ * @param data Vector of float values
+ * @return Statistical variance
+ */
 float SimpleGestureDetector::calculateVariance(const std::vector<float>& data) const
 {
     if (data.size() < 2) return 0.0f;
@@ -31,6 +43,11 @@ float SimpleGestureDetector::calculateVariance(const std::vector<float>& data) c
     return variance / (data.size() - 1);
 }
 
+/**
+ * @brief Calculate mean of a data series
+ * @param data Vector of float values
+ * @return Arithmetic mean
+ */
 float SimpleGestureDetector::calculateMean(const std::vector<float>& data) const
 {
     if (data.empty()) return 0.0f;
@@ -44,111 +61,227 @@ float SimpleGestureDetector::calculateMean(const std::vector<float>& data) const
     return sum / data.size();
 }
 
-bool SimpleGestureDetector::isAccelerationSpike(const std::vector<float>& magnitudes, size_t index, float threshold) const
+/**
+ * @brief Detect sudden impact/pat on fabric
+ * @param window Recent IMU data
+ * @return true if pat detected
+ */
+bool SimpleGestureDetector::detectPat(const std::vector<IMUData>& window) const
 {
-    if (index == 0 || index >= magnitudes.size() - 1) return false;
+    // A pat on fabric creates a sharp but smaller acceleration spike
+    // followed by quick damping (fabric absorbs energy)
+    if (window.size() < 5) return false;
     
-    float current = magnitudes[index];
-    float prev = magnitudes[index - 1];
-    float next = magnitudes[index + 1];
+    float maxAccel = 0;
+    int maxIndex = -1;
     
-    // Check if current value is significantly higher than neighbors
-    return (current > threshold && current > prev * 1.5f && current > next * 1.5f);
-}
-
-SimpleGestureDetector::GestureType SimpleGestureDetector::detectTiltDirection(const std::vector<IMUData>& window) const
-{
-    // Calculate average acceleration over the window
-    float avgX = 0, avgY = 0, avgZ = 0;
-    
-    for (const auto& data : window)
+    for (size_t i = 0; i < window.size(); ++i)
     {
-        avgX += data.accelX;
-        avgY += data.accelY;
-        avgZ += data.accelZ;
+        float mag = calculateMagnitude(window[i].accelX, window[i].accelY, window[i].accelZ);
+        if (mag > maxAccel)
+        {
+            maxAccel = mag;
+            maxIndex = i;
+        }
     }
     
-    avgX /= window.size();
-    avgY /= window.size();
-    avgZ /= window.size();
-    
-    // Determine dominant tilt direction
-    if (std::abs(avgX) > TILT_THRESHOLD)
+    // Check for sharp rise and quick decay (characteristic of fabric impact)
+    if (maxAccel > PAT_THRESHOLD && maxIndex > 0 && maxIndex < window.size() - 2)
     {
-        return (avgX > 0) ? TILT_RIGHT : TILT_LEFT;
-    }
-    else if (std::abs(avgY) > TILT_THRESHOLD)
-    {
-        return (avgY > 0) ? TILT_FORWARD : TILT_BACKWARD;
-    }
-    
-    return NO_GESTURE;
-}
-
-SimpleGestureDetector::GestureType SimpleGestureDetector::detectSwipeDirection(const std::vector<IMUData>& window) const
-{
-    if (window.size() < 3) return NO_GESTURE;
-    
-    // Look for rapid acceleration followed by deceleration
-    float maxAccelX = 0, maxAccelY = 0, maxAccelZ = 0;
-    
-    for (size_t i = 1; i < window.size() - 1; ++i)
-    {
-        float accelX = std::abs(window[i].accelX);
-        float accelY = std::abs(window[i].accelY);
-        float accelZ = std::abs(window[i].accelZ);
+        float beforeMag = calculateMagnitude(window[maxIndex-1].accelX,
+                                            window[maxIndex-1].accelY,
+                                            window[maxIndex-1].accelZ);
+        float afterMag = calculateMagnitude(window[maxIndex+2].accelX,
+                                           window[maxIndex+2].accelY,
+                                           window[maxIndex+2].accelZ);
         
-        if (accelX > maxAccelX) maxAccelX = accelX;
-        if (accelY > maxAccelY) maxAccelY = accelY;
-        if (accelZ > maxAccelZ) maxAccelZ = accelZ;
+        // Sharp rise and fall pattern
+        if (maxAccel > beforeMag * 2.0f && maxAccel > afterMag * 2.0f)
+        {
+            return true;
+        }
     }
     
-    // Determine swipe direction based on dominant axis
-    if (maxAccelX > SWIPE_THRESHOLD && maxAccelX > maxAccelY && maxAccelX > maxAccelZ)
+    return false;
+}
+
+/**
+ * @brief Detect smooth wave-like motion
+ * @param window Recent IMU data
+ * @return Wave direction if detected, NO_GESTURE otherwise
+ */
+SimpleGestureDetector::GestureType SimpleGestureDetector::detectWave(const std::vector<IMUData>& window) const
+{
+    // Wave motion in fabric creates sinusoidal acceleration patterns
+    if (window.size() < 15) return NO_GESTURE;
+    
+    // Look for oscillating patterns in gyroscope data
+    float gyroXSum = 0, gyroYSum = 0, gyroZSum = 0;
+    int directionChangesX = 0, directionChangesY = 0;
+    
+    for (size_t i = 1; i < window.size(); ++i)
     {
-        // Determine if left or right based on sign
-        float totalX = 0;
-        for (const auto& data : window) totalX += data.accelX;
-        return (totalX > 0) ? SWIPE_RIGHT : SWIPE_LEFT;
+        gyroXSum += std::abs(window[i].gyroX);
+        gyroYSum += std::abs(window[i].gyroY);
+        gyroZSum += std::abs(window[i].gyroZ);
+        
+        // Count direction changes (oscillation)
+        if (i > 1)
+        {
+            bool prevPosX = window[i-1].gyroX > 0;
+            bool currPosX = window[i].gyroX > 0;
+            if (prevPosX != currPosX && std::abs(window[i].gyroX) > 50) directionChangesX++;
+            
+            bool prevPosY = window[i-1].gyroY > 0;
+            bool currPosY = window[i].gyroY > 0;
+            if (prevPosY != currPosY && std::abs(window[i].gyroY) > 50) directionChangesY++;
+        }
     }
-    else if (maxAccelZ > SWIPE_THRESHOLD && maxAccelZ > maxAccelX && maxAccelZ > maxAccelY)
+    
+    // Detect wave based on oscillating motion with sufficient amplitude
+    if (directionChangesX >= 2 && gyroXSum > WAVE_THRESHOLD)
     {
-        float totalZ = 0;
-        for (const auto& data : window) totalZ += data.accelZ;
-        return (totalZ > 0) ? SWIPE_UP : SWIPE_DOWN;
+        return WAVE_HORIZONTAL;
+    }
+    else if (directionChangesY >= 2 && gyroYSum > WAVE_THRESHOLD)
+    {
+        return WAVE_VERTICAL;
     }
     
     return NO_GESTURE;
 }
 
-SimpleGestureDetector::GestureType SimpleGestureDetector::detectCircularMotion(const std::vector<IMUData>& window) const
+/**
+ * @brief Detect spinning motion (pirouette-like)
+ * @param window Recent IMU data
+ * @return Spin direction if detected
+ */
+SimpleGestureDetector::GestureType SimpleGestureDetector::detectSpin(const std::vector<IMUData>& window) const
 {
     if (window.size() < 10) return NO_GESTURE;
     
-    // Sum up rotation rates to detect sustained circular motion
-    float totalRotationZ = 0;
+    // Spinning creates sustained rotation in one axis
+    float totalRotZ = 0;
+    float minRotZ = 1000, maxRotZ = -1000;
     
     for (const auto& data : window)
     {
-        totalRotationZ += data.gyroZ;
+        totalRotZ += data.gyroZ;
+        if (data.gyroZ < minRotZ) minRotZ = data.gyroZ;
+        if (data.gyroZ > maxRotZ) maxRotZ = data.gyroZ;
     }
     
-    float avgRotation = totalRotationZ / window.size();
+    float avgRotZ = totalRotZ / window.size();
     
-    if (std::abs(avgRotation) > CIRCULAR_THRESHOLD)
+    // Check for consistent spinning (not just a quick turn)
+    bool consistentSpin = (minRotZ > 0 && avgRotZ > SPIN_THRESHOLD) ||
+                          (maxRotZ < 0 && avgRotZ < -SPIN_THRESHOLD);
+    
+    if (consistentSpin && std::abs(avgRotZ) > SPIN_THRESHOLD)
     {
-        return (avgRotation > 0) ? CIRCLE_CW : CIRCLE_CCW;
+        return (avgRotZ > 0) ? SPIN_RIGHT : SPIN_LEFT;
     }
     
     return NO_GESTURE;
 }
 
+/**
+ * @brief Detect stretching motion in fabric
+ * @param window Recent IMU data
+ * @return true if stretch detected
+ */
+bool SimpleGestureDetector::detectStretch(const std::vector<IMUData>& window) const
+{
+    if (window.size() < 10) return false;
+    
+    // Stretching fabric creates gradual, sustained acceleration change
+    float initialAccel = calculateMagnitude(window[0].accelX, window[0].accelY, window[0].accelZ);
+    float finalAccel = calculateMagnitude(window.back().accelX, window.back().accelY, window.back().accelZ);
+    
+    // Check for gradual increase in acceleration (fabric under tension)
+    float deltaAccel = finalAccel - initialAccel;
+    
+    // Also check gyroscope for minimal rotation (stretch is linear)
+    float totalRot = 0;
+    for (const auto& data : window)
+    {
+        totalRot += calculateMagnitude(data.gyroX, data.gyroY, data.gyroZ);
+    }
+    float avgRot = totalRot / window.size();
+    
+    // Stretch detected: gradual accel change with minimal rotation
+    return (std::abs(deltaAccel) > STRETCH_THRESHOLD && avgRot < 100);
+}
+
+/**
+ * @brief Detect flutter/shake motion in fabric
+ * @param window Recent IMU data
+ * @return true if flutter detected
+ */
+bool SimpleGestureDetector::detectFlutter(const std::vector<IMUData>& window) const
+{
+    if (window.size() < 10) return false;
+    
+    // Flutter creates rapid, small oscillations
+    std::vector<float> accelMags;
+    for (const auto& data : window)
+    {
+        accelMags.push_back(calculateMagnitude(data.accelX, data.accelY, data.accelZ));
+    }
+    
+    // High variance with moderate amplitude indicates flutter
+    float variance = calculateVariance(accelMags);
+    float mean = calculateMean(accelMags);
+    
+    // Flutter has high variance relative to mean
+    return (variance > FLUTTER_THRESHOLD && mean < 20.0f);
+}
+
+/**
+ * @brief Detect held pose (stillness)
+ * @param window Recent IMU data
+ * @return true if holding still
+ */
+bool SimpleGestureDetector::detectHold(const std::vector<IMUData>& window) const
+{
+    if (window.size() < 20) return false;
+    
+    // Calculate variance in all axes
+    std::vector<float> accelX, accelY, accelZ;
+    std::vector<float> gyroX, gyroY, gyroZ;
+    
+    for (const auto& data : window)
+    {
+        accelX.push_back(data.accelX);
+        accelY.push_back(data.accelY);
+        accelZ.push_back(data.accelZ);
+        gyroX.push_back(data.gyroX);
+        gyroY.push_back(data.gyroY);
+        gyroZ.push_back(data.gyroZ);
+    }
+    
+    // Very low variance in all sensors indicates holding still
+    float accelVar = calculateVariance(accelX) + calculateVariance(accelY) + calculateVariance(accelZ);
+    float gyroVar = calculateVariance(gyroX) + calculateVariance(gyroY) + calculateVariance(gyroZ);
+    
+    return (accelVar < HOLD_THRESHOLD && gyroVar < 1000);
+}
+
+/**
+ * @brief Get current system time in milliseconds
+ * @return Current time in ms since epoch
+ */
 int64_t SimpleGestureDetector::getCurrentTimeMs() const
 {
     return std::chrono::duration_cast<std::chrono::milliseconds>(
         std::chrono::steady_clock::now().time_since_epoch()).count();
 }
 
+/**
+ * @brief Main processing function for new IMU data
+ * @param newData Latest IMU readings
+ * @return Detected gesture type
+ */
 SimpleGestureDetector::GestureType SimpleGestureDetector::processIMUData(const IMUData& newData)
 {
     // Add new data to buffer
@@ -158,117 +291,121 @@ SimpleGestureDetector::GestureType SimpleGestureDetector::processIMUData(const I
         dataBuffer.pop_front();
     }
     
-    // Calculate acceleration magnitude for this sample
-    float magnitude = calculateMagnitude(newData.accelX, newData.accelY, newData.accelZ);
-    accelMagnitudes.push_back(magnitude);
-    if (accelMagnitudes.size() > BUFFER_SIZE)
-    {
-        accelMagnitudes.erase(accelMagnitudes.begin());
-    }
-    
     // Need minimum data to start detection
     if (dataBuffer.size() < GESTURE_WINDOW)
     {
         return NO_GESTURE;
     }
     
-    // Decrement gesture timeout
-    if (gestureTimeout > 0)
+    // Handle gesture cooldown
+    if (gestureCooldown > 0)
     {
-        gestureTimeout--;
-        return lastGesture; // Continue returning the same gesture during timeout
+        gestureCooldown--;
+        // Don't return last gesture during cooldown, just return NO_GESTURE
+        // This prevents gesture "sticking"
+        return NO_GESTURE;
     }
     
-    // Get recent data window for analysis
-    std::vector<IMUData> window(dataBuffer.end() - GESTURE_WINDOW, dataBuffer.end());
-    std::vector<float> magWindow(accelMagnitudes.end() - GESTURE_WINDOW, accelMagnitudes.end());
+    // Get analysis windows
+    std::vector<IMUData> shortWindow(dataBuffer.end() - 10, dataBuffer.end());
+    std::vector<IMUData> mediumWindow(dataBuffer.end() - GESTURE_WINDOW, dataBuffer.end());
     
     GestureType detectedGesture = NO_GESTURE;
     
-    // TAP (sharp acceleration spike)
-    for (size_t i = 1; i < magWindow.size() - 1; ++i)
+    // Priority order for choreographic gestures:
+    // 1. PAT - immediate tactile feedback
+    if (detectPat(shortWindow))
     {
-        if (isAccelerationSpike(magWindow, i, TAP_THRESHOLD))
+        detectedGesture = PAT;
+        gestureCooldown = 15; // Short cooldown for repeated pats
+    }
+    // 2. FLUTTER - rapid movement
+    else if (detectFlutter(shortWindow))
+    {
+        detectedGesture = FLUTTER;
+        gestureCooldown = 20;
+    }
+    // 3. STRETCH - tension in fabric
+    else if (detectStretch(mediumWindow))
+    {
+        detectedGesture = STRETCH;
+        gestureCooldown = 30;
+    }
+    // 4. WAVE - flowing motion
+    else
+    {
+        GestureType waveType = detectWave(mediumWindow);
+        if (waveType != NO_GESTURE)
         {
-            int64_t currentTime = getCurrentTimeMs();
-            
-            // Check for double tap (within 500ms of previous tap)
-            if (currentTime - lastTapTime < 500)
-            {
-                tapCount++;
-                if (tapCount >= 2)
-                {
-                    detectedGesture = DOUBLE_TAP;
-                    tapCount = 0;
-                }
-            }
-            else
-            {
-                tapCount = 1;
-                detectedGesture = TAP;
-            }
-            
-            lastTapTime = currentTime;
-            break;
+            detectedGesture = waveType;
+            gestureCooldown = 25;
         }
     }
     
-    // SHAKE (high variance in acceleration)
+    // 5. SPIN - rotation
     if (detectedGesture == NO_GESTURE)
     {
-        float variance = calculateVariance(magWindow);
-        if (variance > SHAKE_THRESHOLD)
+        GestureType spinType = detectSpin(mediumWindow);
+        if (spinType != NO_GESTURE)
         {
-            detectedGesture = SHAKE;
+            detectedGesture = spinType;
+            gestureCooldown = 40;
         }
     }
     
-    // CIRCULAR MOTION (sustained rotation)
-    if (detectedGesture == NO_GESTURE)
+    // 6. HOLD - stillness (lowest priority)
+    if (detectedGesture == NO_GESTURE && detectHold(mediumWindow))
     {
-        detectedGesture = detectCircularMotion(window);
+        // Only trigger HOLD if we weren't already in HOLD state
+        if (lastGesture != HOLD)
+        {
+            detectedGesture = HOLD;
+            gestureCooldown = 50; // Long cooldown for hold
+        }
     }
     
-    // SWIPE (rapid directional acceleration)
-    if (detectedGesture == NO_GESTURE)
-    {
-        detectedGesture = detectSwipeDirection(window);
-    }
-    
-    // TILT (sustained directional acceleration)
-    if (detectedGesture == NO_GESTURE)
-    {
-        detectedGesture = detectTiltDirection(window);
-    }
-    
-    // Set timeout to prevent rapid re-triggering of the same gesture
+    // Update last gesture
     if (detectedGesture != NO_GESTURE)
     {
-        gestureTimeout = 20; // ~200ms timeout at 100Hz
         lastGesture = detectedGesture;
     }
     
     return detectedGesture;
 }
 
+/**
+ * @brief Get human-readable name for gesture
+ * @param gesture Gesture type enum
+ * @return String description of the gesture
+ */
 std::string SimpleGestureDetector::getGestureName(GestureType gesture) const
 {
     switch (gesture)
     {
-        case NO_GESTURE:     return "None";
-        case TAP:            return "Tap";
-        case DOUBLE_TAP:     return "Double Tap";
-        case SHAKE:          return "Shake";
-        case TILT_LEFT:      return "Tilt Left";
-        case TILT_RIGHT:     return "Tilt Right";
-        case TILT_FORWARD:   return "Tilt Forward";
-        case TILT_BACKWARD:  return "Tilt Backward";
-        case CIRCLE_CW:      return "Circle Clockwise";
-        case CIRCLE_CCW:     return "Circle Counter-Clockwise";
-        case SWIPE_LEFT:     return "Swipe Left";
-        case SWIPE_RIGHT:    return "Swipe Right";
-        case SWIPE_UP:       return "Swipe Up";
-        case SWIPE_DOWN:     return "Swipe Down";
-        default:             return "Unknown";
+        case NO_GESTURE:        return "None";
+        case PAT:              return "Pat";
+        case WAVE_HORIZONTAL:  return "Wave Horizontal";
+        case WAVE_VERTICAL:    return "Wave Vertical";
+        case SPIN_LEFT:        return "Spin Left";
+        case SPIN_RIGHT:       return "Spin Right";
+        case STRETCH:          return "Stretch";
+        case FLUTTER:          return "Flutter";
+        case HOLD:             return "Hold";
+        
+        // Legacy gestures (keeping for compatibility but not actively detected)
+        case TAP:              return "Tap";
+        case DOUBLE_TAP:       return "Double Tap";
+        case SHAKE:            return "Shake";
+        case TILT_LEFT:        return "Tilt Left";
+        case TILT_RIGHT:       return "Tilt Right";
+        case TILT_FORWARD:     return "Tilt Forward";
+        case TILT_BACKWARD:    return "Tilt Backward";
+        case CIRCLE_CW:        return "Circle CW";
+        case CIRCLE_CCW:       return "Circle CCW";
+        case SWIPE_LEFT:       return "Swipe Left";
+        case SWIPE_RIGHT:      return "Swipe Right";
+        case SWIPE_UP:         return "Swipe Up";
+        case SWIPE_DOWN:       return "Swipe Down";
+        default:               return "Unknown";
     }
 }

@@ -1,14 +1,8 @@
-/*
- ==============================================================================
- 
- GestureManager.h
- Created: 13 Jun 2025 3:33:06pm
- Author:  Joseph B
- 
- Gesture Manager class to identify, scale, handle and export IMU sensor data
- over various connection types.
- 
- ==============================================================================
+/**
+ * @file GestureManager.h
+ * @brief Manages gesture detection and OSC communication
+ * @author Joseph B
+ * @date Created: 13 Jun 2025
  */
 
 #pragma once
@@ -17,48 +11,72 @@
 #include <vector>
 #include <memory>
 #include <deque>
+#include <atomic>
 #include "SimpleGestureDetector.h"
 
-// Forward declare to avoid circular dependency
 class ConnectionManager;
 
+/**
+ * @class GestureManager
+ * @brief Processes IMU data for gesture detection and sends data via OSC
+ *
+ * Polls sensor data from ConnectionManager at 100Hz, performs gesture
+ * detection, and continuously streams both raw sensor data and detected
+ * gestures via OSC.
+ */
 class GestureManager : private juce::Timer
 {
 public:
     GestureManager();
     ~GestureManager();
     
+    /**
+     * @brief Set the connection manager reference
+     * @param connectionManagerInstance Shared pointer to connection manager
+     */
     void setConnectionManager(std::shared_ptr<ConnectionManager> connectionManagerInstance)
     {
         connectionManager = connectionManagerInstance;
     }
     
+    /** @brief Start polling sensor data and detecting gestures */
     void startPolling();
+    
+    /** @brief Stop polling and gesture detection */
     void stopPolling();
     
+    /** @brief Get the last detected gesture type */
     SimpleGestureDetector::GestureType getLastGesture() const { return lastDetectedGesture; }
+    
+    /** @brief Get human-readable name of last gesture */
     std::string getLastGestureName() const { return gestureDetector.getGestureName(lastDetectedGesture); }
 
 private:
-    static constexpr int POLLING_RATE_HZ = 100;  // 100 Hz polling
-    static constexpr int MAX_RECONNECT_ATTEMPTS = 5;
+    static constexpr int POLLING_RATE_HZ = 100;  ///< Sensor polling rate
+    static constexpr int MAX_RECONNECT_ATTEMPTS = 5; ///< Max OSC reconnection attempts
     
-    // Core components
-    SimpleGestureDetector gestureDetector;
-    std::weak_ptr<ConnectionManager> connectionManager;
+    SimpleGestureDetector gestureDetector; ///< Gesture detection algorithm
+    std::weak_ptr<ConnectionManager> connectionManager; ///< Weak ref to connection manager
     
-    // OSC communication
+    /** @name OSC Communication
+     *  @{
+     */
     juce::OSCSender oscSender;
     juce::String oscHost = "192.169.1.2";
     int oscPort = 5006;
     bool oscConnected = false;
     int oscReconnectAttempts = 0;
+    /** @} */
     
-    // State tracking
+    /** @name State Tracking
+     *  @{
+     */
     SimpleGestureDetector::GestureType lastDetectedGesture = SimpleGestureDetector::NO_GESTURE;
-    int pollCount = 0;
+    std::atomic<int> pollCount{0};
+    std::atomic<bool> isPolling{false};
+    /** @} */
     
-    // Raw sensor data (latest readings)
+    /** @brief Raw sensor data structure */
     struct SensorData
     {
         float accelX = 0, accelY = 0, accelZ = 0;
@@ -66,14 +84,20 @@ private:
         float magX = 0, magY = 0, magZ = 0;
     } sensorData;
     
-    // Timer callback - called at POLLING_RATE_HZ
+    /** @brief Timer callback - called at POLLING_RATE_HZ */
     void timerCallback() override;
     
-    // Core processing functions
+    /** @brief Main gesture processing loop */
     void pollGestures();
+    
+    /** @brief Get sensor data from connection manager */
     bool getSensorDataFromConnection();
+    
+    /** @brief Ensure OSC connection is active */
     bool ensureOSCConnection();
-    void sendGestureDataViaOSC();
+    
+    /** @brief Send all data via OSC (continuous streaming) */
+    void sendDataViaOSC();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GestureManager)
 };

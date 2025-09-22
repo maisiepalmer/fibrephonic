@@ -22,22 +22,6 @@ public:
                        std::function<bool()> shouldExit,
                        std::function<void()> onConnectionSuccess);
 
-    float mx, my, mz;
-    float gx, gy, gz;
-    float accx, accy, accz;
-    
-    inline double getMagX() const { return mx; }
-    inline double getMagY() const { return my; }
-    inline double getMagZ() const { return mz; }
-    
-    inline double getX() const { return gx; }
-    inline double getY() const { return gy; }
-    inline double getZ() const { return gz; }
-
-    inline double getAccX() const { return accx; }
-    inline double getAccY() const { return accy; }
-    inline double getAccZ() const { return accz; }
-
 private:
     ConnectionManager* parentManager = nullptr;
 

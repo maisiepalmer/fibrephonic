@@ -1,12 +1,12 @@
-/*
-  ==============================================================================
-
-    SimpleGestureDetector.h
-    Created: 18 Sep 2025 3:13:59pm
-    Author:  Maisie Palmer
-
-  ==============================================================================
-*/
+/**
+ * @file SimpleGestureDetector.h
+ * @brief Choreographic gesture detection for textile-based IMU sensors
+ * @author Maisie Palmer
+ * @date Created: 18 Sep 2025
+ *
+ * Detects expressive gestures suitable for musical costume interaction
+ * and dance performance with fabric-embedded sensors.
+ */
 
 #pragma once
 
@@ -15,76 +15,139 @@
 #include <cmath>
 #include <algorithm>
 
+/**
+ * @class SimpleGestureDetector
+ * @brief Detects choreographic gestures from IMU data embedded in textiles
+ *
+ * Optimized for detecting expressive movements in performance contexts
+ * where the IMU sensor is embedded in fabric or costume materials.
+ * Focuses on gestures that work well with the properties of textile materials.
+ */
 class SimpleGestureDetector
 {
 public:
+    /**
+     * @enum GestureType
+     * @brief Types of gestures optimized for choreographic/textile applications
+     */
     enum GestureType
     {
         NO_GESTURE,
-        TAP,           // Sharp downward acceleration spike
-        DOUBLE_TAP,    // Two taps in quick succession
-        SHAKE,         // Rapid back-and-forth movement
-        TILT_LEFT,     // Sustained left tilt
-        TILT_RIGHT,    // Sustained right tilt
-        TILT_FORWARD,  // Sustained forward tilt
-        TILT_BACKWARD, // Sustained backward tilt
-        CIRCLE_CW,     // Clockwise circular motion
-        CIRCLE_CCW,    // Counter-clockwise circular motion
-        SWIPE_LEFT,    // Quick left swipe
-        SWIPE_RIGHT,   // Quick right swipe
-        SWIPE_UP,      // Quick upward swipe
-        SWIPE_DOWN     // Quick downward swipe
+        
+        // Choreographic gestures for textile
+        PAT,              ///< Pat or tap on fabric surface
+        WAVE_HORIZONTAL,  ///< Horizontal wave motion through fabric
+        WAVE_VERTICAL,    ///< Vertical wave motion through fabric
+        SPIN_LEFT,        ///< Counter-clockwise spinning motion
+        SPIN_RIGHT,       ///< Clockwise spinning motion
+        STRETCH,          ///< Fabric stretching/tension
+        FLUTTER,          ///< Rapid flutter/shake of fabric
+        HOLD,             ///< Holding still/pose
+        
+        // Legacy gestures (kept for compatibility)
+        TAP,              ///< Sharp tap
+        DOUBLE_TAP,       ///< Double tap
+        SHAKE,            ///< Shake motion
+        TILT_LEFT,        ///< Left tilt
+        TILT_RIGHT,       ///< Right tilt
+        TILT_FORWARD,     ///< Forward tilt
+        TILT_BACKWARD,    ///< Backward tilt
+        CIRCLE_CW,        ///< Clockwise circle
+        CIRCLE_CCW,       ///< Counter-clockwise circle
+        SWIPE_LEFT,       ///< Left swipe
+        SWIPE_RIGHT,      ///< Right swipe
+        SWIPE_UP,         ///< Up swipe
+        SWIPE_DOWN        ///< Down swipe
     };
 
+    /**
+     * @struct IMUData
+     * @brief Container for IMU sensor readings
+     */
     struct IMUData
     {
-        float accelX, accelY, accelZ;
-        float gyroX, gyroY, gyroZ;
-        float magX, magY, magZ;
+        float accelX, accelY, accelZ; ///< Accelerometer values (m/s²)
+        float gyroX, gyroY, gyroZ;    ///< Gyroscope values (deg/s)
+        float magX, magY, magZ;       ///< Magnetometer values (μT)
         
-        IMUData() : accelX(0), accelY(0), accelZ(0), gyroX(0), gyroY(0), gyroZ(0), magX(0), magY(0), magZ(0) {}
-        IMUData(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz)
-            : accelX(ax), accelY(ay), accelZ(az), gyroX(gx), gyroY(gy), gyroZ(gz), magX(mx), magY(my), magZ(mz) {}
+        /** @brief Default constructor - initializes all values to zero */
+        IMUData() : accelX(0), accelY(0), accelZ(0),
+                   gyroX(0), gyroY(0), gyroZ(0),
+                   magX(0), magY(0), magZ(0) {}
+        
+        /** @brief Parameterized constructor */
+        IMUData(float ax, float ay, float az,
+                float gx, float gy, float gz,
+                float mx, float my, float mz)
+            : accelX(ax), accelY(ay), accelZ(az),
+              gyroX(gx), gyroY(gy), gyroZ(gz),
+              magX(mx), magY(my), magZ(mz) {}
     };
 
+    /** @brief Default constructor */
+    SimpleGestureDetector() {}
+    
+    /**
+     * @brief Process new IMU data and detect gestures
+     * @param newData Latest IMU sensor readings
+     * @return Detected gesture type (or NO_GESTURE if none detected)
+     */
+    GestureType processIMUData(const IMUData& newData);
+    
+    /**
+     * @brief Get human-readable name for a gesture type
+     * @param gesture The gesture type to describe
+     * @return String representation of the gesture
+     */
+    std::string getGestureName(GestureType gesture) const;
+
 private:
-    // Configuration
-    static constexpr size_t BUFFER_SIZE = 50;      // ~0.5 seconds at 100Hz
-    static constexpr size_t GESTURE_WINDOW = 20;   // Window for gesture analysis
+    /** @name Configuration Constants
+     *  @{
+     */
+    static constexpr size_t BUFFER_SIZE = 50;      ///< ~0.5 seconds at 100Hz
+    static constexpr size_t GESTURE_WINDOW = 20;   ///< Analysis window size
     
-    // Thresholds
-    static constexpr float TAP_THRESHOLD = 15.0f;           // Acceleration spike for tap
-    static constexpr float SHAKE_THRESHOLD = 10.0f;         // Acceleration variance for shake
-    static constexpr float TILT_THRESHOLD = 5.0f;           // Sustained acceleration for tilt
-    static constexpr float SWIPE_THRESHOLD = 8.0f;          // Acceleration for swipe detection
-    static constexpr float CIRCULAR_THRESHOLD = 300.0f;     // Gyroscope rotation for circles
+    // Thresholds optimized for fabric/textile response
+    static constexpr float PAT_THRESHOLD = 12.0f;      ///< Gentle pat on fabric
+    static constexpr float WAVE_THRESHOLD = 1500.0f;   ///< Wave motion through fabric
+    static constexpr float SPIN_THRESHOLD = 250.0f;    ///< Spinning/rotation threshold
+    static constexpr float STRETCH_THRESHOLD = 3.0f;   ///< Fabric stretch detection
+    static constexpr float FLUTTER_THRESHOLD = 8.0f;   ///< Flutter/vibration in fabric
+    static constexpr float HOLD_THRESHOLD = 0.5f;      ///< Stillness detection
+    /** @} */
     
-    // Data buffers
-    std::deque<IMUData> dataBuffer;
-    std::vector<float> accelMagnitudes;
+    /** @name Data Buffers
+     *  @{
+     */
+    std::deque<IMUData> dataBuffer;       ///< Rolling buffer of IMU data
+    /** @} */
     
-    // State tracking
-    GestureType lastGesture = NO_GESTURE;
-    int gestureTimeout = 0;
-    int tapCount = 0;
-    int64_t lastTapTime = 0;
+    /** @name State Tracking
+     *  @{
+     */
+    GestureType lastGesture = NO_GESTURE; ///< Previously detected gesture
+    int gestureCooldown = 0;              ///< Cooldown timer between gestures
+    /** @} */
     
-    // Helper functions
+    /** @name Helper Functions - Math Utilities
+     *  @{
+     */
     float calculateMagnitude(float x, float y, float z) const;
     float calculateVariance(const std::vector<float>& data) const;
     float calculateMean(const std::vector<float>& data) const;
-    bool isAccelerationSpike(const std::vector<float>& magnitudes, size_t index, float threshold) const;
-    GestureType detectTiltDirection(const std::vector<IMUData>& window) const;
-    GestureType detectSwipeDirection(const std::vector<IMUData>& window) const;
-    GestureType detectCircularMotion(const std::vector<IMUData>& window) const;
     int64_t getCurrentTimeMs() const;
-
-public:
-    SimpleGestureDetector() {}
+    /** @} */
     
-    // Main processing function - call this with each new IMU reading
-    GestureType processIMUData(const IMUData& newData);
-    
-    // Get readable gesture name
-    std::string getGestureName(GestureType gesture) const;
+    /** @name Choreographic Gesture Detectors
+     *  Specialized detection functions for textile-based gestures
+     *  @{
+     */
+    bool detectPat(const std::vector<IMUData>& window) const;
+    GestureType detectWave(const std::vector<IMUData>& window) const;
+    GestureType detectSpin(const std::vector<IMUData>& window) const;
+    bool detectStretch(const std::vector<IMUData>& window) const;
+    bool detectFlutter(const std::vector<IMUData>& window) const;
+    bool detectHold(const std::vector<IMUData>& window) const;
+    /** @} */
 };
