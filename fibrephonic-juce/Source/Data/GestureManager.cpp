@@ -12,12 +12,9 @@
 GestureManager::GestureManager()
 : gestureDetector(gestureThresholds)
 {
-    gestureThresholds.tapThreshold = 1.f;
-    gestureThresholds.strokeThreshold = 1.5f;
-    gestureThresholds.stretchThreshold = 1.f;
-    gestureThresholds.waveThreshold = 100.f;
-    gestureThresholds.flutterVariance = 1.f;
-    
+    gestureThresholds.tapSoftThreshold = 1.5f;
+    gestureThresholds.tapHardThreshold = 2.5f;
+    gestureThresholds.strokeMinAccel = 0.5f;
     gestureDetector.setThresholds(gestureThresholds);
     
     ensureOSCConnection();

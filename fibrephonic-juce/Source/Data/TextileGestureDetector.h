@@ -1,10 +1,8 @@
 /**
  * @file TextileGestureDetector.h
- * @brief Simplified gesture detection for fabric-based IMU sensors
+ * @brief Directional tap and stroke detection for fabric-based IMU sensors
  * @author Maisie Palmer
  * @date 22 Sep 2025
- *
- * Focused on expressive textile interactions: Tap, Stroke, Stretch, Flutter, Wave.
  */
 
 #pragma once
@@ -21,11 +19,12 @@ public:
     enum GestureType
     {
         NO_GESTURE,
-        TAP,        ///< Sharp pat/tap
-        STROKE,     ///< Smooth directional stroke
-        STRETCH,    ///< Pulling/elongating fabric
-        FLUTTER,    ///< Rapid flutter/shake
-        WAVE        ///< Optional flowing wave motion
+        TAP_SOFT,
+        TAP_HARD,
+        STROKE_UP,
+        STROKE_DOWN,
+        STROKE_LEFT,
+        STROKE_RIGHT
     };
 
     /** @brief IMU data container */
@@ -50,11 +49,9 @@ public:
     /** @brief Configurable thresholds for gesture detection */
     struct GestureThresholds
     {
-        float tapThreshold;       ///< Accel spike for tap
-        float strokeThreshold;    ///< Accel/gyro change for stroke
-        float stretchThreshold;   ///< Gradual accel change for stretch
-        float flutterVariance;    ///< Variance for flutter
-        float waveThreshold;      ///< Oscillation energy for wave
+        float tapSoftThreshold;   ///< Min accel for soft tap
+        float tapHardThreshold;   ///< Min accel for hard tap
+        float strokeMinAccel;     ///< Min net movement for stroke
     };
 
     /** @brief Constructor with thresholds */
@@ -73,20 +70,17 @@ private:
     GestureThresholds thresholds;
 
     std::deque<IMUData> dataBuffer;
-    static constexpr size_t BUFFER_SIZE = 50;      ///< Rolling buffer size
-    static constexpr size_t GESTURE_WINDOW = 20;   ///< Window for analysis
+    static constexpr size_t BUFFER_SIZE = 30;      ///< Rolling buffer size (~0.3s)
+    static constexpr size_t STROKE_WINDOW = 10;   ///< Window size for strokes
     GestureType lastGesture = NO_GESTURE;
     int gestureCooldown = 0;
 
     // Math helpers
-    float calculateMagnitude(float x, float y, float z) const;
+    float calculateMagnitude(const IMUData& data) const;
     float calculateMean(const std::vector<float>& data) const;
     float calculateVariance(const std::vector<float>& data) const;
 
     // Gesture detectors
-    bool detectTap(const std::vector<IMUData>& window) const;
-    bool detectStroke(const std::vector<IMUData>& window) const;
-    bool detectStretch(const std::vector<IMUData>& window) const;
-    bool detectFlutter(const std::vector<IMUData>& window) const;
-    GestureType detectWave(const std::vector<IMUData>& window) const;
+    GestureType detectTap(const std::vector<IMUData>& window) const;
+    GestureType detectStroke(const std::vector<IMUData>& window) const;
 };

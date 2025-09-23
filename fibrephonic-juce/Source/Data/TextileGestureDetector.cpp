@@ -11,9 +11,19 @@ void TextileGestureDetector::setThresholds(const GestureThresholds& newThreshold
     thresholds = newThresholds;
 }
 
-float TextileGestureDetector::calculateMagnitude(float x, float y, float z) const
+// -------------------- Math Helpers --------------------
+float TextileGestureDetector::calculateMagnitude(const IMUData& data) const
 {
-    return std::sqrt(x*x + y*y + z*z);
+    // Include accel, gyro, and mag for optional directional robustness
+    return std::sqrt(data.accelX*data.accelX +
+                     data.accelY*data.accelY +
+                     data.accelZ*data.accelZ +
+                     data.gyroX*data.gyroX +
+                     data.gyroY*data.gyroY +
+                     data.gyroZ*data.gyroZ +
+                     data.magX*data.magX +
+                     data.magY*data.magY +
+                     data.magZ*data.magZ);
 }
 
 float TextileGestureDetector::calculateMean(const std::vector<float>& data) const
@@ -33,98 +43,105 @@ float TextileGestureDetector::calculateVariance(const std::vector<float>& data) 
     return var / (data.size() - 1);
 }
 
-// -------------------- Gesture Detectors --------------------
-
-bool TextileGestureDetector::detectTap(const std::vector<IMUData>& window) const
+// -------------------- Tap Detection --------------------
+TextileGestureDetector::GestureType TextileGestureDetector::detectTap(const std::vector<IMUData>& window) const
 {
-    if (window.size() < 5) return false;
+    if (window.empty()) return NO_GESTURE;
+
     float maxAccel = 0.0f;
     for (const auto& d : window)
     {
-        float mag = calculateMagnitude(d.accelX, d.accelY, d.accelZ);
+        float mag = std::sqrt(d.accelX*d.accelX +
+                              d.accelY*d.accelY +
+                              d.accelZ*d.accelZ);
         if (mag > maxAccel) maxAccel = mag;
     }
-    return maxAccel > thresholds.tapThreshold;
+
+    if (maxAccel > thresholds.tapHardThreshold) return TAP_HARD;
+    if (maxAccel > thresholds.tapSoftThreshold) return TAP_SOFT;
+    return NO_GESTURE;
 }
 
-bool TextileGestureDetector::detectStroke(const std::vector<IMUData>& window) const
+// -------------------- Stroke Detection --------------------
+TextileGestureDetector::GestureType TextileGestureDetector::detectStroke(const std::vector<IMUData>& window) const
 {
-    if (window.size() < 5) return false;
-    float totalGyro = 0.0f;
+    if (window.size() < 2) return NO_GESTURE;
+
+    // Compute net movement for X and Y using accel + optional gyro
+    float sumX = 0.0f, sumY = 0.0f;
     for (const auto& d : window)
-        totalGyro += calculateMagnitude(d.gyroX, d.gyroY, d.gyroZ);
-    return totalGyro > thresholds.strokeThreshold;
-}
+    {
+        sumX += d.accelX + d.gyroX + d.magX;
+        sumY += d.accelY + d.gyroY + d.magY;
+    }
 
-bool TextileGestureDetector::detectStretch(const std::vector<IMUData>& window) const
-{
-    if (window.size() < 10) return false;
-    float startAccel = calculateMagnitude(window.front().accelX, window.front().accelY, window.front().accelZ);
-    float endAccel = calculateMagnitude(window.back().accelX, window.back().accelY, window.back().accelZ);
-    return std::abs(endAccel - startAccel) > thresholds.stretchThreshold;
-}
+    float absX = std::abs(sumX);
+    float absY = std::abs(sumY);
 
-bool TextileGestureDetector::detectFlutter(const std::vector<IMUData>& window) const
-{
-    if (window.size() < 10) return false;
-    std::vector<float> mags;
-    for (const auto& d : window)
-        mags.push_back(calculateMagnitude(d.accelX, d.accelY, d.accelZ));
-    return calculateVariance(mags) > thresholds.flutterVariance;
-}
+    if (absX < thresholds.strokeMinAccel && absY < thresholds.strokeMinAccel)
+        return NO_GESTURE;
 
-TextileGestureDetector::GestureType TextileGestureDetector::detectWave(const std::vector<IMUData>& window) const
-{
-    if (window.size() < 15) return NO_GESTURE;
-    float gyroSum = 0.0f;
-    for (const auto& d : window)
-        gyroSum += calculateMagnitude(d.gyroX, d.gyroY, d.gyroZ);
-    return (gyroSum > thresholds.waveThreshold) ? WAVE : NO_GESTURE;
+    if (absX > absY) return (sumX > 0) ? STROKE_RIGHT : STROKE_LEFT;
+    else return (sumY > 0) ? STROKE_UP : STROKE_DOWN;
 }
 
 // -------------------- Main Processing --------------------
-
 TextileGestureDetector::GestureType TextileGestureDetector::processIMUData(const IMUData& newData)
 {
+    // Add new data to buffer
     dataBuffer.push_back(newData);
     if (dataBuffer.size() > BUFFER_SIZE) dataBuffer.pop_front();
-    if (dataBuffer.size() < GESTURE_WINDOW) return NO_GESTURE;
 
+    // Handle cooldown
     if (gestureCooldown > 0)
     {
         gestureCooldown--;
         return NO_GESTURE;
     }
 
-    std::vector<IMUData> shortWindow(dataBuffer.end() - 10, dataBuffer.end());
-    std::vector<IMUData> mediumWindow(dataBuffer.end() - GESTURE_WINDOW, dataBuffer.end());
+    // Always analyze last few samples for tap
+    std::vector<IMUData> tapWindow(dataBuffer.end() - std::min<size_t>(STROKE_WINDOW, dataBuffer.size()),
+                                   dataBuffer.end());
 
-    GestureType detected = NO_GESTURE;
-
-    if (detectTap(shortWindow)) { detected = TAP; gestureCooldown = 15; }
-    else if (detectFlutter(shortWindow)) { detected = FLUTTER; gestureCooldown = 20; }
-    else if (detectStretch(mediumWindow)) { detected = STRETCH; gestureCooldown = 30; }
-    else
+    GestureType detected = detectTap(tapWindow);
+    if (detected != NO_GESTURE)
     {
-        GestureType waveG = detectWave(mediumWindow);
-        if (waveG != NO_GESTURE) { detected = waveG; gestureCooldown = 25; }
-        else if (detectStroke(mediumWindow)) { detected = STROKE; gestureCooldown = 20; }
+        // Tap detected → set cooldown and mark as stroke candidate
+        lastGesture = detected;
+        gestureCooldown = 5;  // short delay before next detection
+        return detected;
     }
 
-    if (detected != NO_GESTURE) lastGesture = detected;
-    return detected;
+    // Only detect stroke **if last gesture was a tap**
+    if (lastGesture == TAP_SOFT || lastGesture == TAP_HARD)
+    {
+        std::vector<IMUData> strokeWindow(dataBuffer.end() - std::min<size_t>(STROKE_WINDOW, dataBuffer.size()),
+                                          dataBuffer.end());
+        detected = detectStroke(strokeWindow);
+        if (detected != NO_GESTURE)
+        {
+            // Stroke detected → reset lastGesture to avoid repeated strokes
+            lastGesture = NO_GESTURE;
+            gestureCooldown = 10;  // prevent double detection
+            return detected;
+        }
+    }
+
+    return NO_GESTURE;
 }
 
+// -------------------- Gesture Name --------------------
 std::string TextileGestureDetector::getGestureName(GestureType g) const
 {
     switch(g)
     {
         case NO_GESTURE: return "None";
-        case TAP: return "Tap";
-        case STROKE: return "Stroke";
-        case STRETCH: return "Stretch";
-        case FLUTTER: return "Flutter";
-        case WAVE: return "Wave";
+        case TAP_SOFT: return "Tap Soft";
+        case TAP_HARD: return "Tap Hard";
+        case STROKE_UP: return "Stroke Up";
+        case STROKE_DOWN: return "Stroke Down";
+        case STROKE_LEFT: return "Stroke Left";
+        case STROKE_RIGHT: return "Stroke Right";
         default: return "Unknown";
     }
 }
