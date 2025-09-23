@@ -11,41 +11,11 @@
 #include <deque>
 #include <cmath>
 #include <string>
+#include "../Helpers.h"
 
 class TextileGestureDetector
 {
 public:
-    /** @brief Gesture types for fabric interaction */
-    enum GestureType
-    {
-        NO_GESTURE,
-        TAP_SOFT,
-        TAP_HARD,
-        STROKE_UP,
-        STROKE_DOWN,
-        STROKE_LEFT,
-        STROKE_RIGHT
-    };
-
-    /** @brief IMU data container */
-    struct IMUData
-    {
-        float accelX, accelY, accelZ;
-        float gyroX, gyroY, gyroZ;
-        float magX, magY, magZ;
-
-        IMUData() : accelX(0), accelY(0), accelZ(0),
-                    gyroX(0), gyroY(0), gyroZ(0),
-                    magX(0), magY(0), magZ(0) {}
-
-        IMUData(float ax, float ay, float az,
-                float gx, float gy, float gz,
-                float mx, float my, float mz)
-            : accelX(ax), accelY(ay), accelZ(az),
-              gyroX(gx), gyroY(gy), gyroZ(gz),
-              magX(mx), magY(my), magZ(mz) {}
-    };
-
     /** @brief Configurable thresholds for gesture detection */
     struct GestureThresholds
     {
@@ -58,13 +28,12 @@ public:
     TextileGestureDetector(const GestureThresholds& thresholds);
 
     /** @brief Process new IMU data and detect gesture */
-    GestureType processIMUData(const IMUData& newData);
+    Gestures::GestureType processIMUData(const IMUData& newData);
 
     /** @brief Update detection thresholds */
     void setThresholds(const GestureThresholds& newThresholds);
-
-    /** @brief Human-readable gesture name */
-    std::string getGestureName(GestureType gesture) const;
+    
+    const std::deque<IMUData>& getBuffer() const { return dataBuffer; }
 
 private:
     GestureThresholds thresholds;
@@ -72,15 +41,10 @@ private:
     std::deque<IMUData> dataBuffer;
     static constexpr size_t BUFFER_SIZE = 30;      ///< Rolling buffer size (~0.3s)
     static constexpr size_t STROKE_WINDOW = 10;   ///< Window size for strokes
-    GestureType lastGesture = NO_GESTURE;
+    Gestures::GestureType lastGesture = Gestures::NO_GESTURE;
     int gestureCooldown = 0;
 
-    // Math helpers
-    float calculateMagnitude(const IMUData& data) const;
-    float calculateMean(const std::vector<float>& data) const;
-    float calculateVariance(const std::vector<float>& data) const;
-
     // Gesture detectors
-    GestureType detectTap(const std::vector<IMUData>& window) const;
-    GestureType detectStroke(const std::vector<IMUData>& window) const;
+    Gestures::GestureType detectTap(const std::vector<IMUData>& window) const;
+    Gestures::GestureType detectStroke(const std::vector<IMUData>& window) const;
 };

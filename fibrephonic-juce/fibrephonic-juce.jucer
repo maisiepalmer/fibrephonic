@@ -4,7 +4,12 @@
               jucerFormatVersion="1" projectType="guiapp" pluginFormats="buildAU,buildVST3">
   <MAINGROUP id="bHfRaM" name="fibrephonic-juce">
     <GROUP id="{84252521-09E1-94F5-5DC3-C5E95915EB1C}" name="Source">
+      <FILE id="OOofo6" name="Helpers.h" compile="0" resource="0" file="Source/Helpers.h"/>
       <GROUP id="{10A6A6E9-BAAD-CFB0-07C7-1EFB0943290B}" name="Data">
+        <GROUP id="{C09D8381-6F58-C4DC-2F30-15254960072F}" name="Training">
+          <FILE id="lQyL8Z" name="GestureRecorder.h" compile="0" resource="0"
+                file="Source/Data/Training/GestureRecorder.h"/>
+        </GROUP>
         <FILE id="eFOeZQ" name="ConnectionManager.cpp" compile="1" resource="0"
               file="Source/Data/ConnectionManager.cpp"/>
         <FILE id="HCEz1i" name="ConnectionManager.h" compile="0" resource="0"

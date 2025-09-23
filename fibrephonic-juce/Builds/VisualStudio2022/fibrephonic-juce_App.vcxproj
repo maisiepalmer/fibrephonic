@@ -3237,6 +3237,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Helpers.h"/>
+    <ClInclude Include="..\..\Source\Data\Training\GestureRecorder.h"/>
     <ClInclude Include="..\..\Source\Data\ConnectionManager.h"/>
     <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
     <ClInclude Include="..\..\Source\Data\TextileGestureDetector.h"/>

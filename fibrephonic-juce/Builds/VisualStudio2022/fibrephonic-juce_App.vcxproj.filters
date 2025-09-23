@@ -2,6 +2,9 @@
 
 <Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="fibrephonic-juce\Source\Data\Training">
+      <UniqueIdentifier>{8049E2EC-1CB4-ED1C-83B2-C826FE8E8B34}</UniqueIdentifier>
+    </Filter>
     <Filter Include="fibrephonic-juce\Source\Data">
       <UniqueIdentifier>{ABAC7ACC-B3F3-2ECD-91D5-1541811C2534}</UniqueIdentifier>
     </Filter>
@@ -4056,6 +4059,12 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Helpers.h">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Data\Training\GestureRecorder.h">
+      <Filter>fibrephonic-juce\Source\Data\Training</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Data\ConnectionManager.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>

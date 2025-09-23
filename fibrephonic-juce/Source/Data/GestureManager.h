@@ -46,10 +46,7 @@ public:
     void stopPolling();
     
     /** @brief Get the last detected gesture type */
-    TextileGestureDetector::GestureType getLastGesture() const { return lastDetectedGesture; }
-    
-    /** @brief Get human-readable name of last gesture */
-    std::string getLastGestureName() const { return gestureDetector.getGestureName(lastDetectedGesture); }
+    Gestures::GestureType getLastGesture() const { return lastDetectedGesture; }
 
 private:
     static constexpr int POLLING_RATE_HZ = 100;  ///< Sensor polling rate
@@ -72,7 +69,7 @@ private:
     /** @name State Tracking
      *  @{
      */
-    TextileGestureDetector::GestureType lastDetectedGesture = TextileGestureDetector::NO_GESTURE;
+    Gestures::GestureType lastDetectedGesture = Gestures::NO_GESTURE;
     std::atomic<int> pollCount{0};
     std::atomic<bool> isPolling{false};
     /** @} */

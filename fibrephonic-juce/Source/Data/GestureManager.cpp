@@ -55,7 +55,7 @@ void GestureManager::pollGestures()
         return; // No valid data available
     
     // Create IMU data structure for gesture detector
-    TextileGestureDetector::IMUData imuData(
+    IMUData imuData(
         sensorData.accelX, sensorData.accelY, sensorData.accelZ,
         sensorData.gyroX, sensorData.gyroY, sensorData.gyroZ,
         sensorData.magX, sensorData.magY, sensorData.magZ
@@ -65,7 +65,7 @@ void GestureManager::pollGestures()
     auto detectedGesture = gestureDetector.processIMUData(imuData);
     
     // Update last detected gesture
-    if (detectedGesture != TextileGestureDetector::NO_GESTURE)
+    if (detectedGesture != Gestures::NO_GESTURE)
     {
         lastDetectedGesture = detectedGesture;
     }
@@ -149,7 +149,7 @@ void GestureManager::sendDataViaOSC()
         // Always send current gesture state
         juce::OSCMessage gestureMessage("/gesture");
         gestureMessage.addInt32(static_cast<int>(lastDetectedGesture));
-        gestureMessage.addString(getLastGestureName());
+        gestureMessage.addString(Gestures::getGestureName(getLastGesture()));
         
         // Always send sensor data
         juce::OSCMessage accMessage("/sensor/acc");
