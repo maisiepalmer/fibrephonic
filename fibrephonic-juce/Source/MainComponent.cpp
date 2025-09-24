@@ -9,51 +9,31 @@
 
 MainComponent::MainComponent()
 {
-    // Create the gesture detection system
     gestureManager = std::make_shared<GestureManager>();
     connectionManager = std::make_shared<ConnectionManager>(gestureManager);
     
     // Set up the circular reference
     gestureManager->setConnectionManager(connectionManager);
     
-    // Set up UI components with new FontOptions
-    addAndMakeVisible(statusLabel);
-    statusLabel.setText("Gesture Detection System", juce::dontSendNotification);
-    statusLabel.setFont(juce::FontOptions(20.0f));
-    statusLabel.setJustificationType(juce::Justification::centred);
-    
-    addAndMakeVisible(connectionLabel);
-    connectionLabel.setText("Connection: Disconnected", juce::dontSendNotification);
-    connectionLabel.setFont(juce::FontOptions(16.0f));
-    
-    addAndMakeVisible(gestureLabel);
-    gestureLabel.setText("Last Gesture: None", juce::dontSendNotification);
-    gestureLabel.setFont(juce::FontOptions(16.0f));
-    
-    addAndMakeVisible(sensorDataLabel);
-    sensorDataLabel.setText("Sensor Data: Waiting...", juce::dontSendNotification);
-    sensorDataLabel.setFont(juce::FontOptions(14.0f));
-    sensorDataLabel.setJustificationType(juce::Justification::topLeft);
-    
-    addAndMakeVisible(toggleButton);
-    toggleButton.setButtonText("Start");
-    toggleButton.onClick = [this] { toggleConnection(); };
+    setupUI();
     
     // Start UI update timer
     startTimerHz(10); // Update UI 10 times per second
     
-    setSize(500, 400);
+    setSize(600, 400);
 }
 
 MainComponent::~MainComponent()
 {
     stopTimer();
     
+    // Stop connection
     if (connectionManager && connectionManager->getIsConnected())
     {
         connectionManager->stopConnection();
     }
     
+    // Clean up references
     if (gestureManager)
     {
         gestureManager->setConnectionManager(nullptr);
@@ -63,17 +43,58 @@ MainComponent::~MainComponent()
     connectionManager.reset();
 }
 
+void MainComponent::setupUI()
+{
+    // Title
+    addAndMakeVisible(titleLabel);
+    titleLabel.setText("Textile Gesture Detection System", juce::dontSendNotification);
+    titleLabel.setFont(juce::FontOptions(24.0f, juce::Font::bold));
+    titleLabel.setJustificationType(juce::Justification::centred);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colours::darkblue);
+    
+    // Connection controls
+    addAndMakeVisible(toggleButton);
+    toggleButton.setButtonText("Start Connection");
+    toggleButton.setColour(juce::TextButton::buttonColourId, juce::Colours::forestgreen);
+    toggleButton.onClick = [this] { toggleConnection(); };
+    
+    // Status labels
+    addAndMakeVisible(connectionLabel);
+    connectionLabel.setText("Connection: Disconnected", juce::dontSendNotification);
+    connectionLabel.setFont(juce::FontOptions(16.0f, juce::Font::bold));
+    connectionLabel.setColour(juce::Label::textColourId, juce::Colours::red);
+    
+    addAndMakeVisible(gestureLabel);
+    gestureLabel.setText("Last Gesture: None", juce::dontSendNotification);
+    gestureLabel.setFont(juce::FontOptions(16.0f));
+    gestureLabel.setColour(juce::Label::textColourId, juce::Colours::darkgreen);
+    
+    addAndMakeVisible(sensorDataLabel);
+    sensorDataLabel.setText("Sensor Data: Waiting for connection...", juce::dontSendNotification);
+    sensorDataLabel.setFont(juce::FontOptions(12.0f));
+    sensorDataLabel.setJustificationType(juce::Justification::topLeft);
+    sensorDataLabel.setColour(juce::Label::textColourId, juce::Colours::darkslategrey);
+}
+
 /**
  * @brief Paint callback for custom drawing
  * @param g Graphics context for drawing
  */
 void MainComponent::paint(juce::Graphics& g)
 {
-    g.fillAll(getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+    // Background gradient
+    juce::ColourGradient gradient(juce::Colours::lightgrey.withAlpha(0.3f), 0, 0,
+                                  juce::Colours::white, 0, getHeight(), false);
+    g.setGradientFill(gradient);
+    g.fillAll();
     
-    // Draw a border
-    g.setColour(juce::Colours::grey);
+    // Main border
+    g.setColour(juce::Colours::darkgrey);
     g.drawRect(getLocalBounds(), 2);
+    
+    // Header separator
+    g.setColour(juce::Colours::lightslategrey);
+    g.drawLine(20, 70, getWidth() - 20, 70, 1.0f);
 }
 
 /**
@@ -83,9 +104,17 @@ void MainComponent::resized()
 {
     auto bounds = getLocalBounds().reduced(20);
     
-    statusLabel.setBounds(bounds.removeFromTop(40));
+    // Title section
+    titleLabel.setBounds(bounds.removeFromTop(50));
     bounds.removeFromTop(10);
     
+    // Control buttons
+    auto buttonArea = bounds.removeFromTop(50);
+    toggleButton.setBounds(buttonArea.removeFromLeft(180));
+    buttonArea.removeFromLeft(20);
+    bounds.removeFromTop(20);
+    
+    // Status section
     connectionLabel.setBounds(bounds.removeFromTop(30));
     bounds.removeFromTop(5);
     
@@ -94,9 +123,6 @@ void MainComponent::resized()
     
     sensorDataLabel.setBounds(bounds.removeFromTop(120));
     bounds.removeFromTop(20);
-    
-    auto buttonArea = bounds.removeFromTop(40);
-    toggleButton.setBounds(buttonArea.removeFromLeft(120));
 }
 
 /**
@@ -117,42 +143,57 @@ void MainComponent::updateUI()
     
     // Update connection status
     bool connected = connectionManager->getIsConnected();
+    
     connectionLabel.setText("Connection: " + juce::String(connected ? "Connected" : "Disconnected"),
                            juce::dontSendNotification);
     connectionLabel.setColour(juce::Label::textColourId,
                              connected ? juce::Colours::green : juce::Colours::red);
     
-    // Update toggle button state
-    toggleButton.setButtonText(isRunning ? "Stop" : "Start");
+    // Update toggle button
+    toggleButton.setButtonText(isRunning ? "Stop Connection" : "Start Connection");
     toggleButton.setColour(juce::TextButton::buttonColourId,
                           isRunning ? juce::Colours::indianred : juce::Colours::forestgreen);
     
     // Update gesture info
-    auto lastGesture = gestureManager->getLastGestureName();
-    gestureLabel.setText("Last Gesture: " + juce::String(lastGesture), juce::dontSendNotification);
+    auto lastGesture = gestureManager->getLastGesture();
+    juce::String gestureName = Gestures::getGestureName(lastGesture);
+    gestureLabel.setText("Last Gesture: " + gestureName, juce::dontSendNotification);
+    
+    // Color-code gestures
+    juce::Colour gestureColor = juce::Colours::darkgreen;
+    if (lastGesture != Gestures::NO_GESTURE)
+    {
+        gestureColor = juce::Colours::orange;
+    }
+    gestureLabel.setColour(juce::Label::textColourId, gestureColor);
     
     // Update sensor data display
     if (connected)
     {
         juce::String sensorInfo;
-        sensorInfo << "Accelerometer: "
-                   << juce::String(connectionManager->getAccelerationX(), 2) << ", "
-                   << juce::String(connectionManager->getAccelerationY(), 2) << ", "
-                   << juce::String(connectionManager->getAccelerationZ(), 2) << "\n";
-        sensorInfo << "Gyroscope: "
-                   << juce::String(connectionManager->getGyroscopeX(), 2) << ", "
-                   << juce::String(connectionManager->getGyroscopeY(), 2) << ", "
-                   << juce::String(connectionManager->getGyroscopeZ(), 2) << "\n";
-        sensorInfo << "Magnetometer: "
-                   << juce::String(connectionManager->getMagnetometerX(), 2) << ", "
-                   << juce::String(connectionManager->getMagnetometerY(), 2) << ", "
-                   << juce::String(connectionManager->getMagnetometerZ(), 2);
+        sensorInfo << "ACCELEROMETER (g):\n";
+        sensorInfo << "   X: " << juce::String(connectionManager->getAccelerationX(), 3)
+                   << "   Y: " << juce::String(connectionManager->getAccelerationY(), 3)
+                   << "   Z: " << juce::String(connectionManager->getAccelerationZ(), 3) << "\n\n";
+        
+        sensorInfo << "GYROSCOPE (deg/s):\n";
+        sensorInfo << "   X: " << juce::String(connectionManager->getGyroscopeX(), 2)
+                   << "   Y: " << juce::String(connectionManager->getGyroscopeY(), 2)
+                   << "   Z: " << juce::String(connectionManager->getGyroscopeZ(), 2) << "\n\n";
+        
+        sensorInfo << "MAGNETOMETER (uT):\n";
+        sensorInfo << "   X: " << juce::String(connectionManager->getMagnetometerX(), 2)
+                   << "   Y: " << juce::String(connectionManager->getMagnetometerY(), 2)
+                   << "   Z: " << juce::String(connectionManager->getMagnetometerZ(), 2);
         
         sensorDataLabel.setText(sensorInfo, juce::dontSendNotification);
+        sensorDataLabel.setColour(juce::Label::textColourId, juce::Colours::darkslategrey);
     }
     else
     {
-        sensorDataLabel.setText("Sensor Data: No connection", juce::dontSendNotification);
+        sensorDataLabel.setText("Sensor Data: No connection\n\nConnect to an x-IMU3 device to see live sensor readings.",
+                               juce::dontSendNotification);
+        sensorDataLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
     }
 }
 
@@ -163,6 +204,7 @@ void MainComponent::toggleConnection()
 {
     if (!isRunning)
     {
+        DBG("Starting connection...");
         if (connectionManager)
         {
             connectionManager->startConnection();
@@ -171,6 +213,7 @@ void MainComponent::toggleConnection()
     }
     else
     {
+        DBG("Stopping connection...");
         if (connectionManager)
         {
             connectionManager->stopConnection();

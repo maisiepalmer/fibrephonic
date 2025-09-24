@@ -10,13 +10,9 @@
 #include "ConnectionManager.h"
 
 GestureManager::GestureManager()
-: gestureDetector(gestureThresholds)
 {
-    gestureThresholds.tapSoftThreshold = 1.5f;
-    gestureThresholds.tapHardThreshold = 2.5f;
-    gestureThresholds.strokeMinAccel = 0.5f;
-    gestureDetector.setThresholds(gestureThresholds);
-    
+    mlClassifier = std::make_unique<FastGestureClassifier>();
+    mlClassifier->initialise();
     ensureOSCConnection();
 }
 
@@ -61,8 +57,14 @@ void GestureManager::pollGestures()
         sensorData.magX, sensorData.magY, sensorData.magZ
     );
     
+    auto detectedGesture = Gestures::NO_GESTURE;
     // Process gesture detection
-    auto detectedGesture = gestureDetector.processIMUData(imuData);
+    mlClassifier->addSensorData(imuData);
+    auto result = mlClassifier->classify();
+    if (result.valid) {
+        DBG("Gesture: " << result.toString());
+        detectedGesture = result.gesture;
+    }
     
     // Update last detected gesture
     if (detectedGesture != Gestures::NO_GESTURE)

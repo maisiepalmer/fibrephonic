@@ -12,7 +12,7 @@
 #include <memory>
 #include <deque>
 #include <atomic>
-#include "TextileGestureDetector.h"
+#include "Training/FastGestureClassifier.h"
 
 class ConnectionManager;
 
@@ -52,8 +52,7 @@ private:
     static constexpr int POLLING_RATE_HZ = 100;  ///< Sensor polling rate
     static constexpr int MAX_RECONNECT_ATTEMPTS = 5; ///< Max OSC reconnection attempts
     
-    TextileGestureDetector gestureDetector; ///< Gesture detection algorithm
-    TextileGestureDetector::GestureThresholds gestureThresholds;
+    std::unique_ptr<FastGestureClassifier> mlClassifier;
     std::weak_ptr<ConnectionManager> connectionManager; ///< Weak ref to connection manager
     
     /** @name OSC Communication
