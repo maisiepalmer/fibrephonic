@@ -775,9 +775,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Data\Training\FastGestureClassifier.cpp">
-      <Filter>fibrephonic-juce\Source\Data\Training</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
@@ -4062,13 +4059,13 @@
     <ClInclude Include="..\..\Source\Helpers.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Data\Training\FastGestureClassifier.h">
-      <Filter>fibrephonic-juce\Source\Data\Training</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Data\Training\GestureRecorder.h">
       <Filter>fibrephonic-juce\Source\Data\Training</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\ConnectionManager.h">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Data\GestureDetector.h">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Data\GestureManager.h">
@@ -4078,6 +4075,9 @@
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\MainComponent.h">
+      <Filter>fibrephonic-juce\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CalibrationComponent.h">
       <Filter>fibrephonic-juce\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Connection.h">

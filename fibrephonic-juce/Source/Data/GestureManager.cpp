@@ -1,18 +1,16 @@
-/*
-  ==============================================================================
-    GestureManager.cpp
-    Created: 24 Jun 2025 2:18:38pm
-    Author:  Joseph B
-  ==============================================================================
-*/
+/**
+ * @file GestureManager.cpp
+ * @brief Gesture manager using calibrated detection system
+ * @author Joseph B
+ * @date Created: 24 Jun 2025
+ */
 
 #include "GestureManager.h"
 #include "ConnectionManager.h"
 
 GestureManager::GestureManager()
 {
-    mlClassifier = std::make_unique<FastGestureClassifier>();
-    mlClassifier->initialise();
+    gestureDetector = std::make_unique<GestureDetector>();
     ensureOSCConnection();
 }
 
@@ -34,6 +32,29 @@ void GestureManager::stopPolling()
     stopTimer();
 }
 
+void GestureManager::startCalibration()
+{
+    if (gestureDetector)
+    {
+        gestureDetector->startCalibration();
+        DBG("Started gesture calibration...");
+    }
+}
+
+void GestureManager::stopCalibration()
+{
+    if (gestureDetector)
+    {
+        gestureDetector->stopCalibration();
+        DBG("Stopped gesture calibration");
+    }
+}
+
+bool GestureManager::isCalibrated() const
+{
+    return gestureDetector ? gestureDetector->isCalibrated() : false;
+}
+
 void GestureManager::timerCallback()
 {
     if (isPolling)
@@ -50,29 +71,69 @@ void GestureManager::pollGestures()
     if (!getSensorDataFromConnection())
         return; // No valid data available
     
-    // Create IMU data structure for gesture detector
+    // Create IMU data structure
     IMUData imuData(
         sensorData.accelX, sensorData.accelY, sensorData.accelZ,
         sensorData.gyroX, sensorData.gyroY, sensorData.gyroZ,
         sensorData.magX, sensorData.magY, sensorData.magZ
     );
     
-    auto detectedGesture = Gestures::NO_GESTURE;
-    // Process gesture detection
-    mlClassifier->addSensorData(imuData);
-    auto result = mlClassifier->classify();
-    if (result.valid) {
-        DBG("Gesture: " << result.toString());
-        detectedGesture = result.gesture;
-    }
+    // Add data to detector
+    gestureDetector->addSensorData(imuData);
     
-    // Update last detected gesture
-    if (detectedGesture != Gestures::NO_GESTURE)
+    // Detect gesture
+    auto result = gestureDetector->detect();
+    
+    if (result.valid)
     {
-        lastDetectedGesture = detectedGesture;
+        DBG("Detected: " << result.toString() << " (confidence: " << result.confidence << ")");
+        
+        // Convert to legacy gesture type for compatibility
+        if (result.type == GestureDetector::GestureType::TAP)
+        {
+            switch(result.tapStrength)
+            {
+                case GestureDetector::TapStrength::SOFT:
+                    lastDetectedGesture = Gestures::TAP_SOFT;
+                    break;
+                case GestureDetector::TapStrength::MEDIUM:
+                    lastDetectedGesture = Gestures::TAP_SOFT; // Map medium to soft for now
+                    break;
+                case GestureDetector::TapStrength::HARD:
+                    lastDetectedGesture = Gestures::TAP_HARD;
+                    break;
+            }
+        }
+        else if (result.type == GestureDetector::GestureType::STROKE)
+        {
+            switch(result.strokeDirection)
+            {
+                case GestureDetector::StrokeDirection::UP:
+                    lastDetectedGesture = Gestures::STROKE_UP;
+                    break;
+                case GestureDetector::StrokeDirection::DOWN:
+                    lastDetectedGesture = Gestures::STROKE_DOWN;
+                    break;
+                case GestureDetector::StrokeDirection::LEFT:
+                    lastDetectedGesture = Gestures::STROKE_LEFT;
+                    break;
+                case GestureDetector::StrokeDirection::RIGHT:
+                    lastDetectedGesture = Gestures::STROKE_RIGHT;
+                    break;
+            }
+        }
+        
+        // Store confidence for OSC
+        lastConfidence = result.confidence;
+    }
+    else
+    {
+        // No gesture detected
+        lastDetectedGesture = Gestures::NO_GESTURE;
+        lastConfidence = 0.0f;
     }
     
-    // Send ALL data via OSC at refresh rate (not just when gesture detected)
+    // Send ALL data via OSC at refresh rate
     sendDataViaOSC();
 }
 
@@ -148,12 +209,13 @@ void GestureManager::sendDataViaOSC()
     
     try
     {
-        // Always send current gesture state
+        // Send gesture with confidence
         juce::OSCMessage gestureMessage("/gesture");
         gestureMessage.addInt32(static_cast<int>(lastDetectedGesture));
-        gestureMessage.addString(Gestures::getGestureName(getLastGesture()));
+        gestureMessage.addString(Gestures::getGestureName(lastDetectedGesture));
+        gestureMessage.addFloat32(lastConfidence);
         
-        // Always send sensor data
+        // Send sensor data
         juce::OSCMessage accMessage("/sensor/acc");
         accMessage.addFloat32(sensorData.accelX);
         accMessage.addFloat32(sensorData.accelY);

@@ -1,11 +1,10 @@
 /**
  * @file MainComponent.cpp
- * @brief Main UI component implementation for gesture detection system
- * @author Joseph B, Maisie Palmer
- * @date Created: 2025
+ * @brief Main UI component with calibration support
  */
 
 #include "MainComponent.h"
+#include "CalibrationComponent.h"
 
 MainComponent::MainComponent()
 {
@@ -15,12 +14,19 @@ MainComponent::MainComponent()
     // Set up the circular reference
     gestureManager->setConnectionManager(connectionManager);
     
+    // Create calibration component
+    if (gestureManager->getDetector())
+    {
+        calibrationComponent = std::make_unique<CalibrationComponent>(*gestureManager->getDetector());
+        addAndMakeVisible(calibrationComponent.get());
+    }
+    
     setupUI();
     
     // Start UI update timer
     startTimerHz(10); // Update UI 10 times per second
     
-    setSize(600, 400);
+    setSize(600, 400); // Increased width for calibration panel
 }
 
 MainComponent::~MainComponent()
@@ -39,6 +45,7 @@ MainComponent::~MainComponent()
         gestureManager->setConnectionManager(nullptr);
     }
     
+    calibrationComponent.reset();
     gestureManager.reset();
     connectionManager.reset();
 }
@@ -50,7 +57,7 @@ void MainComponent::setupUI()
     titleLabel.setText("Textile Gesture Detection System", juce::dontSendNotification);
     titleLabel.setFont(juce::FontOptions(24.0f, juce::Font::bold));
     titleLabel.setJustificationType(juce::Justification::centred);
-    titleLabel.setColour(juce::Label::textColourId, juce::Colours::darkblue);
+    titleLabel.setColour(juce::Label::textColourId, juce::Colours::white);
     
     // Connection controls
     addAndMakeVisible(toggleButton);
@@ -76,16 +83,8 @@ void MainComponent::setupUI()
     sensorDataLabel.setColour(juce::Label::textColourId, juce::Colours::darkslategrey);
 }
 
-/**
- * @brief Paint callback for custom drawing
- * @param g Graphics context for drawing
- */
 void MainComponent::paint(juce::Graphics& g)
 {
-    // Background gradient
-    juce::ColourGradient gradient(juce::Colours::lightgrey.withAlpha(0.3f), 0, 0,
-                                  juce::Colours::white, 0, getHeight(), false);
-    g.setGradientFill(gradient);
     g.fillAll();
     
     // Main border
@@ -95,47 +94,64 @@ void MainComponent::paint(juce::Graphics& g)
     // Header separator
     g.setColour(juce::Colours::lightslategrey);
     g.drawLine(20, 70, getWidth() - 20, 70, 1.0f);
+    
+    // Vertical separator for calibration panel
+    if (calibrationComponent)
+    {
+        int separatorX = getWidth() - 320;
+        g.setColour(juce::Colours::lightslategrey);
+        g.drawLine(separatorX, 80, separatorX, getHeight() - 20, 1.0f);
+    }
 }
 
-/**
- * @brief Layout components when window is resized
- */
 void MainComponent::resized()
 {
     auto bounds = getLocalBounds().reduced(20);
     
+    // Reserve space for calibration panel on the right
+    int calibrationWidth = 300;
+    juce::Rectangle<int> mainArea = bounds;
+    juce::Rectangle<int> calibArea;
+    
+    // Layout main controls in left area
+    auto mainBounds = mainArea;
+    
     // Title section
-    titleLabel.setBounds(bounds.removeFromTop(50));
-    bounds.removeFromTop(10);
+    titleLabel.setBounds(mainBounds.removeFromTop(50));
+    mainBounds.removeFromTop(10);
+    
+    if (calibrationComponent)
+    {
+        calibArea = mainBounds.removeFromRight(calibrationWidth);
+        mainArea.removeFromRight(20); // spacing
+    }
     
     // Control buttons
-    auto buttonArea = bounds.removeFromTop(50);
+    auto buttonArea = mainBounds.removeFromTop(50);
     toggleButton.setBounds(buttonArea.removeFromLeft(180));
-    buttonArea.removeFromLeft(20);
-    bounds.removeFromTop(20);
+    mainBounds.removeFromTop(20);
     
     // Status section
-    connectionLabel.setBounds(bounds.removeFromTop(30));
-    bounds.removeFromTop(5);
+    connectionLabel.setBounds(mainBounds.removeFromTop(30));
+    mainBounds.removeFromTop(5);
     
-    gestureLabel.setBounds(bounds.removeFromTop(30));
-    bounds.removeFromTop(10);
+    gestureLabel.setBounds(mainBounds.removeFromTop(30));
+    mainBounds.removeFromTop(5);
     
-    sensorDataLabel.setBounds(bounds.removeFromTop(120));
-    bounds.removeFromTop(20);
+    sensorDataLabel.setBounds(mainBounds.removeFromTop(150));
+    
+    // Calibration component on the right
+    if (calibrationComponent)
+    {
+        calibrationComponent->setBounds(calibArea);
+    }
 }
 
-/**
- * @brief Timer callback for UI updates
- */
 void MainComponent::timerCallback()
 {
     updateUI();
 }
 
-/**
- * @brief Update UI elements with current system state
- */
 void MainComponent::updateUI()
 {
     if (!connectionManager || !gestureManager)
@@ -159,13 +175,20 @@ void MainComponent::updateUI()
     juce::String gestureName = Gestures::getGestureName(lastGesture);
     gestureLabel.setText("Last Gesture: " + gestureName, juce::dontSendNotification);
     
-    // Color-code gestures
-    juce::Colour gestureColor = juce::Colours::darkgreen;
-    if (lastGesture != Gestures::NO_GESTURE)
+    // Calibration status indicator
+    if (gestureManager->isCalibrated())
     {
-        gestureColor = juce::Colours::orange;
+        if (!calibrationStatusShown)
+        {
+            calibrationStatusShown = true;
+            juce::AlertWindow::showAsync(MessageBoxOptions()
+                             .withIconType (MessageBoxIconType::InfoIcon)
+                             .withTitle ("Calibration Status")
+                             .withMessage ("System is calibrated and ready for gesture detection!")
+                             .withButton("Close"),
+                             nullptr);
+        }
     }
-    gestureLabel.setColour(juce::Label::textColourId, gestureColor);
     
     // Update sensor data display
     if (connected)
@@ -184,7 +207,9 @@ void MainComponent::updateUI()
         sensorInfo << "MAGNETOMETER (uT):\n";
         sensorInfo << "   X: " << juce::String(connectionManager->getMagnetometerX(), 2)
                    << "   Y: " << juce::String(connectionManager->getMagnetometerY(), 2)
-                   << "   Z: " << juce::String(connectionManager->getMagnetometerZ(), 2);
+                   << "   Z: " << juce::String(connectionManager->getMagnetometerZ(), 2) << "\n\n";
+        
+        sensorInfo << "Calibration: " << (gestureManager->isCalibrated() ? "YES" : "NO");
         
         sensorDataLabel.setText(sensorInfo, juce::dontSendNotification);
         sensorDataLabel.setColour(juce::Label::textColourId, juce::Colours::darkslategrey);
@@ -197,9 +222,6 @@ void MainComponent::updateUI()
     }
 }
 
-/**
- * @brief Toggle connection state between running and stopped
- */
 void MainComponent::toggleConnection()
 {
     if (!isRunning)

@@ -1,4 +1,4 @@
-// GestureRecorder.h - Fixed Implementation
+
 #pragma once
 #include <JuceHeader.h>
 #include "../../Helpers.h"

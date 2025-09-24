@@ -12,13 +12,14 @@
 #include <memory>
 #include <deque>
 #include <atomic>
-#include "Training/FastGestureClassifier.h"
+#include "GestureDetector.h"
+#include "../Helpers.h"
 
 class ConnectionManager;
 
 /**
  * @class GestureManager
- * @brief Processes IMU data for gesture detection and sends data via OSC
+ * @brief Processes IMU data for gesture detection with calibration support
  *
  * Polls sensor data from ConnectionManager at 100Hz, performs gesture
  * detection, and continuously streams both raw sensor data and detected
@@ -45,14 +46,29 @@ public:
     /** @brief Stop polling and gesture detection */
     void stopPolling();
     
+    /** @brief Start calibration process */
+    void startCalibration();
+    
+    /** @brief Stop calibration process */
+    void stopCalibration();
+    
+    /** @brief Check if system is calibrated */
+    bool isCalibrated() const;
+    
     /** @brief Get the last detected gesture type */
     Gestures::GestureType getLastGesture() const { return lastDetectedGesture; }
+    
+    /** @brief Get the last confidence value */
+    float getLastConfidence() const { return lastConfidence; }
+    
+    /** @brief Get the gesture detector for UI access */
+    GestureDetector* getDetector() { return gestureDetector.get(); }
 
 private:
     static constexpr int POLLING_RATE_HZ = 100;  ///< Sensor polling rate
     static constexpr int MAX_RECONNECT_ATTEMPTS = 5; ///< Max OSC reconnection attempts
     
-    std::unique_ptr<FastGestureClassifier> mlClassifier;
+    std::unique_ptr<GestureDetector> gestureDetector;
     std::weak_ptr<ConnectionManager> connectionManager; ///< Weak ref to connection manager
     
     /** @name OSC Communication
@@ -69,6 +85,7 @@ private:
      *  @{
      */
     Gestures::GestureType lastDetectedGesture = Gestures::NO_GESTURE;
+    float lastConfidence = 0.0f;
     std::atomic<int> pollCount{0};
     std::atomic<bool> isPolling{false};
     /** @} */

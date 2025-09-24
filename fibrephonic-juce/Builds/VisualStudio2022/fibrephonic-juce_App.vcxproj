@@ -158,7 +158,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Source\Data\Training\FastGestureClassifier.cpp"/>
     <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp"/>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
@@ -3238,12 +3237,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Source\Helpers.h"/>
-    <ClInclude Include="..\..\Source\Data\Training\FastGestureClassifier.h"/>
     <ClInclude Include="..\..\Source\Data\Training\GestureRecorder.h"/>
     <ClInclude Include="..\..\Source\Data\ConnectionManager.h"/>
+    <ClInclude Include="..\..\Source\Data\GestureDetector.h"/>
     <ClInclude Include="..\..\Source\Data\GestureManager.h"/>
     <ClInclude Include="..\..\Source\Data\Ximu3DeviceManager.h"/>
     <ClInclude Include="..\..\Source\MainComponent.h"/>
+    <ClInclude Include="..\..\Source\CalibrationComponent.h"/>
     <ClInclude Include="..\..\Source\Connection.h"/>
     <ClInclude Include="..\..\Source\Wavelib\wavelet2s.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_analytics\analytics\juce_Analytics.h"/>
