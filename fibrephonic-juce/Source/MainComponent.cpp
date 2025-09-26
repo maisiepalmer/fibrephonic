@@ -170,9 +170,16 @@ void MainComponent::updateUI()
                           isRunning ? juce::Colours::indianred : juce::Colours::forestgreen);
 
     // Gesture info
-    auto lastGesture = gestureManager->getLastGesture();
-    juce::String gestureName = Gestures::getGestureName(lastGesture);
-    gestureLabel.setText("Last Gesture: " + gestureName, juce::dontSendNotification);
+    float lastTapVelocity = gestureManager->getLastTapVelocity();
+    if (lastTapVelocity > 0.0f)
+    {
+        gestureLabel.setText("Last Gesture: Tap (velocity: " + juce::String(lastTapVelocity, 1) + ")",
+                            juce::dontSendNotification);
+    }
+    else
+    {
+        gestureLabel.setText("Last Gesture: None", juce::dontSendNotification);
+    }
 
     // Calibration status popup
     if (gestureManager->isCalibrated())
