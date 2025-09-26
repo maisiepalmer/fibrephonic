@@ -1,8 +1,6 @@
 /**
  * @file CalibrationComponent.h
  * @brief UI component for gesture detector calibration
- * @author Maisie Palmer
- * @date 24 Sep 2025 11:19:12am
  */
 
 #pragma once
@@ -27,14 +25,10 @@ public:
     void paint(juce::Graphics& g) override
     {
         g.fillAll(juce::Colours::darkgrey.withAlpha(0.1f));
-        
-        // Draw border
         g.setColour(juce::Colours::lightgrey);
         g.drawRoundedRectangle(getLocalBounds().toFloat(), 5.0f, 1.0f);
-        
-        // Draw calibration status indicator
+
         auto statusBounds = getLocalBounds().removeFromTop(40).reduced(10, 5);
-        
         if (detector.isCalibrated())
         {
             g.setColour(juce::Colours::green.withAlpha(0.3f));
@@ -42,7 +36,6 @@ public:
         }
         else if (isCalibrating)
         {
-            // Pulsing animation during calibration
             float alpha = 0.3f + 0.2f * std::sin(animationPhase);
             g.setColour(juce::Colours::orange.withAlpha(alpha));
             g.fillRoundedRectangle(statusBounds.toFloat(), 3.0f);
@@ -53,37 +46,22 @@ public:
     {
         auto bounds = getLocalBounds().reduced(10);
         
-        // Title
         titleLabel.setBounds(bounds.removeFromTop(30));
         bounds.removeFromTop(5);
-        
-        // Status
         statusLabel.setBounds(bounds.removeFromTop(25));
         bounds.removeFromTop(10);
-        
-        // Calibrate button
         calibrateButton.setBounds(bounds.removeFromTop(35));
         bounds.removeFromTop(5);
-        
-        // Reset button
         resetButton.setBounds(bounds.removeFromTop(30));
         bounds.removeFromTop(10);
-        
-        // Instructions
         instructionsLabel.setBounds(bounds.removeFromTop(60));
         bounds.removeFromTop(10);
-        
-        // Threshold controls
+
         auto thresholdArea = bounds.removeFromTop(120);
-        
-        tapSoftLabel.setBounds(thresholdArea.removeFromTop(20));
-        tapSoftSlider.setBounds(thresholdArea.removeFromTop(25));
-        
-        tapHardLabel.setBounds(thresholdArea.removeFromTop(20));
-        tapHardSlider.setBounds(thresholdArea.removeFromTop(25));
-        
-        strokeThresholdLabel.setBounds(thresholdArea.removeFromTop(20));
-        strokeThresholdSlider.setBounds(thresholdArea.removeFromTop(25));
+        tapLabel.setBounds(thresholdArea.removeFromTop(20));
+        tapSlider.setBounds(thresholdArea.removeFromTop(25));
+        strokeLabel.setBounds(thresholdArea.removeFromTop(20));
+        strokeSlider.setBounds(thresholdArea.removeFromTop(25));
     }
     
 private:
@@ -101,12 +79,11 @@ private:
         statusLabel.setFont(juce::FontOptions(14.0f));
         statusLabel.setJustificationType(juce::Justification::centred);
         
-        // Calibrate button
+        // Buttons
         addAndMakeVisible(calibrateButton);
         calibrateButton.setButtonText("Start Calibration");
         calibrateButton.onClick = [this]() { startCalibration(); };
         
-        // Reset button
         addAndMakeVisible(resetButton);
         resetButton.setButtonText("Reset Calibration");
         resetButton.setEnabled(false);
@@ -122,12 +99,10 @@ private:
         instructionsLabel.setColour(juce::Label::textColourId, juce::Colours::grey);
         
         // Threshold sliders
-        setupThresholdSlider(tapSoftSlider, tapSoftLabel, "Tap Soft Threshold", 0.5, 5.0, 2.0);
-        setupThresholdSlider(tapHardSlider, tapHardLabel, "Tap Hard Threshold", 2.0, 10.0, 5.0);
-        setupThresholdSlider(strokeThresholdSlider, strokeThresholdLabel, "Stroke Threshold", 10.0, 100.0, 30.0);
+        setupThresholdSlider(tapSlider, tapLabel, "Tap Threshold", 1.0, 10.0, 3.0);
+        setupThresholdSlider(strokeSlider, strokeLabel, "Stroke Threshold", 10.0, 100.0, 30.0);
         
-        // Set initial size
-        setSize(300, 400);
+        setSize(300, 350);
     }
     
     void setupThresholdSlider(juce::Slider& slider, juce::Label& label,
@@ -148,8 +123,6 @@ private:
                          juce::dontSendNotification);
             updateThresholds();
         };
-        
-        // Initially disabled until calibrated
         slider.setEnabled(false);
     }
     
@@ -164,10 +137,8 @@ private:
         statusLabel.setText("Hold still...", juce::dontSendNotification);
         statusLabel.setColour(juce::Label::textColourId, juce::Colours::orange);
         
-        // Start animation timer
         startTimerHz(30);
         
-        // Schedule calibration completion
         juce::Timer::callAfterDelay(2000, [this]()
         {
             completeCalibration();
@@ -178,7 +149,6 @@ private:
     {
         detector.stopCalibration();
         isCalibrating = false;
-        
         stopTimer();
         
         if (detector.isCalibrated())
@@ -187,19 +157,15 @@ private:
             calibrateButton.setEnabled(true);
             resetButton.setEnabled(true);
             
-            // Enable threshold sliders
-            tapSoftSlider.setEnabled(true);
-            tapHardSlider.setEnabled(true);
-            strokeThresholdSlider.setEnabled(true);
+            tapSlider.setEnabled(true);
+            strokeSlider.setEnabled(true);
             
             statusLabel.setText("Calibration Complete!", juce::dontSendNotification);
             statusLabel.setColour(juce::Label::textColourId, juce::Colours::green);
             
-            // Update thresholds with current calibration values
             auto calib = detector.getCalibration();
-            tapSoftSlider.setValue(calib.tapThresholdSoft);
-            tapHardSlider.setValue(calib.tapThresholdHard);
-            strokeThresholdSlider.setValue(calib.strokeGyroThreshold);
+            tapSlider.setValue(calib.tapThreshold);
+            strokeSlider.setValue(calib.strokeThreshold);
         }
         else
         {
@@ -215,15 +181,12 @@ private:
     void resetCalibration()
     {
         detector.resetCalibration();
-        
         calibrateButton.setButtonText("Start Calibration");
         calibrateButton.setEnabled(true);
         resetButton.setEnabled(false);
         
-        // Disable threshold sliders
-        tapSoftSlider.setEnabled(false);
-        tapHardSlider.setEnabled(false);
-        strokeThresholdSlider.setEnabled(false);
+        tapSlider.setEnabled(false);
+        strokeSlider.setEnabled(false);
         
         updateStatusLabel();
         repaint();
@@ -245,10 +208,8 @@ private:
     
     void updateThresholds()
     {
-        // Update detector thresholds
-        detector.setTapSoftThreshold(tapSoftSlider.getValue());
-        detector.setTapHardThreshold(tapHardSlider.getValue());
-        detector.setStrokeThreshold(strokeThresholdSlider.getValue());
+        detector.setTapThreshold(tapSlider.getValue());
+        detector.setStrokeThreshold(strokeSlider.getValue());
     }
     
     void timerCallback() override
@@ -259,32 +220,27 @@ private:
             if (animationPhase > 2.0f * M_PI)
                 animationPhase -= 2.0f * M_PI;
             
-            calibrationProgress += 0.0167f; // ~60Hz timer, 2 seconds total
+            calibrationProgress += 0.0167f;
             calibrationProgress = std::min(1.0f, calibrationProgress);
-            
             repaint();
         }
     }
     
-    // Reference to the gesture detector
+    // reference
     GestureDetector& detector;
     
-    // UI Components
+    // UI
     juce::Label titleLabel;
     juce::Label statusLabel;
     juce::TextButton calibrateButton;
     juce::TextButton resetButton;
     juce::Label instructionsLabel;
     
-    // Threshold controls
-    juce::Slider tapSoftSlider;
-    juce::Label tapSoftLabel;
-    juce::Slider tapHardSlider;
-    juce::Label tapHardLabel;
-    juce::Slider strokeThresholdSlider;
-    juce::Label strokeThresholdLabel;
+    juce::Slider tapSlider;
+    juce::Label tapLabel;
+    juce::Slider strokeSlider;
+    juce::Label strokeLabel;
     
-    // State
     bool isCalibrating = false;
     float calibrationProgress = 0.0f;
     float animationPhase = 0.0f;

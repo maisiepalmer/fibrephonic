@@ -34,9 +34,8 @@ struct Gestures
     /** @brief Gesture types for fabric interaction */
     enum GestureType
     {
-        NO_GESTURE,
-        TAP_SOFT,
-        TAP_HARD,
+        NONE,
+        TAP,
         STROKE_UP,
         STROKE_DOWN,
         STROKE_LEFT,
@@ -47,9 +46,8 @@ struct Gestures
     {
         switch(g)
         {
-            case NO_GESTURE: return "None";
-            case TAP_SOFT: return "Tap Soft";
-            case TAP_HARD: return "Tap Hard";
+            case NONE: return "None";
+            case TAP: return "Tap";
             case STROKE_UP: return "Stroke Up";
             case STROKE_DOWN: return "Stroke Down";
             case STROKE_LEFT: return "Stroke Left";

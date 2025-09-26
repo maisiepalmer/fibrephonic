@@ -71,67 +71,15 @@ void GestureManager::pollGestures()
     if (!getSensorDataFromConnection())
         return; // No valid data available
     
-    // Create IMU data structure
     IMUData imuData(
         sensorData.accelX, sensorData.accelY, sensorData.accelZ,
         sensorData.gyroX, sensorData.gyroY, sensorData.gyroZ,
         sensorData.magX, sensorData.magY, sensorData.magZ
     );
     
-    // Add data to detector
-    gestureDetector->addSensorData(imuData);
-    
-    // Detect gesture
-    auto result = gestureDetector->detect();
-    
-    if (result.valid)
-    {
-        DBG("Detected: " << result.toString() << " (confidence: " << result.confidence << ")");
-        
-        // Convert to legacy gesture type for compatibility
-        if (result.type == GestureDetector::GestureType::TAP)
-        {
-            switch(result.tapStrength)
-            {
-                case GestureDetector::TapStrength::SOFT:
-                    lastDetectedGesture = Gestures::TAP_SOFT;
-                    break;
-                case GestureDetector::TapStrength::MEDIUM:
-                    lastDetectedGesture = Gestures::TAP_SOFT; // Map medium to soft for now
-                    break;
-                case GestureDetector::TapStrength::HARD:
-                    lastDetectedGesture = Gestures::TAP_HARD;
-                    break;
-            }
-        }
-        else if (result.type == GestureDetector::GestureType::STROKE)
-        {
-            switch(result.strokeDirection)
-            {
-                case GestureDetector::StrokeDirection::UP:
-                    lastDetectedGesture = Gestures::STROKE_UP;
-                    break;
-                case GestureDetector::StrokeDirection::DOWN:
-                    lastDetectedGesture = Gestures::STROKE_DOWN;
-                    break;
-                case GestureDetector::StrokeDirection::LEFT:
-                    lastDetectedGesture = Gestures::STROKE_LEFT;
-                    break;
-                case GestureDetector::StrokeDirection::RIGHT:
-                    lastDetectedGesture = Gestures::STROKE_RIGHT;
-                    break;
-            }
-        }
-        
-        // Store confidence for OSC
-        lastConfidence = result.confidence;
-    }
-    else
-    {
-        // No gesture detected
-        lastDetectedGesture = Gestures::NO_GESTURE;
-        lastConfidence = 0.0f;
-    }
+    // Detect getsure
+    gestureDetector->pushSample(imuData);
+    lastDetectedGesture = gestureDetector->detect();
     
     // Send ALL data via OSC at refresh rate
     sendDataViaOSC();

@@ -159,6 +159,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp"/>
+    <ClCompile Include="..\..\Source\Data\GestureDetector.cpp"/>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp"/>
     <ClCompile Include="..\..\Source\Main.cpp"/>
     <ClCompile Include="..\..\Source\MainComponent.cpp"/>

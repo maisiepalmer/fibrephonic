@@ -778,6 +778,9 @@
     <ClCompile Include="..\..\Source\Data\ConnectionManager.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Data\GestureDetector.cpp">
+      <Filter>fibrephonic-juce\Source\Data</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Data\GestureManager.cpp">
       <Filter>fibrephonic-juce\Source\Data</Filter>
     </ClCompile>

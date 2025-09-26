@@ -84,7 +84,7 @@ private:
     /** @name State Tracking
      *  @{
      */
-    Gestures::GestureType lastDetectedGesture = Gestures::NO_GESTURE;
+    Gestures::GestureType lastDetectedGesture = Gestures::NONE;
     float lastConfidence = 0.0f;
     std::atomic<int> pollCount{0};
     std::atomic<bool> isPolling{false};

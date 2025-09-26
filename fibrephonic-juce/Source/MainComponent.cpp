@@ -26,7 +26,7 @@ MainComponent::MainComponent()
     // Start UI update timer
     startTimerHz(10); // Update UI 10 times per second
     
-    setSize(600, 400); // Increased width for calibration panel
+    setSize(600, 450); // Increased width for calibration panel
 }
 
 MainComponent::~MainComponent()
@@ -156,26 +156,25 @@ void MainComponent::updateUI()
 {
     if (!connectionManager || !gestureManager)
         return;
-    
-    // Update connection status
+
+    // Connection status
     bool connected = connectionManager->getIsConnected();
-    
     connectionLabel.setText("Connection: " + juce::String(connected ? "Connected" : "Disconnected"),
                            juce::dontSendNotification);
     connectionLabel.setColour(juce::Label::textColourId,
                              connected ? juce::Colours::green : juce::Colours::red);
-    
-    // Update toggle button
+
+    // Toggle button
     toggleButton.setButtonText(isRunning ? "Stop Connection" : "Start Connection");
     toggleButton.setColour(juce::TextButton::buttonColourId,
                           isRunning ? juce::Colours::indianred : juce::Colours::forestgreen);
-    
-    // Update gesture info
+
+    // Gesture info
     auto lastGesture = gestureManager->getLastGesture();
     juce::String gestureName = Gestures::getGestureName(lastGesture);
     gestureLabel.setText("Last Gesture: " + gestureName, juce::dontSendNotification);
-    
-    // Calibration status indicator
+
+    // Calibration status popup
     if (gestureManager->isCalibrated())
     {
         if (!calibrationStatusShown)
@@ -189,8 +188,8 @@ void MainComponent::updateUI()
                              nullptr);
         }
     }
-    
-    // Update sensor data display
+
+    // Sensor data
     if (connected)
     {
         juce::String sensorInfo;
@@ -198,19 +197,19 @@ void MainComponent::updateUI()
         sensorInfo << "   X: " << juce::String(connectionManager->getAccelerationX(), 3)
                    << "   Y: " << juce::String(connectionManager->getAccelerationY(), 3)
                    << "   Z: " << juce::String(connectionManager->getAccelerationZ(), 3) << "\n\n";
-        
+
         sensorInfo << "GYROSCOPE (deg/s):\n";
         sensorInfo << "   X: " << juce::String(connectionManager->getGyroscopeX(), 2)
                    << "   Y: " << juce::String(connectionManager->getGyroscopeY(), 2)
                    << "   Z: " << juce::String(connectionManager->getGyroscopeZ(), 2) << "\n\n";
-        
+
         sensorInfo << "MAGNETOMETER (uT):\n";
         sensorInfo << "   X: " << juce::String(connectionManager->getMagnetometerX(), 2)
                    << "   Y: " << juce::String(connectionManager->getMagnetometerY(), 2)
                    << "   Z: " << juce::String(connectionManager->getMagnetometerZ(), 2) << "\n\n";
-        
+
         sensorInfo << "Calibration: " << (gestureManager->isCalibrated() ? "YES" : "NO");
-        
+
         sensorDataLabel.setText(sensorInfo, juce::dontSendNotification);
         sensorDataLabel.setColour(juce::Label::textColourId, juce::Colours::darkslategrey);
     }
